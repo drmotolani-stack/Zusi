@@ -523,7 +523,7 @@
   }
 
   .future-wrap {
-    max-width: 680px; /* Widened layout to feel premium, structured, and expansive */
+    max-width: 680px; 
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -656,6 +656,10 @@
 </style>
 </head>
 <body>
+
+<audio id="bg-music" loop>
+  <source src="bg-music.mp3" type="audio/mpeg">
+</audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
@@ -959,6 +963,13 @@
 
   /* ─── LANDING → ACT I ─── */
   function enterWorld() {
+    // Play the background music on first tap!
+    const music = document.getElementById('bg-music');
+    if(music) {
+      music.volume = 0.4; // Soft background volume
+      music.play().catch(e => console.log("Audio play prevented by browser policies until user interacts"));
+    }
+
     const landing = document.getElementById('landing');
     landing.style.opacity = '0';
     landing.style.pointerEvents = 'none';
