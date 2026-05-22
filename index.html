@@ -1675,9 +1675,17 @@ function showProgressThread() {
 let currentAct = 0;
 
 function enterWorld() {
+  // --- NEW: Unlock the Natalie Cole track immediately on first tap ---
+  joyMusic.volume = 0;
+  joyMusic.play().then(() => { 
+    joyMusic.pause(); // Pause it immediately, now the browser trusts it
+  }).catch(()=>{});
+
+  // Start the actual opening music and effects
   startAmbient();
   startMusic();
   playEntryBloom();
+  
   const landing = document.getElementById('landing');
   landing.style.opacity = '0';
   landing.style.pointerEvents = 'none';
