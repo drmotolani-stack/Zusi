@@ -817,7 +817,7 @@
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
 <audio id="voice-audio">
-  <source src="voicenote.mp3" type="audio/mpeg">
+  <source src="voicenote.m4a" type="audio/mp4">
 </audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
@@ -1188,7 +1188,7 @@
             <span class="voice-play-icon" id="voice-play-icon">▶</span>
           </div>
           <div class="voice-waveform" id="voice-waveform"></div>
-          <span class="voice-duration" id="voice-duration">0:00</span>
+          <span class="voice-duration" id="voice-duration">1:10</span>
         </div>
       </div>
 
@@ -1233,7 +1233,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const swCode = `
 const CACHE = 'zusi-v2';
-const ASSETS = ['./', './index.html', './bg-music.mp3', './voicenote.mp3', './handwriting.jpg',
+const ASSETS = ['./', './index.html', './bg-music.mp3', './voicenote.m4a', './handwriting.jpg',
   './photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg',
   './photo6.jpg','./photo7.jpg','./photo8.jpg'];
 self.addEventListener('install', e => {
