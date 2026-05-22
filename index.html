@@ -345,49 +345,151 @@
     background: var(--wa-bg);
     display: flex; flex-direction: column;
   }
+
+  /* ── iOS WhatsApp header ── */
   .wa-header {
-    background: #008069; color: white;
-    padding: 14px 18px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 600; font-size: 0.95rem;
+    background: #1c2b33;
+    border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    color: white;
+    padding: 10px 14px 10px 10px;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
   }
+  /* iOS back chevron */
+  .wa-back {
+    font-size: 1.25rem; color: #25d366;
+    line-height: 1; flex-shrink: 0;
+    margin-right: 2px;
+  }
   .wa-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #25d366;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; font-weight: 700; color: white; flex-shrink: 0;
+    font-size: 0.8rem; font-weight: 600; color: white; flex-shrink: 0;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
   }
+  .wa-header-info { display: flex; flex-direction: column; flex: 1; }
+  .wa-name {
+    font-size: 0.92rem; font-weight: 600; color: #fff; line-height: 1.2;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+  }
+  .wa-status {
+    font-size: 0.67rem; color: #8696a0; line-height: 1.2;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+  }
+  .wa-icons {
+    display: flex; gap: 18px; align-items: center;
+    color: #25d366; font-size: 1.1rem;
+  }
+
+  /* ── iOS chat background with subtle pattern ── */
   .wa-chat {
-    padding: 14px;
-    display: flex; flex-direction: column; gap: 8px;
+    padding: 8px 10px;
+    display: flex; flex-direction: column; gap: 3px;
     overflow-y: auto; flex-grow: 1;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13.5px; -webkit-overflow-scrolling: touch;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+    font-size: 14px; -webkit-overflow-scrolling: touch;
+    background: #0b141a;
+    /* WhatsApp iOS subtle wallpaper-like texture */
+    background-image: radial-gradient(circle at 20% 80%, rgba(18,44,34,0.4) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(11,20,26,0.6) 0%, transparent 50%);
   }
+
+  /* ── Date chip ── */
+  .wa-date-chip {
+    align-self: center;
+    background: rgba(17,27,33,0.85);
+    color: #8696a0;
+    font-size: 0.67rem;
+    padding: 4px 10px;
+    border-radius: 8px;
+    margin: 6px 0 4px;
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+  }
+
+  /* ── Message bubbles ── */
   .msg {
-    max-width: 82%; padding: 8px 12px; border-radius: 8px;
-    color: #e9edef; line-height: 1.45;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+    max-width: 78%;
+    padding: 7px 10px 18px 10px; /* extra bottom for timestamp */
+    border-radius: 18px;
+    color: #e9edef; line-height: 1.4;
     word-break: break-word;
+    position: relative;
     opacity: 0; transform: translateY(6px);
     transition: opacity 0.3s ease, transform 0.3s ease;
+    font-size: 14px;
   }
   .msg.shown { opacity: 1; transform: translateY(0); }
-  .msg.recv { background: var(--wa-recv); align-self: flex-start; border-top-left-radius: 2px; }
-  .msg.sent { background: var(--wa-sent); align-self: flex-end; border-top-right-radius: 2px; }
+
+  /* Received bubble — left tail */
+  .msg.recv {
+    background: #1f2c34;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    margin-left: 6px;
+  }
+  .msg.recv::before {
+    content: '';
+    position: absolute;
+    left: -6px; bottom: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 0 10px 8px;
+    border-color: transparent transparent #1f2c34 transparent;
+  }
+
+  /* Sent bubble — right tail */
+  .msg.sent {
+    background: #005c4b;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    margin-right: 6px;
+  }
+  .msg.sent::after {
+    content: '';
+    position: absolute;
+    right: -6px; bottom: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 8px 10px 0;
+    border-color: transparent #005c4b transparent transparent;
+  }
+
+  /* Timestamp inside bubble */
+  .msg-time {
+    position: absolute;
+    bottom: 4px; right: 9px;
+    font-size: 10px;
+    color: rgba(233,237,239,0.55);
+    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 3px;
+  }
+  /* Double-tick for sent messages */
+  .msg.sent .msg-time { color: #53bdeb; }
+  .tick { font-size: 11px; }
 
   /* WhatsApp typing indicator */
   .wa-typing {
     display: none;
     align-self: flex-start;
-    background: var(--wa-recv);
+    background: #1f2c34;
     padding: 10px 14px;
-    border-radius: 8px;
-    border-top-left-radius: 2px;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
     gap: 4px;
     align-items: center;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+    margin-left: 6px;
+    position: relative;
+  }
+  .wa-typing::before {
+    content: '';
+    position: absolute;
+    left: -6px; bottom: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 0 10px 8px;
+    border-color: transparent transparent #1f2c34 transparent;
   }
   .wa-typing.active { display: flex; }
   .typing-dot {
@@ -702,14 +804,23 @@
           <span class="tap-hint">tap to open</span>
         </div>
         <div class="card-face card-back">
-          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-header">
+            <div class="wa-back">‹</div>
+            <div class="wa-avatar">ZB</div>
+            <div class="wa-header-info">
+              <div class="wa-name">Zusi Billions</div>
+              <div class="wa-status">online</div>
+            </div>
+            <div class="wa-icons">📞 📹</div>
+          </div>
           <div class="wa-chat">
+            <div class="wa-date-chip">Today</div>
             <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-            <div class="msg recv">Good evening, Doctor. Hope I'm permitted to call you that? 😅</div>
-            <div class="msg recv">What's Corper, Doctor and finance guru Motolani doing this week and today?</div>
-            <div class="msg recv">Good afternoon, Dr 😅</div>
-            <div class="msg recv">Good afternoon, CFA scholar</div>
-            <div class="msg sent">CFA scholar azhow 😂. No be only book i come read for this life abeg</div>
+            <div class="msg recv">Good evening, Doctor. Hope I'm permitted to call you that? 😅<span class="msg-time">8:41 pm</span></div>
+            <div class="msg recv">What's Corper, Doctor and finance guru Motolani doing this week and today?<span class="msg-time">8:41 pm</span></div>
+            <div class="msg recv">Good afternoon, Dr 😅<span class="msg-time">1:14 pm</span></div>
+            <div class="msg recv">Good afternoon, CFA scholar<span class="msg-time">1:22 pm</span></div>
+            <div class="msg sent">CFA scholar azhow 😂. No be only book i come read for this life abeg<span class="msg-time">1:24 pm <span class="tick">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -723,18 +834,27 @@
           <span class="tap-hint">tap to open</span>
         </div>
         <div class="card-face card-back">
-          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-header">
+            <div class="wa-back">‹</div>
+            <div class="wa-avatar">ZB</div>
+            <div class="wa-header-info">
+              <div class="wa-name">Zusi Billions</div>
+              <div class="wa-status">online</div>
+            </div>
+            <div class="wa-icons">📞 📹</div>
+          </div>
           <div class="wa-chat">
+            <div class="wa-date-chip">Today</div>
             <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-            <div class="msg recv">On the contrary, a better way to look at it is that you can talk a woman to sleep. Sounds like a win. Is this where I get a thank you for participating in the experiment? 🙂‍↔️</div>
-            <div class="msg sent">Can you imagine</div>
-            <div class="msg sent">I was sharing what blessed me in the message and all but you slept off</div>
-            <div class="msg recv">You're welcome 😂</div>
-            <div class="msg sent">And you're calling it an experiment 😂</div>
-            <div class="msg recv">Ema binu I can't promise it won't happen again, sadly 😂. Accept my apology.</div>
-            <div class="msg recv">Yes o, I still deserve a thank you though.</div>
-            <div class="msg sent">Okay so that will be 129.99 GBP</div>
-            <div class="msg sent">Increments of 14.99 for subsequent repeats 🙏🏾</div>
+            <div class="msg recv">On the contrary, a better way to look at it is that you can talk a woman to sleep. Sounds like a win. Is this where I get a thank you for participating in the experiment? 🙂‍↔️<span class="msg-time">11:03 pm</span></div>
+            <div class="msg sent">Can you imagine<span class="msg-time">11:04 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">I was sharing what blessed me in the message and all but you slept off<span class="msg-time">11:04 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">You're welcome 😂<span class="msg-time">11:05 pm</span></div>
+            <div class="msg sent">And you're calling it an experiment 😂<span class="msg-time">11:05 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">Ema binu I can't promise it won't happen again, sadly 😂. Accept my apology.<span class="msg-time">11:06 pm</span></div>
+            <div class="msg recv">Yes o, I still deserve a thank you though.<span class="msg-time">11:06 pm</span></div>
+            <div class="msg sent">Okay so that will be 129.99 GBP<span class="msg-time">11:07 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">Increments of 14.99 for subsequent repeats 🙏🏾<span class="msg-time">11:07 pm <span class="tick">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -748,18 +868,27 @@
           <span class="tap-hint">tap to open</span>
         </div>
         <div class="card-face card-back">
-          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-header">
+            <div class="wa-back">‹</div>
+            <div class="wa-avatar">ZB</div>
+            <div class="wa-header-info">
+              <div class="wa-name">Zusi Billions</div>
+              <div class="wa-status">online</div>
+            </div>
+            <div class="wa-icons">📞 📹</div>
+          </div>
           <div class="wa-chat">
+            <div class="wa-date-chip">Today</div>
             <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-            <div class="msg sent">But before you go, that will be $199.99 please</div>
-            <div class="msg recv">All these for $200</div>
-            <div class="msg sent">Another 29.99. Thanks</div>
-            <div class="msg recv">If I don't get your account details in 1 minute, forget about it</div>
-            <div class="msg sent">0775273984 Access bank 🫱🏾‍🫲🏾</div>
-            <div class="msg recv">Is this a domiciliary account? I don't exchange to naira</div>
-            <div class="msg sent">I'll be charging £12.99 for that</div>
-            <div class="msg recv">You have moved to pounds, nice one. Is it because dollar is coming down?</div>
-            <div class="msg sent">Trump mehn. Idk what that brudda is doing so I'm doing GBP for now</div>
+            <div class="msg sent">But before you go, that will be $199.99 please<span class="msg-time">9:48 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">All these for $200<span class="msg-time">9:49 pm</span></div>
+            <div class="msg sent">Another 29.99. Thanks<span class="msg-time">9:49 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">If I don't get your account details in 1 minute, forget about it<span class="msg-time">9:50 pm</span></div>
+            <div class="msg sent">0775273984 Access bank 🫱🏾‍🫲🏾<span class="msg-time">9:50 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">Is this a domiciliary account? I don't exchange to naira<span class="msg-time">9:51 pm</span></div>
+            <div class="msg sent">I'll be charging £12.99 for that<span class="msg-time">9:51 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">You have moved to pounds, nice one. Is it because dollar is coming down?<span class="msg-time">9:52 pm</span></div>
+            <div class="msg sent">Trump mehn. Idk what that brudda is doing so I'm doing GBP for now<span class="msg-time">9:52 pm <span class="tick">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -773,15 +902,24 @@
           <span class="tap-hint">tap to open</span>
         </div>
         <div class="card-face card-back">
-          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-header">
+            <div class="wa-back">‹</div>
+            <div class="wa-avatar">ZB</div>
+            <div class="wa-header-info">
+              <div class="wa-name">Zusi Billions</div>
+              <div class="wa-status">online</div>
+            </div>
+            <div class="wa-icons">📞 📹</div>
+          </div>
           <div class="wa-chat">
+            <div class="wa-date-chip">Today</div>
             <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-            <div class="msg sent">Ahahn overall besttt 🙌🏾</div>
-            <div class="msg sent">Overall best, trust youu're killing it</div>
-            <div class="msg sent">Overall besttt I'm not surprised</div>
-            <div class="msg recv">Thanks for the call</div>
-            <div class="msg sent">you're welcome my PMP certified CEO ma</div>
-            <div class="msg sent">Obo wie, CEO PMP overall best</div>
+            <div class="msg sent">Ahahn overall besttt 🙌🏾<span class="msg-time">3:17 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">Overall best, trust youu're killing it<span class="msg-time">3:17 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">Overall besttt I'm not surprised<span class="msg-time">3:18 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">Thanks for the call<span class="msg-time">3:19 pm</span></div>
+            <div class="msg sent">you're welcome my PMP certified CEO ma<span class="msg-time">3:19 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">Obo wie, CEO PMP overall best<span class="msg-time">3:20 pm <span class="tick">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -795,14 +933,23 @@
           <span class="tap-hint">tap to open</span>
         </div>
         <div class="card-face card-back">
-          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-header">
+            <div class="wa-back">‹</div>
+            <div class="wa-avatar">ZB</div>
+            <div class="wa-header-info">
+              <div class="wa-name">Zusi Billions</div>
+              <div class="wa-status">online</div>
+            </div>
+            <div class="wa-icons">📞 📹</div>
+          </div>
           <div class="wa-chat">
+            <div class="wa-date-chip">Today</div>
             <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
-            <div class="msg sent">My consultant ma 🙌🏾</div>
-            <div class="msg recv">That should work. Thanks for the suggestion, Business Consultant 😅</div>
-            <div class="msg sent">whatt 😂</div>
-            <div class="msg sent">You're the actual business consultant abeg</div>
-            <div class="msg sent">Osheyy consultants 🙌🏾</div>
+            <div class="msg sent">My consultant ma 🙌🏾<span class="msg-time">2:05 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg recv">That should work. Thanks for the suggestion, Business Consultant 😅<span class="msg-time">2:07 pm</span></div>
+            <div class="msg sent">whatt 😂<span class="msg-time">2:07 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">You're the actual business consultant abeg<span class="msg-time">2:08 pm <span class="tick">✓✓</span></span></div>
+            <div class="msg sent">Osheyy consultants 🙌🏾<span class="msg-time">2:08 pm <span class="tick">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -1390,10 +1537,10 @@ function initScrollReveal() {
             if (aw) aw.classList.add('spread');
           }, 1800);
 
-          // Epilogue trigger: 14 seconds after the last block appears
+          // Epilogue trigger: 90 seconds after the last block appears — give her full time to read and sit with it
           if (!epilogueTriggered) {
             epilogueTriggered = true;
-            setTimeout(showEpilogue, 14000);
+            setTimeout(showEpilogue, 90000);
           }
         }
       }
