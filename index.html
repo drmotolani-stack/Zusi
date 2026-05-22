@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>For Zusi Billions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+
+  /* ─── TOKENS ─── */
+  :root {
+    --night:   #080c14;
+    --ink:     #0d1526;
+    --mist:    #94a3b8;
+    --silk:    #f1ede6;
+    --gold:    #c9a96e;
+    --gold2:   #e8d5a3;
+    --wa-bg:   #efeae2;
+    --wa-sent: #dcf8c6;
+    --wa-recv: #ffffff;
+    --serif:   'Cormorant Garamond', Georgia, serif;
+    --mono:    'DM Mono', 'Courier New', monospace;
+  }
+
+  /* ─── RESET ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--night);
+    color: var(--silk);
+    font-family: var(--serif);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .hidden { display: none !important; }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ═══════════════════════════════════════
+     LANDING — tap to enter
+  ═══════════════════════════════════════ */
+  #landing {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--night);
+    z-index: 100;
+    transition: opacity 1.2s ease;
+    cursor: pointer;
+  }
+
+  #landing .star-field {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50%       { opacity: var(--peak, 0.7); transform: scale(1); }
+  }
+
+  #landing .center-content {
+    position: relative;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  #landing .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  #landing h1 {
+    font-size: clamp(2.4rem, 8vw, 4.5rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  #landing h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  #landing .tap-ring {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 169, 110, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.8s forwards, pulse-ring 2.5s ease 2.8s infinite;
+    margin-top: 16px;
+  }
+
+  #landing .tap-ring::after {
+    content: '';
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(201, 169, 110, 0.15);
+    border: 1px solid rgba(201, 169, 110, 0.6);
+    position: absolute;
+    animation: pulse-ring 2.5s ease 2.8s infinite;
+  }
+
+  #landing .tap-icon {
+    font-size: 1.4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  #landing .tap-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--mist);
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s ease 2s forwards;
+  }
+
+  @keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(201,169,110,0.3); }
+    70%  { box-shadow: 0 0 0 14px rgba(201,169,110,0); }
+    100% { box-shadow: 0 0 0 0 rgba(201,169,110,0); }
+  }
+
+  /* ─── SHARED SECTION STYLES ─── */
+  .act {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px 80px;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+
+  .act.visible { opacity: 1; }
+
+  .act-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-heading {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-weight: 300;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 48px;
+    line-height: 1.2;
+  }
+
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 48px;
+    opacity: 0.5;
+  }
+
+  .next-btn {
+    margin-top: 56px;
+    padding: 14px 40px;
+    background: transparent;
+    border: 1px solid rgba(201, 169, 110, 0.5);
+    color: var(--gold2);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .next-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(201,169,110,0.08);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .next-btn:hover::before { transform: scaleX(1); }
+  .next-btn:active { transform: scale(0.97); }
+
+  /* ═══════════════════════════════════════
+     ACT I — PROLOGUE
+  ═══════════════════════════════════════ */
+  #act1 {
+    background: radial-gradient(ellipse at 50% 40%, #111827 0%, var(--night) 70%);
+    justify-content: center;
+  }
+
+  #act1 .prologue-wrap {
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+  }
+
+  #act1 .date-line {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    color: var(--mist);
+    margin-bottom: 40px;
+    opacity: 0.7;
+  }
+
+  .typewriter {
+    font-size: clamp(1.2rem, 4vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 120px;
+    color: var(--silk);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--gold);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  .prologue-kicker {
+    margin-top: 32px;
+    font-size: clamp(1rem, 3.5vw, 1.25rem);
+    font-style: italic;
+    color: var(--gold2);
+    opacity: 0;
+    transition: opacity 1s ease;
+    line-height: 1.6;
+  }
+
+  /* ═══════════════════════════════════════
+     ACT II — THE RECEIPTS (flip cards)
+  ═══════════════════════════════════════ */
+  #act2 {
+    background: linear-gradient(180deg, var(--night) 0%, #0b1120 100%);
+    justify-content: flex-start;
+    padding-top: 80px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 680px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 500px) {
+    .cards-grid { grid-template-columns: 1fr; max-width: 340px; }
+  }
+
+  .card-container {
+    perspective: 1200px;
+    height: 400px;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 0.85s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+
+  .card.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* Card front */
+  .card-front {
+    background: var(--ink);
+    border: 1px solid rgba(201,169,110,0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 28px;
+  }
+
+  .card-front .card-num {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.6;
+  }
+
+  .card-front h3 {
+    font-size: 1.55rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--silk);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .card-front .tap-hint {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: var(--mist);
+    opacity: 0.5;
+    margin-top: 8px;
+  }
+
+  /* Card back */
+  .card-back {
+    transform: rotateY(180deg);
+    background: var(--wa-bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wa-header {
+    background: #008069;
+    color: white;
+    padding: 14px 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .wa-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #25d366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .wa-chat {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    flex-grow: 1;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13.5px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .msg {
+    max-width: 82%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #111;
+    line-height: 1.45;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+    word-break: break-word;
+  }
+
+  .msg.recv {
+    background: var(--wa-recv);
+    align-self: flex-start;
+    border-top-left-radius: 2px;
+  }
+
+  .msg.sent {
+    background: var(--wa-sent);
+    align-self: flex-end;
+    border-top-right-radius: 2px;
+  }
+
+  /* ═══════════════════════════════════════
+     ACT III — POLAROID GALLERY
+  ═══════════════════════════════════════ */
+  #act3 {
+    background: linear-gradient(180deg, #0b1120 0%, #0c1018 100%);
+    justify-content: flex-start;
+    padding-top: 80px;
+  }
+
+  .polaroid-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    width: 100%;
+    max-width: 340px;
+    margin-bottom: 20px;
+  }
+
+  .polaroid {
+    background: #faf8f5;
+    padding: 14px 14px 48px 14px;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.3),
+      0 14px 40px rgba(0,0,0,0.45),
+      0 0 0 1px rgba(0,0,0,0.06);
+    width: 100%;
+    border-radius: 1px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
+  }
+
+  .polaroid:nth-child(1) { transform: rotate(-2.5deg); }
+  .polaroid:nth-child(2) { transform: rotate(3deg); }
+  .polaroid:nth-child(3) { transform: rotate(-1.5deg); }
+  .polaroid:nth-child(4) { transform: rotate(2deg); }
+  .polaroid:nth-child(5) { transform: rotate(-3deg); }
+  .polaroid:nth-child(6) { transform: rotate(1.5deg); }
+  .polaroid:nth-child(7) { transform: rotate(-2deg); }
+  .polaroid:nth-child(8) { transform: rotate(2.5deg); }
+
+  .polaroid:hover, .polaroid:active {
+    transform: rotate(0deg) scale(1.02) !important;
+    box-shadow:
+      0 8px 16px rgba(0,0,0,0.4),
+      0 24px 60px rgba(0,0,0,0.5);
+    z-index: 10;
+  }
+
+  .polaroid img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    background: #ddd;
+    filter: sepia(8%) contrast(1.02) brightness(0.98);
+  }
+
+  .polaroid .caption {
+    position: absolute;
+    bottom: 10px;
+    left: 14px;
+    right: 14px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: #666;
+  }
+
+  /* ═══════════════════════════════════════
+     ACT IV — THE FUTURE (ELEVATED & WIDE)
+  ═══════════════════════════════════════ */
+  #act4 {
+    background: radial-gradient(ellipse at 50% 50%, #1a120a 0%, var(--night) 80%);
+    justify-content: flex-start;
+    padding-top: 100px;
+    padding-bottom: 160px;
+  }
+
+  .future-wrap {
+    max-width: 680px; /* Widened layout to feel premium, structured, and expansive */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .future-block {
+    padding: 40px 0;
+    border-top: 1px solid rgba(201,169,110,0.12);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .future-block.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .future-block .block-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .future-block p {
+    font-size: clamp(1.1rem, 3.8vw, 1.35rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--silk);
+  }
+
+  .future-block p em {
+    color: var(--gold2);
+    font-style: italic;
+  }
+
+  /* ─── CLIMAX EXPERIENCE SECTIONS ─── */
+  .and-you-block {
+    margin-top: 40px;
+    padding: 60px 40px;
+    background: linear-gradient(180deg, rgba(13, 21, 38, 0.6) 0%, rgba(8, 12, 20, 0) 100%);
+    border-left: 2px solid var(--gold);
+    border-top: 1px solid rgba(201,169,110,0.15);
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .and-you-block.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ask-block {
+    padding: 80px 0 0;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ask-block.revealed { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+
+  .ask-question {
+    font-size: clamp(2.2rem, 7vw, 3.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--gold2);
+    margin-bottom: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  .ask-question em {
+    color: var(--gold);
+    font-style: normal;
+  }
+
+  .ask-open {
+    max-width: 580px;
+    margin: 0 auto;
+    font-size: clamp(1.15rem, 3.8vw, 1.45rem);
+    font-weight: 300;
+    line-height: 1.9;
+    color: var(--silk);
+    font-family: var(--serif);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .alignment-climax {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px dashed rgba(201, 169, 110, 0.2);
+    font-size: clamp(1.2rem, 4vw, 1.55rem);
+    line-height: 1.85;
+    color: var(--silk);
+    font-weight: 300;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 0 0 20px rgba(232, 213, 163, 0.1);
+  }
+
+  .alignment-climax em {
+    letter-spacing: 0.08em;
+    font-style: normal;
+    font-weight: 400;
+    color: var(--gold2);
+  }
+
+  /* ─── SHARED ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
+
+<div id="landing" onclick="enterWorld()">
+  <div class="star-field" id="stars"></div>
+  <div class="center-content">
+    <div class="eyebrow">A world built for one person</div>
+    <h1>For <em>Zusi Billions</em></h1>
+    <div class="tap-ring"><span class="tap-icon">✦</span></div>
+    <div class="tap-label">Tap anywhere to enter</div>
+  </div>
+</div>
+
+<div class="act" id="act1">
+  <div class="prologue-wrap">
+    <div class="act-label">I — Prologue</div>
+    <div class="date-line">GLT · October 6th 2025 → Today</div>
+    <div class="divider"></div>
+    <div class="typewriter" id="typewriter-text"><span class="cursor"></span></div>
+    <div class="prologue-kicker" id="prologue-kicker">
+      And just like that, you went from Jennifer to <em style="color:var(--gold)">Zusi Billions.</em>
+    </div>
+    <button class="next-btn" id="btn-act2" style="opacity:0; transition: opacity 0.8s ease;" onclick="goToAct2()">
+      The Receipts &nbsp;→
+    </button>
+  </div>
+</div>
+
+<div class="act hidden" id="act2">
+  <div class="act-label">II — The Receipts</div>
+  <div class="section-heading">Things that happened<br><em>that we cannot deny</em></div>
+  <div class="divider"></div>
+
+  <div class="cards-grid">
+
+    <div class="card-container">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <span class="card-num">01 / 05</span>
+          <h3>The Titles</h3>
+          <span class="tap-hint">tap to open</span>
+        </div>
+        <div class="card-face card-back">
+          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-chat">
+            <div class="msg recv">Good evening, Doctor. Hope I'm permitted to call you that? 😅</div>
+            <div class="msg recv">What's Corper, Doctor and finance guru Motolani doing this week and today?</div>
+            <div class="msg recv">Good afternoon, Dr 😅</div>
+            <div class="msg recv">Good afternoon, CFA scholar</div>
+            <div class="msg sent">CFA scholar azhow 😂. No be only book i come read for this life abeg</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <span class="card-num">02 / 05</span>
+          <h3>The "Experiment"</h3>
+          <span class="tap-hint">tap to open</span>
+        </div>
+        <div class="card-face card-back">
+          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-chat">
+            <div class="msg recv">On the contrary, a better way to look at it is that you can talk a woman to sleep. Sounds like a win. Is this where I get a thank you for participating in the experiment? 🙂‍↔️</div>
+            <div class="msg sent">Can you imagine</div>
+            <div class="msg sent">I was sharing what blessed me in the message and all but you slept off</div>
+            <div class="msg recv">You're welcome 😂</div>
+            <div class="msg sent">And you're calling it an experiment 😂</div>
+            <div class="msg recv">Ema binu I can't promise it won't happen again, sadly 😂. Accept my apology.</div>
+            <div class="msg recv">Yes o, I still deserve a thank you though.</div>
+            <div class="msg sent">Okay so that will be 129.99 GBP</div>
+            <div class="msg sent">Increments of 14.99 for subsequent repeats 🙏🏾</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <span class="card-num">03 / 05</span>
+          <h3>The Billing Dept.</h3>
+          <span class="tap-hint">tap to open</span>
+        </div>
+        <div class="card-face card-back">
+          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-chat">
+            <div class="msg sent">But before you go, that will be $199.99 please</div>
+            <div class="msg recv">All these for $200</div>
+            <div class="msg sent">Another 29.99. Thanks</div>
+            <div class="msg recv">If I don't get your account details in 1 minute, forget about it</div>
+            <div class="msg sent">0775273984 Access bank 🫱🏾‍🫲🏾</div>
+            <div class="msg recv">Is this a domiciliary account? I don't exchange to naira</div>
+            <div class="msg sent">I'll be charging £12.99 for that</div>
+            <div class="msg recv">You have moved to pounds, nice one. Is it because dollar is coming down?</div>
+            <div class="msg sent">Trump mehn. Idk what that brudda is doing so I'm doing GBP for now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <span class="card-num">04 / 05</span>
+          <h3>The Experience</h3>
+          <span class="tap-hint">tap to open</span>
+        </div>
+        <div class="card-face card-back">
+          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-chat">
+            <div class="msg sent">Ahahn overall besttt 🙌🏾</div>
+            <div class="msg sent">Overall best, trust youu're killing it</div>
+            <div class="msg sent">Overall besttt I'm not surprised</div>
+            <div class="msg recv">Thanks for the call</div>
+            <div class="msg sent">you're welcome my PMP certified CEO ma</div>
+            <div class="msg sent">Obo wie, CEO PMP overall best</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-container">
+      <div class="card" onclick="this.classList.toggle('flipped')">
+        <div class="card-face card-front">
+          <span class="card-num">05 / 05</span>
+          <h3>The Consultant</h3>
+          <span class="tap-hint">tap to open</span>
+        </div>
+        <div class="card-face card-back">
+          <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
+          <div class="wa-chat">
+            <div class="msg sent">My consultant ma 🙌🏾</div>
+            <div class="msg recv">That should work. Thanks for the suggestion, Business Consultant 😅</div>
+            <div class="msg sent">whatt 😂</div>
+            <div class="msg sent">You're the actual business consultant abeg</div>
+            <div class="msg sent">Osheyy consultants 🙌🏾</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
+</div>
+
+<div class="act hidden" id="act3">
+  <div class="act-label">III — The Late Nights</div>
+  <div class="section-heading">Everything a screenshot<br><em>couldn't fully hold</em></div>
+  <div class="divider"></div>
+
+  <div class="polaroid-stack">
+
+    <div class="polaroid">
+      <img src="photo1.jpg" alt="That laugh">
+      <div class="caption">that laugh though</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo2.jpg" alt="Peace sign">
+      <div class="caption">✌🏾</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo3.jpg" alt="Double peace">
+      <div class="caption">double the peace, double the energy</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo4.jpg" alt="Screen share">
+      <div class="caption">even screen-share mode was a vibe</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo5.jpg" alt="Lunch call">
+      <div class="caption">lunch call era</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo6.jpg" alt="Eating and drinking">
+      <div class="caption">unbothered &amp; thriving</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo7.jpg" alt="Professional headshot 1">
+      <div class="caption">CEO ma 🌝</div>
+    </div>
+
+    <div class="polaroid">
+      <img src="photo8.jpg" alt="Professional headshot 2">
+      <div class="caption">overall best. always.</div>
+    </div>
+
+  </div>
+
+  <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
+</div>
+
+<div class="act hidden" id="act4">
+  <div class="act-label">IV — The Next Chapter</div>
+  <div class="section-heading">Where this is going</div>
+  <div class="divider"></div>
+
+  <div class="future-wrap">
+
+    <div class="future-block" id="fb1">
+      <div class="block-label">The mandate</div>
+      <p>
+        I have been called to be light unto nations, a restorer of path for those who dwell in deserts, to take men from lack to abundance, to create springs of water in deserts, as an extension of the ministry of our Lord Jesus Christ. Serving faithfully as a steward of His manifold grace, under GLT. (as a high functioning steward).
+      </p>
+    </div>
+
+    <div class="future-block" id="fb2">
+      <div class="block-label">Right now</div>
+      <p>
+        Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't “hustle” for the sake of it. They are the foundations of good stewardship.
+      </p>
+    </div>
+
+    <div class="future-block" id="fb3">
+      <div class="block-label">The reality we are building toward</div>
+      <p>
+        A 27-floor institution. Capital management. Infrastructure. Banking.
+        Patents that pioneer new categories of financial engineering.
+        A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence
+        of a mandate fulfilled. A legacy that the generation after us will call
+        their foundation.
+      </p>
+    </div>
+
+    <div class="and-you-block" id="and-you-section">
+      <div class="future-block" id="fb4" style="border-top:none; padding:0; opacity:1; transform:none;">
+        <div class="block-label">And you</div>
+        <p>
+          Through all of it, from the early mornings, to the invoices for £12.99,
+          to the late calls where you fell asleep mid-sentence and still charged me a thank you,
+          you have been the most natural constant.
+          <em>I want to build all of this with you.</em>
+        </p>
+      </div>
+    </div>
+
+    <div class="ask-block" id="ask-block">
+      <div class="ask-question">
+        I love you, Zusi Billions.
+      </div>
+      
+      <div class="ask-open">
+        I'm not asking you for an answer tonight.<br>
+        I'm asking you to <em style="color:var(--gold2)">consider a future</em> with me.<br>
+        Sit with it. Let it settle.<br>
+        When it feels right to you, I'll be here.
+        
+        <div class="alignment-climax">
+          Here to <em>ALIGNNNNNNN</em> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+
+  /* ─── STAR FIELD ─── */
+  (function buildStars() {
+    const sf = document.getElementById('stars');
+    for (let i = 0; i < 300; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        --dur:${(Math.random()*4+2).toFixed(1)}s;
+        --delay:${(Math.random()*5).toFixed(1)}s;
+        --peak:${(Math.random()*0.5+0.3).toFixed(2)};
+      `;
+      sf.appendChild(s);
+    }
+    // Also populate bg-stars for persistent background
+    const bg = document.getElementById('bg-stars');
+    for (let i = 0; i < 200; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2 + 0.4;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        --dur:${(Math.random()*5+2).toFixed(1)}s;
+        --delay:${(Math.random()*6).toFixed(1)}s;
+        --peak:${(Math.random()*0.4+0.2).toFixed(2)};
+      `;
+      bg.appendChild(s);
+    }
+  })();
+
+  /* ─── LANDING → ACT I ─── */
+  function enterWorld() {
+    const landing = document.getElementById('landing');
+    landing.style.opacity = '0';
+    landing.style.pointerEvents = 'none';
+    setTimeout(() => {
+      landing.classList.add('hidden');
+      const act1 = document.getElementById('act1');
+      act1.style.display = 'flex';
+      setTimeout(() => {
+        act1.classList.add('visible');
+        startTypewriter();
+      }, 80);
+    }, 1200);
+  }
+
+  /* ─── TYPEWRITER ─── */
+  const LINE = '"Hiii, good evening Jennifer, this is Motolani from GLT.\nWe met after church yesterday."';
+
+  function startTypewriter() {
+    const el = document.getElementById('typewriter-text');
+    el.innerHTML = '<span class="cursor"></span>';
+    let i = 0;
+    function type() {
+      if (i < LINE.length) {
+        const ch = LINE[i];
+        const cursor = el.querySelector('.cursor');
+        if (ch === '\n') {
+          cursor.insertAdjacentHTML('beforebegin', '<br>');
+        } else {
+          cursor.insertAdjacentText('beforebegin', ch);
+        }
+        i++;
+        setTimeout(type, ch === '\n' ? 400 : 38);
+      } else {
+        // remove cursor blink, show kicker + button
+        el.querySelector('.cursor').style.display = 'none';
+        const kicker = document.getElementById('prologue-kicker');
+        const btn    = document.getElementById('btn-act2');
+        setTimeout(() => { kicker.style.opacity = '1'; }, 600);
+        setTimeout(() => { btn.style.opacity   = '1'; }, 1400);
+      }
+    }
+    setTimeout(type, 600);
+  }
+
+  /* ─── TRANSITION HELPER ─── */
+  function fadeOut(id, cb) {
+    const el = document.getElementById(id);
+    el.classList.remove('visible');
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.classList.add('hidden');
+      el.style.display = '';
+      if (cb) cb();
+    }, 1200);
+  }
+
+  function fadeIn(id) {
+    window.scrollTo(0, 0);
+    const el = document.getElementById(id);
+    el.classList.remove('hidden');
+    el.style.display = 'flex';
+    setTimeout(() => el.classList.add('visible'), 60);
+  }
+
+  function goToAct2() { fadeOut('act1', () => fadeIn('act2')); }
+  function goToAct3() { fadeOut('act2', () => fadeIn('act3')); }
+  function goToAct4() {
+    fadeOut('act3', () => {
+      fadeIn('act4');
+      setTimeout(revealFutureBlocks, 600);
+    });
+  }
+
+  /* ─── SEQUENTIAL FUTURE BLOCK REVEALS ─── */
+  function revealFutureBlocks() {
+    ['fb1','fb2','fb3'].forEach((id, i) => {
+      setTimeout(() => {
+        document.getElementById(id).classList.add('revealed');
+      }, i * 800);
+    });
+    
+    // Smooth cinematic staggered entrance for the focal point sections
+    setTimeout(() => {
+      document.getElementById('and-you-section').classList.add('revealed');
+    }, 3 * 800);
+
+    setTimeout(() => {
+      document.getElementById('ask-block').classList.add('revealed');
+    }, 4 * 800 + 400);
+  }
+
+</script>
+</body>
+</html>
