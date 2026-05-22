@@ -45,6 +45,40 @@
     opacity: 0.4;
   }
 
+  /* ═══════════════════════════════════════════
+     #5 — INTRO SCREEN: "z u s i"
+  ═══════════════════════════════════════════ */
+  #intro-screen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: opacity 1.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  #intro-screen.fade-out { opacity: 0; }
+
+  .intro-name {
+    display: flex;
+    gap: 0.28em;
+    align-items: center;
+  }
+  .intro-letter {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(2rem, 10vw, 4.5rem);
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    letter-spacing: 0.05em;
+  }
+  .intro-letter.appear { opacity: 1; transform: translateY(0); }
+
   /* ── PROGRESS THREAD ── */
   #progress-thread {
     position: fixed;
@@ -150,7 +184,9 @@
     z-index: 100;
     transition: opacity 1.2s ease;
     cursor: pointer;
+    opacity: 0;
   }
+  #landing.ready { opacity: 1; }
   #landing .star-field { position: absolute; inset: 0; overflow: hidden; }
   .star {
     position: absolute; border-radius: 50%; background: white;
@@ -170,20 +206,20 @@
     font-family: var(--mono);
     font-size: 0.65rem; letter-spacing: 0.3em;
     color: var(--gold); text-transform: uppercase;
-    opacity: 0; animation: fadeUp 1s ease 0.8s forwards;
+    opacity: 0; animation: fadeUp 1s ease 0.4s forwards;
   }
   #landing h1 {
     font-size: clamp(2.4rem, 8vw, 4.5rem);
     font-weight: 300; font-style: italic;
     letter-spacing: 0.04em; line-height: 1.1;
-    opacity: 0; animation: fadeUp 1s ease 1.2s forwards;
+    opacity: 0; animation: fadeUp 1s ease 0.7s forwards;
   }
   #landing h1 em { font-style: normal; color: var(--gold); }
 
   /* ── WAX SEAL ── */
   #wax-seal {
     opacity: 0;
-    animation: fadeUp 1s ease 1.6s forwards;
+    animation: fadeUp 1s ease 1.0s forwards;
     margin-top: 4px;
   }
   #wax-seal svg {
@@ -198,7 +234,7 @@
     border: 1px solid rgba(201, 169, 110, 0.4);
     display: flex; align-items: center; justify-content: center;
     opacity: 0;
-    animation: fadeUp 1s ease 1.8s forwards, pulse-ring 2.5s ease 2.8s infinite;
+    animation: fadeUp 1s ease 1.2s forwards, pulse-ring 2.5s ease 2.2s infinite;
     margin-top: 8px;
   }
   #landing .tap-ring::after {
@@ -208,14 +244,14 @@
     background: rgba(201,169,110,0.15);
     border: 1px solid rgba(201,169,110,0.6);
     position: absolute;
-    animation: pulse-ring 2.5s ease 2.8s infinite;
+    animation: pulse-ring 2.5s ease 2.2s infinite;
   }
   #landing .tap-icon { font-size: 1.4rem; position: relative; z-index: 1; }
   #landing .tap-label {
     font-family: var(--mono);
     font-size: 0.6rem; letter-spacing: 0.25em;
     color: var(--mist); text-transform: uppercase;
-    opacity: 0; animation: fadeUp 1s ease 2s forwards;
+    opacity: 0; animation: fadeUp 1s ease 1.4s forwards;
   }
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0 rgba(201,169,110,0.3); }
@@ -307,7 +343,15 @@
   @media (max-width: 500px) {
     .cards-grid { grid-template-columns: 1fr; max-width: 340px; }
   }
-  .card-container { perspective: 1200px; height: 440px; }
+
+  /* Card stagger fade-in */
+  .card-container {
+    perspective: 1200px; height: 440px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .card-container.appeared { opacity: 1; transform: translateY(0); }
+
   .card {
     width: 100%; height: 100%; position: relative;
     transition: transform 0.85s cubic-bezier(0.23, 1, 0.32, 1);
@@ -355,12 +399,7 @@
     font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
   }
-  /* iOS back chevron */
-  .wa-back {
-    font-size: 1.25rem; color: #25d366;
-    line-height: 1; flex-shrink: 0;
-    margin-right: 2px;
-  }
+  .wa-back { font-size: 1.25rem; color: #25d366; line-height: 1; flex-shrink: 0; margin-right: 2px; }
   .wa-avatar {
     width: 36px; height: 36px; border-radius: 50%;
     background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
@@ -377,12 +416,7 @@
     font-size: 0.67rem; color: #8696a0; line-height: 1.2;
     font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
   }
-  .wa-icons {
-    display: flex; gap: 18px; align-items: center;
-    color: #25d366; font-size: 1.1rem;
-  }
-
-  /* ── iOS chat background with subtle pattern ── */
+  .wa-icons { display: flex; gap: 18px; align-items: center; color: #25d366; font-size: 1.1rem; }
   .wa-chat {
     padding: 8px 10px;
     display: flex; flex-direction: column; gap: 3px;
@@ -390,27 +424,19 @@
     font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
     font-size: 14px; -webkit-overflow-scrolling: touch;
     background: #0b141a;
-    /* WhatsApp iOS subtle wallpaper-like texture */
     background-image: radial-gradient(circle at 20% 80%, rgba(18,44,34,0.4) 0%, transparent 50%),
                       radial-gradient(circle at 80% 20%, rgba(11,20,26,0.6) 0%, transparent 50%);
   }
-
-  /* ── Date chip ── */
   .wa-date-chip {
     align-self: center;
     background: rgba(17,27,33,0.85);
-    color: #8696a0;
-    font-size: 0.67rem;
-    padding: 4px 10px;
-    border-radius: 8px;
-    margin: 6px 0 4px;
+    color: #8696a0; font-size: 0.67rem;
+    padding: 4px 10px; border-radius: 8px; margin: 6px 0 4px;
     font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
   }
-
-  /* ── Message bubbles ── */
   .msg {
     max-width: 78%;
-    padding: 7px 10px 18px 10px; /* extra bottom for timestamp */
+    padding: 7px 10px 18px 10px;
     border-radius: 18px;
     color: #e9edef; line-height: 1.4;
     word-break: break-word;
@@ -420,82 +446,49 @@
     font-size: 14px;
   }
   .msg.shown { opacity: 1; transform: translateY(0); }
-
-  /* Received bubble — left tail */
   .msg.recv {
-    background: #1f2c34;
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-    margin-left: 6px;
+    background: #1f2c34; align-self: flex-start;
+    border-bottom-left-radius: 4px; margin-left: 6px;
   }
   .msg.recv::before {
-    content: '';
-    position: absolute;
-    left: -6px; bottom: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 0 10px 8px;
+    content: ''; position: absolute;
+    left: -6px; bottom: 0; width: 0; height: 0;
+    border-style: solid; border-width: 0 0 10px 8px;
     border-color: transparent transparent #1f2c34 transparent;
   }
-
-  /* Sent bubble — right tail */
   .msg.sent {
-    background: #005c4b;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    margin-right: 6px;
+    background: #005c4b; align-self: flex-end;
+    border-bottom-right-radius: 4px; margin-right: 6px;
   }
   .msg.sent::after {
-    content: '';
-    position: absolute;
-    right: -6px; bottom: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 8px 10px 0;
+    content: ''; position: absolute;
+    right: -6px; bottom: 0; width: 0; height: 0;
+    border-style: solid; border-width: 0 8px 10px 0;
     border-color: transparent #005c4b transparent transparent;
   }
-
-  /* Timestamp inside bubble */
   .msg-time {
-    position: absolute;
-    bottom: 4px; right: 9px;
-    font-size: 10px;
-    color: rgba(233,237,239,0.55);
+    position: absolute; bottom: 4px; right: 9px;
+    font-size: 10px; color: rgba(233,237,239,0.55);
     font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-    white-space: nowrap;
-    display: flex; align-items: center; gap: 3px;
+    white-space: nowrap; display: flex; align-items: center; gap: 3px;
   }
-  /* Double-tick for sent messages */
   .msg.sent .msg-time { color: #53bdeb; }
   .tick { font-size: 11px; }
-
-  /* WhatsApp typing indicator */
   .wa-typing {
-    display: none;
-    align-self: flex-start;
-    background: #1f2c34;
-    padding: 10px 14px;
-    border-radius: 18px;
-    border-bottom-left-radius: 4px;
-    gap: 4px;
-    align-items: center;
-    margin-left: 6px;
-    position: relative;
+    display: none; align-self: flex-start;
+    background: #1f2c34; padding: 10px 14px;
+    border-radius: 18px; border-bottom-left-radius: 4px;
+    gap: 4px; align-items: center; margin-left: 6px; position: relative;
   }
   .wa-typing::before {
-    content: '';
-    position: absolute;
-    left: -6px; bottom: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 0 10px 8px;
+    content: ''; position: absolute;
+    left: -6px; bottom: 0; width: 0; height: 0;
+    border-style: solid; border-width: 0 0 10px 8px;
     border-color: transparent transparent #1f2c34 transparent;
   }
   .wa-typing.active { display: flex; }
   .typing-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #8696a0;
+    width: 7px; height: 7px; border-radius: 50%; background: #8696a0;
     animation: typing-bounce 1.2s ease-in-out infinite;
   }
   .typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -514,6 +507,7 @@
     display: flex; flex-direction: column;
     align-items: center; gap: 36px;
     width: 100%; max-width: 340px; margin-bottom: 20px;
+    will-change: transform;
   }
   .polaroid {
     background: #faf8f5;
@@ -524,30 +518,23 @@
       0 0 0 1px rgba(0,0,0,0.06);
     width: 100%; border-radius: 1px;
     position: relative;
-    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
+    will-change: transform;
     cursor: pointer;
   }
-  .polaroid:nth-child(1) { transform: rotate(-2.5deg); }
-  .polaroid:nth-child(2) { transform: rotate(3deg); }
-  .polaroid:nth-child(3) { transform: rotate(-1.5deg); }
-  .polaroid:nth-child(4) { transform: rotate(2deg); }
-  .polaroid:nth-child(5) { transform: rotate(-3deg); }
-  .polaroid:nth-child(6) { transform: rotate(1.5deg); }
-  .polaroid:nth-child(7) { transform: rotate(-2deg); }
-  .polaroid:nth-child(8) { transform: rotate(2.5deg); }
-  .polaroid:hover, .polaroid:active {
-    transform: rotate(0deg) scale(1.02) !important;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.4), 0 24px 60px rgba(0,0,0,0.5);
-    z-index: 10;
-  }
+  /* Base rotations — parallax applied via JS inline transform */
+  .polaroid:nth-child(1)  { --base-rot: -2.5deg; transform: rotate(-2.5deg); }
+  .polaroid:nth-child(2)  { --base-rot: 3deg;    transform: rotate(3deg); }
+  .polaroid:nth-child(3)  { --base-rot: -1.5deg; transform: rotate(-1.5deg); }
+  .polaroid:nth-child(4)  { --base-rot: 2deg;    transform: rotate(2deg); }
+  .polaroid:nth-child(5)  { --base-rot: -3deg;   transform: rotate(-3deg); }
+  .polaroid:nth-child(6)  { --base-rot: 1.5deg;  transform: rotate(1.5deg); }
+  .polaroid:nth-child(7)  { --base-rot: -2deg;   transform: rotate(-2deg); }
   .polaroid img {
     width: 100%; display: block; aspect-ratio: 4/3;
     object-fit: cover; background: #ddd;
     filter: sepia(8%) contrast(1.02) brightness(0.98);
     transition: filter 0.4s ease;
-  }
-  .polaroid:hover img, .polaroid:active img {
-    filter: sepia(0%) contrast(1.04) brightness(1.04) saturate(1.1);
+    pointer-events: none;
   }
   .polaroid .caption {
     position: absolute; bottom: 16px;
@@ -556,18 +543,11 @@
     font-family: var(--mono); font-size: 0.75rem;
     font-weight: 400; letter-spacing: 0.08em; color: #1a1a1a;
   }
-  /* ── DATE STAMP on polaroid ── */
   .polaroid .date-stamp {
-    position: absolute;
-    bottom: 14px; right: 14px;
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-    color: #cc3322;
-    opacity: 0.85;
-    font-weight: 400;
-    line-height: 1.3;
-    text-align: right;
+    position: absolute; bottom: 14px; right: 14px;
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.06em; color: #cc3322; opacity: 0.85;
+    font-weight: 400; line-height: 1.3; text-align: right;
     filter: blur(0.2px);
   }
 
@@ -577,7 +557,6 @@
     justify-content: flex-start;
     padding-top: 100px;
     padding-bottom: 200px;
-    /* Scroll mode: let content flow naturally */
     min-height: auto;
   }
   .future-wrap {
@@ -613,6 +592,97 @@
                 transform 1.8s cubic-bezier(0.16,1,0.3,1);
   }
   .and-you-block.revealed { opacity: 1; transform: translateY(0); }
+
+  /* ── Handwritten note ── */
+  .handwriting-wrap {
+    margin-top: 36px;
+    display: flex;
+    justify-content: flex-start;
+    opacity: 0; transform: rotate(-1.5deg) translateY(12px);
+    transition: opacity 1.2s ease 0.6s, transform 1.2s ease 0.6s;
+  }
+  .and-you-block.revealed .handwriting-wrap {
+    opacity: 1; transform: rotate(-1.5deg) translateY(0);
+  }
+  .handwriting-wrap img {
+    max-width: min(260px, 80%);
+    border-radius: 2px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    filter: sepia(10%) brightness(0.95);
+  }
+
+  /* ── Voice note player ── */
+  .voice-note-section {
+    max-width: 680px; width: 100%;
+    margin: 0 auto;
+    padding: 48px 0;
+    border-top: 1px solid rgba(201,169,110,0.12);
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1),
+                transform 1.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .voice-note-section.revealed { opacity: 1; transform: translateY(0); }
+  .voice-note-label {
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .voice-player {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(13,21,38,0.7);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 999px;
+    padding: 14px 24px 14px 14px;
+    cursor: pointer;
+    max-width: 340px;
+    transition: border-color 0.3s ease;
+    user-select: none;
+  }
+  .voice-player:hover { border-color: rgba(201,169,110,0.5); }
+  .voice-play-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .voice-player:active .voice-play-btn { transform: scale(0.93); }
+  .voice-play-icon {
+    font-size: 1.1rem;
+    color: var(--night);
+    margin-left: 3px; /* optical center for play triangle */
+  }
+  .voice-waveform {
+    display: flex;
+    align-items: center;
+    gap: 2.5px;
+    flex: 1;
+  }
+  .wv-bar {
+    background: rgba(201,169,110,0.35);
+    border-radius: 2px;
+    width: 3px;
+    transition: background 0.3s ease, height 0.3s ease;
+  }
+  .wv-bar.played { background: rgba(201,169,110,0.85); }
+  .voice-duration {
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.1em; color: var(--mist);
+    flex-shrink: 0;
+  }
+  /* Animating waveform bars when playing */
+  .voice-player.playing .wv-bar {
+    animation: wv-pulse var(--wv-spd, 0.6s) ease-in-out infinite alternate;
+    animation-delay: var(--wv-delay, 0s);
+  }
+  @keyframes wv-pulse {
+    from { background: rgba(201,169,110,0.3); transform: scaleY(0.5); }
+    to   { background: rgba(201,169,110,0.9); transform: scaleY(1); }
+  }
+
   .ask-block {
     padding: 100px 0 0; text-align: center;
     opacity: 0; transform: scale(0.97);
@@ -651,6 +721,53 @@
   }
   .align-word.spread { letter-spacing: 0.18em; }
 
+  /* ═══════════════════════════════════════════
+     #10 — REPLY FIELD
+  ═══════════════════════════════════════════ */
+  .reply-section {
+    max-width: 580px; width: 100%;
+    margin: 80px auto 0;
+    padding: 56px 0;
+    border-top: 1px solid rgba(201,169,110,0.1);
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 1.6s ease, transform 1.6s ease;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .reply-section.revealed { opacity: 1; transform: translateY(0); }
+  .reply-label {
+    font-family: var(--mono); font-size: 0.55rem;
+    letter-spacing: 0.3em; color: rgba(201,169,110,0.4);
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .reply-field {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+    outline: none;
+    resize: none;
+    font-family: var(--serif);
+    font-size: clamp(1.1rem, 3.5vw, 1.3rem);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold2);
+    line-height: 1.8;
+    padding: 8px 0 20px;
+    min-height: 80px;
+    caret-color: var(--gold);
+    transition: border-color 0.4s ease;
+  }
+  .reply-field::placeholder {
+    color: rgba(148, 163, 184, 0.35);
+    font-style: italic;
+  }
+  .reply-field:focus {
+    border-bottom-color: rgba(201,169,110,0.45);
+  }
+  /* Disable scrollbar on the textarea */
+  .reply-field::-webkit-scrollbar { display: none; }
+  .reply-field { scrollbar-width: none; }
+
   /* ─── ACT V — EPILOGUE ─── */
   #act5 {
     position: fixed; inset: 0;
@@ -668,15 +785,14 @@
     font-size: clamp(1.1rem, 4vw, 1.5rem);
     font-weight: 300; font-style: italic;
     color: var(--mist); letter-spacing: 0.04em;
-    opacity: 0;
-    transition: opacity 3s ease 2s;
     line-height: 1.8;
+    min-height: 3em;
   }
-  #act5.visible .epilogue-text { opacity: 1; }
   #act5 .epilogue-mark {
     margin-top: 12px; color: var(--gold); font-style: normal;
-    opacity: 0.6;
+    opacity: 0; transition: opacity 2s ease;
   }
+  #act5.visible .epilogue-mark.show { opacity: 0.6; }
 
   /* ─── SHARED ANIMATIONS ─── */
   @keyframes fadeUp {
@@ -700,8 +816,21 @@
 <audio id="bg-music" loop>
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
+<audio id="voice-audio">
+  <source src="voicenote.mp3" type="audio/mpeg">
+</audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
+
+<!-- ═══ #5 INTRO SCREEN ═══ -->
+<div id="intro-screen">
+  <div class="intro-name">
+    <span class="intro-letter">z</span>
+    <span class="intro-letter">u</span>
+    <span class="intro-letter">s</span>
+    <span class="intro-letter">i</span>
+  </div>
+</div>
 
 <!-- Progress Thread -->
 <div id="progress-thread">
@@ -726,10 +855,8 @@
 <!-- ACT V — Epilogue (hidden overlay) -->
 <div id="act5">
   <div class="epilogue-stars" id="epilogue-stars"></div>
-  <div class="epilogue-text">
-    whenever you're ready, I'm here
-    <div class="epilogue-mark">✦</div>
-  </div>
+  <div class="epilogue-text" id="epilogue-typed"></div>
+  <div class="epilogue-mark" id="epilogue-mark">✦</div>
 </div>
 
 <!-- LANDING -->
@@ -739,23 +866,17 @@
     <div class="eyebrow">A world built for one person</div>
     <h1>For <em>Zusi Billions</em></h1>
 
-    <!-- Wax Seal -->
     <div id="wax-seal">
       <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Wax base -->
         <circle cx="36" cy="36" r="34" fill="#8B5E2A" opacity="0.9"/>
         <circle cx="36" cy="36" r="34" fill="url(#wax-grad)" opacity="0.6"/>
-        <!-- Outer ring emboss -->
         <circle cx="36" cy="36" r="30" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
         <circle cx="36" cy="36" r="26" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.3"/>
-        <!-- Initials M & Z -->
         <text x="36" y="32" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
           font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">M</text>
         <text x="36" y="46" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
           font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">Z</text>
-        <!-- Divider line between initials -->
         <line x1="27" y1="36.5" x2="45" y2="36.5" stroke="#e8d5a3" stroke-width="0.5" opacity="0.5"/>
-        <!-- Tiny stars at top/bottom -->
         <text x="36" y="18" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
         <text x="36" y="60" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
         <defs>
@@ -796,7 +917,7 @@
 
   <div class="cards-grid">
 
-    <div class="card-container">
+    <div class="card-container" data-card-idx="0">
       <div class="card" id="card-1" onclick="onCardFlip(this, 0)">
         <div class="card-face card-front">
           <span class="card-num">01 / 05</span>
@@ -826,7 +947,7 @@
       </div>
     </div>
 
-    <div class="card-container">
+    <div class="card-container" data-card-idx="1">
       <div class="card" id="card-2" onclick="onCardFlip(this, 1)">
         <div class="card-face card-front">
           <span class="card-num">02 / 05</span>
@@ -860,7 +981,7 @@
       </div>
     </div>
 
-    <div class="card-container">
+    <div class="card-container" data-card-idx="2">
       <div class="card" id="card-3" onclick="onCardFlip(this, 2)">
         <div class="card-face card-front">
           <span class="card-num">03 / 05</span>
@@ -894,7 +1015,7 @@
       </div>
     </div>
 
-    <div class="card-container">
+    <div class="card-container" data-card-idx="3">
       <div class="card" id="card-4" onclick="onCardFlip(this, 3)">
         <div class="card-face card-front">
           <span class="card-num">04 / 05</span>
@@ -925,7 +1046,7 @@
       </div>
     </div>
 
-    <div class="card-container">
+    <div class="card-container" data-card-idx="4">
       <div class="card" id="card-5" onclick="onCardFlip(this, 4)">
         <div class="card-face card-front">
           <span class="card-num">05 / 05</span>
@@ -965,12 +1086,10 @@
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
   <div class="divider"></div>
 
-  <div class="polaroid-stack">
+  <div class="polaroid-stack" id="polaroid-stack">
     <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo1.jpg" alt="That laugh">
-      <div class="caption">that laugh though</div>
-      <div class="date-stamp">05·02<br>2026</div>
-      <div class="caption">✌🏾</div>
+      <div class="caption">that laugh though ✌🏾</div>
       <div class="date-stamp">05·02<br>2026</div>
     </div>
     <div class="polaroid" onclick="onPolaroidTap(this)">
@@ -1044,6 +1163,7 @@
         </p>
       </div>
 
+      <!-- AND YOU BLOCK with handwriting -->
       <div class="and-you-block" id="and-you-section">
         <div class="future-block" id="fb4" style="border-top:none; padding:0; opacity:1; transform:none;">
           <div class="block-label">And you</div>
@@ -1053,6 +1173,22 @@
             you have been the most natural constant.
             <em>I want to build all of this with you.</em>
           </p>
+        </div>
+        <!-- Handwriting image -->
+        <div class="handwriting-wrap">
+          <img src="handwriting.jpg" alt="handwritten note" />
+        </div>
+      </div>
+
+      <!-- #2 VOICE NOTE PLAYER -->
+      <div class="voice-note-section" id="voice-note-section">
+        <div class="voice-note-label">a voice note</div>
+        <div class="voice-player" id="voice-player" onclick="toggleVoiceNote()">
+          <div class="voice-play-btn" id="voice-play-btn">
+            <span class="voice-play-icon" id="voice-play-icon">▶</span>
+          </div>
+          <div class="voice-waveform" id="voice-waveform"></div>
+          <span class="voice-duration" id="voice-duration">0:00</span>
         </div>
       </div>
 
@@ -1072,27 +1208,36 @@
         </div>
       </div>
 
+      <!-- #10 REPLY FIELD -->
+      <div class="reply-section" id="reply-section">
+        <div class="reply-label">for you, if you want</div>
+        <textarea
+          class="reply-field"
+          id="reply-field"
+          placeholder="you can type here if you want. i won't see it tonight."
+          rows="3"
+          spellcheck="false"
+          autocomplete="off"
+        ></textarea>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════
-   SERVICE WORKER REGISTRATION
+   SERVICE WORKER
 ═══════════════════════════════════════════════════ */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Inline service worker via blob URL for single-file distribution
     const swCode = `
-const CACHE = 'zusi-v1';
-const ASSETS = ['./', './index.html', './bg-music.mp3',
-  './photo1.jpg','./photo2.jpg','./photo3.jpg','./photo4.jpg',
-  './photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];
-
+const CACHE = 'zusi-v2';
+const ASSETS = ['./', './index.html', './bg-music.mp3', './voicenote.mp3', './handwriting.jpg',
+  './photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg',
+  './photo6.jpg','./photo7.jpg','./photo8.jpg'];
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{}))
-  );
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})));
   self.skipWaiting();
 });
 self.addEventListener('activate', e => {
@@ -1102,15 +1247,12 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request).catch(()=>new Response('Offline')))
-  );
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(()=>new Response('Offline'))));
 });
     `;
     try {
       const blob = new Blob([swCode], { type: 'application/javascript' });
-      const swURL = URL.createObjectURL(blob);
-      navigator.serviceWorker.register(swURL).catch(() => {});
+      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
     } catch(e) {}
   });
 }
@@ -1118,9 +1260,7 @@ self.addEventListener('fetch', e => {
 /* ═══════════════════════════════════════════════════
    HAPTIC
 ═══════════════════════════════════════════════════ */
-function haptic(ms = 8) {
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
+function haptic(ms = 8) { if (navigator.vibrate) navigator.vibrate(ms); }
 
 /* ═══════════════════════════════════════════════════
    AUDIO ENGINE
@@ -1130,41 +1270,26 @@ let musicPlaying = false;
 const music = document.getElementById('bg-music');
 
 function getAC() {
-  if (!AC) {
-    try { AC = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch(e) { return null; }
-  }
+  if (!AC) { try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){return null;} }
   if (AC.state === 'suspended') AC.resume();
   return AC;
 }
 
-function ramp(gainNode, from, to, duration) {
-  const ac = gainNode.context;
-  gainNode.gain.setValueAtTime(from, ac.currentTime);
-  gainNode.gain.linearRampToValueAtTime(to, ac.currentTime + duration);
-}
-
 function startMusic() {
-  if (!music.src && !music.querySelector('source')) return;
   music.volume = 0;
   music.play().then(() => {
     musicPlaying = true;
-    let vol = 0;
-    const target = 0.28;
-    const step = () => {
-      vol = Math.min(vol + 0.01, target);
-      music.volume = vol;
-      if (vol < target) setTimeout(step, 100);
-    };
+    let vol = 0; const target = 0.28;
+    const step = () => { vol = Math.min(vol+0.01, target); music.volume = vol; if(vol<target) setTimeout(step,100); };
     setTimeout(step, 200);
     showMusicPill();
-  }).catch(() => {});
+  }).catch(()=>{});
 }
 
 function showMusicPill() {
   const pill = document.getElementById('music-pill');
   pill.style.display = 'flex';
-  setTimeout(() => pill.classList.add('visible'), 100);
+  setTimeout(()=>pill.classList.add('visible'),100);
 }
 
 function toggleMusic() {
@@ -1172,224 +1297,278 @@ function toggleMusic() {
   const label = document.getElementById('pill-label');
   if (musicPlaying) {
     let vol = music.volume;
-    const fade = () => {
-      vol = Math.max(vol - 0.015, 0);
-      music.volume = vol;
-      if (vol > 0) setTimeout(fade, 80);
-      else music.pause();
-    };
-    fade();
-    musicPlaying = false;
-    bars.classList.add('paused');
-    label.textContent = 'Music off';
+    const fade = () => { vol = Math.max(vol-0.015,0); music.volume=vol; if(vol>0)setTimeout(fade,80); else music.pause(); };
+    fade(); musicPlaying=false; bars.classList.add('paused'); label.textContent='Music off';
   } else {
-    music.play().catch(() => {});
-    musicPlaying = true;
-    let vol = 0;
-    const fade = () => {
-      vol = Math.min(vol + 0.015, 0.28);
-      music.volume = vol;
-      if (vol < 0.28) setTimeout(fade, 80);
-    };
-    fade();
-    bars.classList.remove('paused');
-    label.textContent = 'Music on';
+    music.play().catch(()=>{});
+    musicPlaying=true;
+    let vol=0;
+    const fade=()=>{ vol=Math.min(vol+0.015,0.28); music.volume=vol; if(vol<0.28)setTimeout(fade,80); };
+    fade(); bars.classList.remove('paused'); label.textContent='Music on';
   }
 }
 
 function startAmbient() {
-  const ac = getAC();
-  if (!ac) return;
-  const masterGain = ac.createGain();
-  masterGain.gain.setValueAtTime(0, ac.currentTime);
-  masterGain.gain.linearRampToValueAtTime(0.05, ac.currentTime + 3);
-  masterGain.connect(ac.destination);
-  const lfo = ac.createOscillator();
-  lfo.frequency.value = 0.08; lfo.type = 'sine';
-  const lfoG = ac.createGain(); lfoG.gain.value = 0.025;
-  lfo.connect(lfoG); lfoG.connect(masterGain.gain); lfo.start();
-  [[110, 1], [165, 0.6], [55, 0.35]].forEach(([freq, vol]) => {
-    const osc = ac.createOscillator();
-    osc.type = 'sine'; osc.frequency.value = freq;
-    const g = ac.createGain(); g.gain.value = vol;
-    osc.connect(g); g.connect(masterGain); osc.start();
-  });
+  const ac = getAC(); if (!ac) return;
+  const mg = ac.createGain(); mg.gain.setValueAtTime(0,ac.currentTime); mg.gain.linearRampToValueAtTime(0.05,ac.currentTime+3); mg.connect(ac.destination);
+  const lfo = ac.createOscillator(); lfo.frequency.value=0.08; lfo.type='sine';
+  const lfoG = ac.createGain(); lfoG.gain.value=0.025;
+  lfo.connect(lfoG); lfoG.connect(mg.gain); lfo.start();
+  [[110,1],[165,0.6],[55,0.35]].forEach(([f,v])=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=f; const g=ac.createGain(); g.gain.value=v; o.connect(g); g.connect(mg); o.start(); });
 }
 
 function playEntryBloom() {
-  const ac = getAC();
-  if (!ac) return;
-  const freqs = [110, 138.59, 164.81, 207.65, 220, 277.18];
-  const masterGain = ac.createGain();
-  masterGain.gain.value = 0;
-  masterGain.connect(ac.destination);
-  ramp(masterGain, 0, 0.16, 0.08);
-  ramp(masterGain, 0.16, 0, 3.5);
-  freqs.forEach((freq, i) => {
-    const osc = ac.createOscillator();
-    osc.type = 'sine'; osc.frequency.value = freq;
-    const g = ac.createGain(); g.gain.value = 0;
-    g.gain.setValueAtTime(0, ac.currentTime + i * 0.04);
-    g.gain.linearRampToValueAtTime(0.7 - i * 0.08, ac.currentTime + i * 0.04 + 0.12);
-    g.gain.linearRampToValueAtTime(0, ac.currentTime + 3.5);
-    osc.connect(g); g.connect(masterGain);
-    osc.start(ac.currentTime + i * 0.04);
-    osc.stop(ac.currentTime + 4);
-  });
+  const ac = getAC(); if (!ac) return;
+  const freqs = [110,138.59,164.81,207.65,220,277.18];
+  const mg = ac.createGain(); mg.gain.value=0; mg.connect(ac.destination);
+  mg.gain.setValueAtTime(0,ac.currentTime); mg.gain.linearRampToValueAtTime(0.16,ac.currentTime+0.08); mg.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);
+  freqs.forEach((f,i)=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=f; const g=ac.createGain(); g.gain.value=0; g.gain.setValueAtTime(0,ac.currentTime+i*0.04); g.gain.linearRampToValueAtTime(0.7-i*0.08,ac.currentTime+i*0.04+0.12); g.gain.linearRampToValueAtTime(0,ac.currentTime+3.5); o.connect(g); g.connect(mg); o.start(ac.currentTime+i*0.04); o.stop(ac.currentTime+4); });
 }
 
 function playTypeTick() {
-  const ac = getAC();
-  if (!ac) return;
-  const buf = ac.createBuffer(1, ac.sampleRate * 0.04, ac.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < data.length; i++)
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.15));
-  const src = ac.createBufferSource(); src.buffer = buf;
-  const bp = ac.createBiquadFilter();
-  bp.type = 'bandpass'; bp.frequency.value = 800 + Math.random() * 400; bp.Q.value = 1.8;
-  const g = ac.createGain(); g.gain.value = 0.28;
-  src.connect(bp); bp.connect(g); g.connect(ac.destination);
-  src.start();
+  const ac=getAC(); if(!ac)return;
+  const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.15));
+  const src=ac.createBufferSource(); src.buffer=buf;
+  const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=800+Math.random()*400; bp.Q.value=1.8;
+  const g=ac.createGain(); g.gain.value=0.28;
+  src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start();
 }
 
 function playCardFlip() {
-  const ac = getAC();
-  if (!ac) return;
-  const dur = 0.35;
-  const buf = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < data.length; i++)
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.4));
-  const src = ac.createBufferSource(); src.buffer = buf;
-  const hp = ac.createBiquadFilter();
-  hp.type = 'highpass';
-  hp.frequency.setValueAtTime(2400, ac.currentTime);
-  hp.frequency.exponentialRampToValueAtTime(300, ac.currentTime + dur);
-  const g = ac.createGain();
-  g.gain.setValueAtTime(0.22, ac.currentTime);
-  g.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
-  src.connect(hp); hp.connect(g); g.connect(ac.destination);
-  src.start(); src.stop(ac.currentTime + dur + 0.05);
+  const ac=getAC(); if(!ac)return;
+  const dur=0.35; const buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.4));
+  const src=ac.createBufferSource(); src.buffer=buf;
+  const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.setValueAtTime(2400,ac.currentTime); hp.frequency.exponentialRampToValueAtTime(300,ac.currentTime+dur);
+  const g=ac.createGain(); g.gain.setValueAtTime(0.22,ac.currentTime); g.gain.linearRampToValueAtTime(0,ac.currentTime+dur);
+  src.connect(hp); hp.connect(g); g.connect(ac.destination); src.start(); src.stop(ac.currentTime+dur+0.05);
 }
 
 function playPolaroid() {
-  const ac = getAC();
-  if (!ac) return;
-  const buf1 = ac.createBuffer(1, ac.sampleRate * 0.08, ac.sampleRate);
-  const d1 = buf1.getChannelData(0);
-  for (let i = 0; i < d1.length; i++)
-    d1[i] = (Math.random() * 2 - 1) * Math.exp(-i / (d1.length * 0.1));
-  const s1 = ac.createBufferSource(); s1.buffer = buf1;
-  const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 280;
-  const g1 = ac.createGain(); g1.gain.value = 0.5;
+  const ac=getAC(); if(!ac)return;
+  const buf1=ac.createBuffer(1,ac.sampleRate*0.08,ac.sampleRate); const d1=buf1.getChannelData(0);
+  for(let i=0;i<d1.length;i++) d1[i]=(Math.random()*2-1)*Math.exp(-i/(d1.length*0.1));
+  const s1=ac.createBufferSource(); s1.buffer=buf1;
+  const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=280;
+  const g1=ac.createGain(); g1.gain.value=0.5;
   s1.connect(lp); lp.connect(g1); g1.connect(ac.destination); s1.start();
-  const osc = ac.createOscillator(); osc.type = 'sine'; osc.frequency.value = 3200;
-  const g2 = ac.createGain();
-  g2.gain.setValueAtTime(0.06, ac.currentTime + 0.01);
-  g2.gain.linearRampToValueAtTime(0, ac.currentTime + 0.25);
-  osc.connect(g2); g2.connect(ac.destination);
-  osc.start(ac.currentTime + 0.01); osc.stop(ac.currentTime + 0.3);
+  const osc=ac.createOscillator(); osc.type='sine'; osc.frequency.value=3200;
+  const g2=ac.createGain(); g2.gain.setValueAtTime(0.06,ac.currentTime+0.01); g2.gain.linearRampToValueAtTime(0,ac.currentTime+0.25);
+  osc.connect(g2); g2.connect(ac.destination); osc.start(ac.currentTime+0.01); osc.stop(ac.currentTime+0.3);
 }
 
 function playTransition() {
-  const ac = getAC();
-  if (!ac) return;
-  const osc = ac.createOscillator(); osc.type = 'sine'; osc.frequency.value = 73.4;
-  const g = ac.createGain();
-  g.gain.setValueAtTime(0, ac.currentTime);
-  g.gain.linearRampToValueAtTime(0.12, ac.currentTime + 0.4);
-  g.gain.linearRampToValueAtTime(0, ac.currentTime + 1.8);
-  const osc2 = ac.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 220.4;
-  const g2 = ac.createGain();
-  g2.gain.setValueAtTime(0, ac.currentTime);
-  g2.gain.linearRampToValueAtTime(0.04, ac.currentTime + 0.5);
-  g2.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5);
-  osc.connect(g); g.connect(ac.destination);
-  osc2.connect(g2); g2.connect(ac.destination);
-  osc.start(); osc.stop(ac.currentTime + 2);
-  osc2.start(); osc2.stop(ac.currentTime + 2);
+  const ac=getAC(); if(!ac)return;
+  const osc=ac.createOscillator(); osc.type='sine'; osc.frequency.value=73.4;
+  const g=ac.createGain(); g.gain.setValueAtTime(0,ac.currentTime); g.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.4); g.gain.linearRampToValueAtTime(0,ac.currentTime+1.8);
+  const osc2=ac.createOscillator(); osc2.type='sine'; osc2.frequency.value=220.4;
+  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.04,ac.currentTime+0.5); g2.gain.linearRampToValueAtTime(0,ac.currentTime+1.5);
+  osc.connect(g); g.connect(ac.destination); osc2.connect(g2); g2.connect(ac.destination);
+  osc.start(); osc.stop(ac.currentTime+2); osc2.start(); osc2.stop(ac.currentTime+2);
 }
 
-const CHIME_NOTES = [261.63, 329.63, 392.0, 493.88];
-function playChime(index) {
-  const ac = getAC();
-  if (!ac) return;
-  const freq = CHIME_NOTES[index % CHIME_NOTES.length];
-  const osc1 = ac.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = freq;
-  const osc2 = ac.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = freq * 2.756;
-  const g1 = ac.createGain();
-  g1.gain.setValueAtTime(0, ac.currentTime);
-  g1.gain.linearRampToValueAtTime(0.12, ac.currentTime + 0.01);
-  g1.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 3.5);
-  const g2 = ac.createGain();
-  g2.gain.setValueAtTime(0, ac.currentTime);
-  g2.gain.linearRampToValueAtTime(0.06, ac.currentTime + 0.01);
-  g2.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1.5);
-  osc1.connect(g1); g1.connect(ac.destination);
-  osc2.connect(g2); g2.connect(ac.destination);
-  osc1.start(); osc1.stop(ac.currentTime + 4);
-  osc2.start(); osc2.stop(ac.currentTime + 2);
+const CHIME_NOTES=[261.63,329.63,392.0,493.88];
+function playChime(i) {
+  const ac=getAC(); if(!ac)return;
+  const freq=CHIME_NOTES[i%CHIME_NOTES.length];
+  const o1=ac.createOscillator(); o1.type='sine'; o1.frequency.value=freq;
+  const o2=ac.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.756;
+  const g1=ac.createGain(); g1.gain.setValueAtTime(0,ac.currentTime); g1.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01); g1.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+3.5);
+  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.06,ac.currentTime+0.01); g2.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+1.5);
+  o1.connect(g1); g1.connect(ac.destination); o2.connect(g2); g2.connect(ac.destination);
+  o1.start(); o1.stop(ac.currentTime+4); o2.start(); o2.stop(ac.currentTime+2);
 }
 
 /* ═══════════════════════════════════════════════════
-   WHATSAPP TYPING INDICATOR + MESSAGE REPLAY
+   #5 — INTRO SCREEN: z u s i
 ═══════════════════════════════════════════════════ */
-const cardFlipped = [false, false, false, false, false];
+function runIntroScreen() {
+  const letters = document.querySelectorAll('.intro-letter');
+  const intro = document.getElementById('intro-screen');
+
+  // Stagger letters in
+  letters.forEach((l, i) => {
+    setTimeout(() => l.classList.add('appear'), 300 + i * 220);
+  });
+
+  // After all letters visible, hold then dissolve
+  const holdTime = 300 + (letters.length - 1) * 220 + 900;
+  setTimeout(() => {
+    intro.classList.add('fade-out');
+    setTimeout(() => {
+      intro.style.display = 'none';
+      // Now fade in landing
+      const landing = document.getElementById('landing');
+      landing.classList.add('ready');
+    }, 1200);
+  }, holdTime);
+}
+runIntroScreen();
+
+/* ═══════════════════════════════════════════════════
+   CARD FLIP (with stagger reveal)
+═══════════════════════════════════════════════════ */
+const cardFlipped = [false,false,false,false,false];
 
 function onCardFlip(cardEl, cardIndex) {
   haptic(8);
   const alreadyFlipped = cardEl.classList.contains('flipped');
-  if (alreadyFlipped) {
-    // unflip
-    cardEl.classList.remove('flipped');
-    playCardFlip();
-    return;
-  }
-  // First flip: typing indicator then messages
+  if (alreadyFlipped) { cardEl.classList.remove('flipped'); playCardFlip(); return; }
   playCardFlip();
   cardEl.classList.add('flipped');
-
   if (!cardFlipped[cardIndex]) {
     cardFlipped[cardIndex] = true;
     const chat = cardEl.querySelector('.wa-chat');
     const typing = chat.querySelector('.wa-typing');
     const messages = chat.querySelectorAll('.msg');
-
-    // Show typing indicator
     typing.classList.add('active');
-
-    // After 1.5s, hide typing and reveal messages one by one
     setTimeout(() => {
       typing.classList.remove('active');
-      messages.forEach((msg, i) => {
-        setTimeout(() => {
-          msg.classList.add('shown');
-        }, i * 280);
-      });
+      messages.forEach((msg, i) => { setTimeout(() => msg.classList.add('shown'), i * 280); });
     }, 1500);
   }
 }
 
-/* ═══════════════════════════════════════════════════
-   POLAROID TAP
-═══════════════════════════════════════════════════ */
-function onPolaroidTap(el) {
-  haptic(8);
-  playPolaroid();
+/* Stagger cards when act2 becomes visible */
+function staggerCards() {
+  const containers = document.querySelectorAll('.card-container');
+  containers.forEach((c, i) => {
+    setTimeout(() => c.classList.add('appeared'), i * 160);
+  });
 }
+
+/* ═══════════════════════════════════════════════════
+   POLAROID TAP + #7 PARALLAX
+═══════════════════════════════════════════════════ */
+function onPolaroidTap(el) { haptic(8); playPolaroid(); }
+
+const PARALLAX_SPEEDS = [0.06, -0.04, 0.08, -0.06, 0.05, -0.07, 0.04];
+const BASE_ROTS = [-2.5, 3, -1.5, 2, -3, 1.5, -2];
+let act3ScrollActive = false;
+
+function initPolaroidParallax() {
+  const stack = document.getElementById('polaroid-stack');
+  const polaroids = stack.querySelectorAll('.polaroid');
+  act3ScrollActive = true;
+
+  function onScroll() {
+    if (!act3ScrollActive) return;
+    const stackRect = stack.getBoundingClientRect();
+    const viewH = window.innerHeight;
+    // Progress of the stack through the viewport (0 = just entering, 1 = leaving)
+    const progress = (viewH - stackRect.top) / (viewH + stackRect.height);
+
+    polaroids.forEach((p, i) => {
+      const speed = PARALLAX_SPEEDS[i] || 0.05;
+      const baseRot = BASE_ROTS[i] || 0;
+      const offset = (progress - 0.5) * viewH * speed;
+      p.style.transform = `rotate(${baseRot}deg) translateY(${offset}px)`;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // initial
+}
+
+/* ═══════════════════════════════════════════════════
+   #2 — VOICE NOTE PLAYER
+═══════════════════════════════════════════════════ */
+const voiceAudio = document.getElementById('voice-audio');
+let voicePlaying = false;
+let voiceDurationKnown = false;
+
+// Build decorative waveform bars
+function buildWaveform() {
+  const wf = document.getElementById('voice-waveform');
+  const heights = [30, 50, 70, 55, 80, 45, 65, 90, 50, 40, 75, 60, 85, 45, 55, 70, 40, 65, 80, 50, 45, 70, 55, 60, 40];
+  heights.forEach((h, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'wv-bar';
+    bar.style.height = h + '%';
+    bar.style.setProperty('--wv-spd', (0.4 + Math.random() * 0.4).toFixed(2) + 's');
+    bar.style.setProperty('--wv-delay', (i * 0.04).toFixed(2) + 's');
+    wf.appendChild(bar);
+  });
+}
+buildWaveform();
+
+voiceAudio.addEventListener('loadedmetadata', () => {
+  if (voiceAudio.duration && isFinite(voiceAudio.duration)) {
+    voiceDurationKnown = true;
+    const mins = Math.floor(voiceAudio.duration / 60);
+    const secs = Math.floor(voiceAudio.duration % 60).toString().padStart(2,'0');
+    document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+  }
+});
+
+voiceAudio.addEventListener('timeupdate', () => {
+  if (!voicePlaying) return;
+  const pct = voiceAudio.duration ? voiceAudio.currentTime / voiceAudio.duration : 0;
+  const bars = document.querySelectorAll('.wv-bar');
+  const played = Math.floor(pct * bars.length);
+  bars.forEach((b, i) => b.classList.toggle('played', i < played));
+  // Show elapsed time
+  const mins = Math.floor(voiceAudio.currentTime / 60);
+  const secs = Math.floor(voiceAudio.currentTime % 60).toString().padStart(2,'0');
+  document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+});
+
+voiceAudio.addEventListener('ended', () => {
+  voicePlaying = false;
+  document.getElementById('voice-play-icon').textContent = '▶';
+  document.getElementById('voice-player').classList.remove('playing');
+  document.querySelectorAll('.wv-bar').forEach(b => b.classList.remove('played'));
+  const mins = Math.floor(voiceAudio.duration / 60);
+  const secs = Math.floor(voiceAudio.duration % 60).toString().padStart(2,'0');
+  document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+});
+
+function toggleVoiceNote() {
+  haptic(10);
+  getAC(); // unlock audio context
+  if (voicePlaying) {
+    voiceAudio.pause();
+    voicePlaying = false;
+    document.getElementById('voice-play-icon').textContent = '▶';
+    document.getElementById('voice-player').classList.remove('playing');
+  } else {
+    // Dim bg music slightly while voice plays
+    if (musicPlaying) {
+      const target = music.volume * 0.4;
+      let v = music.volume;
+      const fade = () => { v = Math.max(v-0.01, target); music.volume=v; if(v>target) setTimeout(fade,60); };
+      fade();
+    }
+    voiceAudio.play().then(()=>{
+      voicePlaying = true;
+      document.getElementById('voice-play-icon').textContent = '⏸';
+      document.getElementById('voice-player').classList.add('playing');
+    }).catch(()=>{});
+  }
+}
+
+// Restore music volume when voice ends
+voiceAudio.addEventListener('ended', () => {
+  if (musicPlaying) {
+    let v = music.volume;
+    const target = 0.28;
+    const fade = () => { v = Math.min(v+0.008, target); music.volume=v; if(v<target) setTimeout(fade,80); };
+    fade();
+  }
+});
 
 /* ═══════════════════════════════════════════════════
    STAR FIELD
 ═══════════════════════════════════════════════════ */
-function buildStarField(containerId, count) {
-  const sf = document.getElementById(containerId);
-  if (!sf) return;
-  for (let i = 0; i < count; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2.5 + 0.5;
-    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
+function buildStarField(id, count) {
+  const sf = document.getElementById(id); if(!sf) return;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div'); s.className='star';
+    const size=Math.random()*2.5+0.5;
+    s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
     sf.appendChild(s);
   }
 }
@@ -1399,18 +1578,16 @@ buildStarField('epilogue-stars', 350);
 
 /* ═══════════════════════════════════════════════════
    PROGRESS THREAD
-   Acts: 1→25%, 2→50%, 3→75%, 4→90%, 5→100%
 ═══════════════════════════════════════════════════ */
-const ACT_PROGRESS = { act1: 20, act2: 42, act3: 64, act4: 85, act5: 100 };
+const ACT_PROGRESS = { act1:20, act2:42, act3:64, act4:85, act5:100 };
 
 function setProgress(pct) {
-  document.getElementById('thread-fill').style.height = pct + '%';
-  document.getElementById('thread-dot').style.top = pct + '%';
+  document.getElementById('thread-fill').style.height = pct+'%';
+  document.getElementById('thread-dot').style.top = pct+'%';
 }
 
 function showProgressThread() {
-  const thread = document.getElementById('progress-thread');
-  thread.classList.add('visible');
+  document.getElementById('progress-thread').classList.add('visible');
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1446,18 +1623,15 @@ function startTypewriter() {
     if (i < LINE.length) {
       const ch = LINE[i];
       const cursor = el.querySelector('.cursor');
-      if (ch === '\n') cursor.insertAdjacentHTML('beforebegin', '<br>');
-      else {
-        cursor.insertAdjacentText('beforebegin', ch);
-        if (ch !== ' ') playTypeTick();
-      }
+      if (ch==='\n') cursor.insertAdjacentHTML('beforebegin','<br>');
+      else { cursor.insertAdjacentText('beforebegin', ch); if(ch!==' ') playTypeTick(); }
       i++;
-      const delay = ch === '\n' ? 420 : (ch === ',' || ch === '.' ? 120 : 38 + Math.random() * 18);
+      const delay = ch==='\n'?420:(ch===','||ch==='.'?120:38+Math.random()*18);
       setTimeout(type, delay);
     } else {
-      el.querySelector('.cursor').style.display = 'none';
-      setTimeout(() => { document.getElementById('prologue-kicker').style.opacity = '1'; }, 600);
-      setTimeout(() => { document.getElementById('btn-act2').style.opacity = '1'; }, 1400);
+      el.querySelector('.cursor').style.display='none';
+      setTimeout(()=>{ document.getElementById('prologue-kicker').style.opacity='1'; },600);
+      setTimeout(()=>{ document.getElementById('btn-act2').style.opacity='1'; },1400);
     }
   }
   setTimeout(type, 600);
@@ -1467,49 +1641,54 @@ function fadeOut(id, cb) {
   const el = document.getElementById(id);
   el.classList.remove('visible');
   el.style.opacity = '0';
-  setTimeout(() => { el.classList.add('hidden'); el.style.display = ''; if (cb) cb(); }, 1200);
+  setTimeout(()=>{ el.classList.add('hidden'); el.style.display=''; if(cb) cb(); }, 1200);
 }
 
 function fadeIn(id) {
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
   const el = document.getElementById(id);
   el.classList.remove('hidden');
   el.style.display = 'flex';
-  setTimeout(() => el.classList.add('visible'), 60);
+  setTimeout(()=>el.classList.add('visible'), 60);
 }
 
 function goToAct2() {
   playTransition();
   setProgress(ACT_PROGRESS.act2);
-  fadeOut('act1', () => fadeIn('act2'));
+  fadeOut('act1', () => {
+    fadeIn('act2');
+    setTimeout(staggerCards, 200);
+  });
   currentAct = 2;
 }
 
 function goToAct3() {
   playTransition();
   setProgress(ACT_PROGRESS.act3);
-  fadeOut('act2', () => fadeIn('act3'));
+  act3ScrollActive = false; // reset old listener flag
+  fadeOut('act2', () => {
+    fadeIn('act3');
+    setTimeout(initPolaroidParallax, 300);
+  });
   currentAct = 3;
 }
 
 function goToAct4() {
   playTransition();
+  act3ScrollActive = false;
   setProgress(ACT_PROGRESS.act4);
   fadeOut('act3', () => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0,0);
     const act4 = document.getElementById('act4');
     act4.classList.remove('hidden');
     act4.style.display = 'flex';
-    setTimeout(() => {
-      act4.classList.add('visible');
-      initScrollReveal();
-    }, 80);
+    setTimeout(()=>{ act4.classList.add('visible'); initScrollReveal(); }, 80);
   });
   currentAct = 4;
 }
 
 /* ═══════════════════════════════════════════════════
-   ACT IV — INTERSECTION OBSERVER SCROLL REVEALS
+   ACT IV — INTERSECTION OBSERVER
 ═══════════════════════════════════════════════════ */
 let epilogueTriggered = false;
 let chimeIndex = 0;
@@ -1520,7 +1699,9 @@ function initScrollReveal() {
     document.getElementById('fb2'),
     document.getElementById('fb3'),
     document.getElementById('and-you-section'),
+    document.getElementById('voice-note-section'),
     document.getElementById('ask-block'),
+    document.getElementById('reply-section'),
   ];
 
   const observer = new IntersectionObserver((entries) => {
@@ -1529,7 +1710,6 @@ function initScrollReveal() {
         entry.target.classList.add('revealed');
         playChime(chimeIndex++);
 
-        // Special: ALIGN word spread after ask-block appears
         if (entry.target.id === 'ask-block') {
           playEntryBloom();
           setTimeout(() => {
@@ -1537,7 +1717,6 @@ function initScrollReveal() {
             if (aw) aw.classList.add('spread');
           }, 1800);
 
-          // Epilogue trigger: 90 seconds after the last block appears — give her full time to read and sit with it
           if (!epilogueTriggered) {
             epilogueTriggered = true;
             setTimeout(showEpilogue, 90000);
@@ -1545,36 +1724,55 @@ function initScrollReveal() {
         }
       }
     });
-  }, {
-    threshold: 0.25,
-    rootMargin: '0px 0px -60px 0px'
-  });
+  }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
 
-  blocks.forEach(b => { if (b) observer.observe(b); });
+  blocks.forEach(b => { if(b) observer.observe(b); });
 }
 
 /* ═══════════════════════════════════════════════════
-   ACT V — EPILOGUE
+   #6 — ACT V: TYPED EPILOGUE
 ═══════════════════════════════════════════════════ */
+const EPILOGUE_TEXT = 'whenever you\'re ready, I\'m here';
+
 function showEpilogue() {
   setProgress(100);
   const act5 = document.getElementById('act5');
   act5.classList.add('visible');
-  // Fade music out gently
+
+  // Fade out music
   if (musicPlaying) {
     let vol = music.volume;
-    const fade = () => {
-      vol = Math.max(vol - 0.004, 0);
-      music.volume = vol;
-      if (vol > 0) setTimeout(fade, 120);
-      else music.pause();
-    };
+    const fade = () => { vol=Math.max(vol-0.004,0); music.volume=vol; if(vol>0)setTimeout(fade,120); else music.pause(); };
     setTimeout(fade, 3000);
   }
+
+  // Type epilogue text after act5 fades in
+  setTimeout(() => typeEpilogue(), 2500);
+}
+
+function typeEpilogue() {
+  const el = document.getElementById('epilogue-typed');
+  el.textContent = '';
+  let i = 0;
+  function type() {
+    if (i < EPILOGUE_TEXT.length) {
+      el.textContent += EPILOGUE_TEXT[i];
+      i++;
+      const delay = 75 + Math.random() * 40;
+      setTimeout(type, delay);
+    } else {
+      // After text finishes, fade in the ✦
+      setTimeout(() => {
+        const mark = document.getElementById('epilogue-mark');
+        mark.classList.add('show');
+      }, 800);
+    }
+  }
+  type();
 }
 
 /* ═══════════════════════════════════════════════════
-   SCROLL PROGRESS UPDATE (for act4 thread fill)
+   SCROLL PROGRESS (act4)
 ═══════════════════════════════════════════════════ */
 window.addEventListener('scroll', () => {
   if (currentAct !== 4) return;
@@ -1582,9 +1780,16 @@ window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY || doc.scrollTop;
   const scrollHeight = doc.scrollHeight - doc.clientHeight;
   if (scrollHeight <= 0) return;
-  const pct = ACT_PROGRESS.act4 + (scrollTop / scrollHeight) * (ACT_PROGRESS.act5 - ACT_PROGRESS.act4);
+  const pct = ACT_PROGRESS.act4 + (scrollTop/scrollHeight)*(ACT_PROGRESS.act5 - ACT_PROGRESS.act4);
   setProgress(Math.min(pct, ACT_PROGRESS.act5 - 2));
 }, { passive: true });
+
+/* Auto-grow textarea */
+const replyField = document.getElementById('reply-field');
+replyField.addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+});
 
 </script>
 </body>
