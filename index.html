@@ -45,6 +45,47 @@
     opacity: 0.4;
   }
 
+  /* ── PROGRESS THREAD ── */
+  #progress-thread {
+    position: fixed;
+    left: 18px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    z-index: 8000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  #progress-thread.visible { opacity: 1; }
+  #progress-thread .thread-track {
+    position: absolute;
+    inset: 0;
+    background: rgba(201,169,110,0.1);
+  }
+  #progress-thread .thread-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0%;
+    background: linear-gradient(180deg, rgba(201,169,110,0.8) 0%, rgba(201,169,110,0.3) 100%);
+    transition: height 0.6s cubic-bezier(0.16,1,0.3,1);
+    box-shadow: 0 0 6px rgba(201,169,110,0.4);
+  }
+  #progress-thread .thread-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(201,169,110,0.8);
+    transition: top 0.6s cubic-bezier(0.16,1,0.3,1);
+    top: 0%;
+  }
+
   /* ── MUSIC CONTROL PILL ── */
   #music-pill {
     position: fixed;
@@ -67,16 +108,12 @@
   #music-pill.visible { opacity: 1; }
   #music-pill:hover { border-color: rgba(201,169,110,0.55); }
   #music-pill .pill-icon {
-    width: 28px;
-    height: 28px;
+    width: 28px; height: 28px;
     border-radius: 50%;
     background: rgba(201,169,110,0.12);
     border: 1px solid rgba(201,169,110,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 0.75rem;
   }
   #music-pill .pill-label {
     font-family: var(--mono);
@@ -85,17 +122,9 @@
     color: var(--mist);
     text-transform: uppercase;
   }
-  /* Animated bars when music plays */
-  .bars {
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    height: 14px;
-  }
+  .bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
   .bar {
-    width: 3px;
-    background: var(--gold);
-    border-radius: 1px;
+    width: 3px; background: var(--gold); border-radius: 1px;
     animation: bounce var(--spd) ease-in-out infinite alternate;
     transform-origin: bottom;
   }
@@ -122,67 +151,56 @@
     transition: opacity 1.2s ease;
     cursor: pointer;
   }
-
   #landing .star-field { position: absolute; inset: 0; overflow: hidden; }
-
   .star {
-    position: absolute;
-    border-radius: 50%;
-    background: white;
+    position: absolute; border-radius: 50%; background: white;
     animation: twinkle var(--dur, 3s) ease-in-out infinite;
-    animation-delay: var(--delay, 0s);
-    opacity: 0;
+    animation-delay: var(--delay, 0s); opacity: 0;
   }
-
   @keyframes twinkle {
     0%, 100% { opacity: 0; transform: scale(0.5); }
     50%       { opacity: var(--peak, 0.7); transform: scale(1); }
   }
-
   #landing .center-content {
-    position: relative;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
+    position: relative; text-align: center;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 24px;
   }
-
   #landing .eyebrow {
     font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0;
-    animation: fadeUp 1s ease 0.8s forwards;
+    font-size: 0.65rem; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase;
+    opacity: 0; animation: fadeUp 1s ease 0.8s forwards;
   }
-
   #landing h1 {
     font-size: clamp(2.4rem, 8vw, 4.5rem);
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.04em;
-    line-height: 1.1;
-    opacity: 0;
-    animation: fadeUp 1s ease 1.2s forwards;
+    font-weight: 300; font-style: italic;
+    letter-spacing: 0.04em; line-height: 1.1;
+    opacity: 0; animation: fadeUp 1s ease 1.2s forwards;
   }
-
   #landing h1 em { font-style: normal; color: var(--gold); }
 
+  /* ── WAX SEAL ── */
+  #wax-seal {
+    opacity: 0;
+    animation: fadeUp 1s ease 1.6s forwards;
+    margin-top: 4px;
+  }
+  #wax-seal svg {
+    filter: drop-shadow(0 2px 8px rgba(201,169,110,0.4));
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  }
+  #wax-seal:hover svg { transform: rotate(8deg) scale(1.08); }
+
   #landing .tap-ring {
-    width: 72px;
-    height: 72px;
+    width: 72px; height: 72px;
     border-radius: 50%;
     border: 1px solid rgba(201, 169, 110, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     opacity: 0;
     animation: fadeUp 1s ease 1.8s forwards, pulse-ring 2.5s ease 2.8s infinite;
-    margin-top: 16px;
+    margin-top: 8px;
   }
-
   #landing .tap-ring::after {
     content: '';
     width: 48px; height: 48px;
@@ -192,19 +210,13 @@
     position: absolute;
     animation: pulse-ring 2.5s ease 2.8s infinite;
   }
-
   #landing .tap-icon { font-size: 1.4rem; position: relative; z-index: 1; }
-
   #landing .tap-label {
     font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.25em;
-    color: var(--mist);
-    text-transform: uppercase;
-    opacity: 0;
-    animation: fadeUp 1s ease 2s forwards;
+    font-size: 0.6rem; letter-spacing: 0.25em;
+    color: var(--mist); text-transform: uppercase;
+    opacity: 0; animation: fadeUp 1s ease 2s forwards;
   }
-
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0 rgba(201,169,110,0.3); }
     70%  { box-shadow: 0 0 0 14px rgba(201,169,110,0); }
@@ -213,70 +225,43 @@
 
   /* ─── SHARED ACT ─── */
   .act {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh; width: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     padding: 60px 24px 80px;
-    opacity: 0;
-    transition: opacity 1.2s ease;
+    opacity: 0; transition: opacity 1.2s ease;
   }
-
   .act.visible { opacity: 1; }
-
   .act-label {
     font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    color: var(--gold); text-transform: uppercase;
     margin-bottom: 16px;
   }
-
   .section-heading {
     font-size: clamp(1.8rem, 6vw, 3rem);
-    font-weight: 300;
-    font-style: italic;
-    text-align: center;
-    margin-bottom: 48px;
-    line-height: 1.2;
+    font-weight: 300; font-style: italic;
+    text-align: center; margin-bottom: 48px; line-height: 1.2;
   }
-
   .divider {
     width: 40px; height: 1px;
-    background: var(--gold);
-    margin: 0 auto 48px;
-    opacity: 0.5;
+    background: var(--gold); margin: 0 auto 48px; opacity: 0.5;
   }
-
   .next-btn {
-    margin-top: 56px;
-    padding: 14px 40px;
+    margin-top: 56px; padding: 14px 40px;
     background: transparent;
     border: 1px solid rgba(201,169,110,0.5);
-    color: var(--gold2);
-    border-radius: 2px;
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    color: var(--gold2); border-radius: 2px; cursor: pointer;
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
   }
-
   .next-btn::before {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: rgba(201,169,110,0.08);
-    transform: scaleX(0);
-    transform-origin: left;
+    transform: scaleX(0); transform-origin: left;
     transition: transform 0.3s ease;
   }
-
   .next-btn:hover::before { transform: scaleX(1); }
   .next-btn:active { transform: scale(0.97); }
 
@@ -285,213 +270,161 @@
     background: radial-gradient(ellipse at 50% 40%, #111827 0%, var(--night) 70%);
     justify-content: center;
   }
-
   #act1 .prologue-wrap { max-width: 520px; width: 100%; text-align: center; }
-
   #act1 .date-line {
-    font-family: var(--mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.28em;
-    color: var(--mist);
-    margin-bottom: 40px;
-    opacity: 0.7;
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.28em; color: var(--mist);
+    margin-bottom: 40px; opacity: 0.7;
   }
-
   .typewriter {
     font-size: clamp(1.2rem, 4vw, 1.55rem);
-    font-weight: 300;
-    line-height: 1.7;
-    min-height: 120px;
-    color: var(--silk);
+    font-weight: 300; line-height: 1.7;
+    min-height: 120px; color: var(--silk);
   }
-
   .cursor {
-    display: inline-block;
-    width: 2px; height: 1em;
-    background: var(--gold);
-    vertical-align: text-bottom;
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
+    display: inline-block; width: 2px; height: 1em;
+    background: var(--gold); vertical-align: text-bottom;
+    animation: blink 1s step-end infinite; margin-left: 2px;
   }
-
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
   .prologue-kicker {
     margin-top: 32px;
     font-size: clamp(1rem, 3.5vw, 1.25rem);
-    font-style: italic;
-    color: var(--gold2);
-    opacity: 0;
-    transition: opacity 1s ease;
-    line-height: 1.6;
+    font-style: italic; color: var(--gold2);
+    opacity: 0; transition: opacity 1s ease; line-height: 1.6;
   }
 
   /* ─── ACT II ─── */
   #act2 {
     background: linear-gradient(180deg, var(--night) 0%, #0b1120 100%);
-    justify-content: flex-start;
-    padding-top: 80px;
+    justify-content: flex-start; padding-top: 80px;
   }
-
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
-    width: 100%;
-    max-width: 680px;
-    margin-bottom: 20px;
+    gap: 24px; width: 100%; max-width: 680px; margin-bottom: 20px;
   }
-
   @media (max-width: 500px) {
     .cards-grid { grid-template-columns: 1fr; max-width: 340px; }
   }
-
-  .card-container { perspective: 1200px; height: 400px; }
-
+  .card-container { perspective: 1200px; height: 440px; }
   .card {
-    width: 100%; height: 100%;
-    position: relative;
+    width: 100%; height: 100%; position: relative;
     transition: transform 0.85s cubic-bezier(0.23, 1, 0.32, 1);
-    transform-style: preserve-3d;
-    cursor: pointer;
+    transform-style: preserve-3d; cursor: pointer;
   }
-
   .card.flipped { transform: rotateY(180deg); }
-
   .card-face {
     position: absolute; inset: 0;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    border-radius: 4px;
-    overflow: hidden;
+    border-radius: 4px; overflow: hidden;
   }
-
   .card-front {
     background: var(--ink);
     border: 1px solid rgba(201,169,110,0.15);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 28px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px; padding: 28px;
   }
-
   .card-front .card-num {
-    font-family: var(--mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    opacity: 0.6;
+    font-family: var(--mono); font-size: 0.55rem;
+    letter-spacing: 0.3em; color: var(--gold); opacity: 0.6;
   }
-
   .card-front h3 {
-    font-size: 1.55rem;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--silk);
-    text-align: center;
-    line-height: 1.3;
+    font-size: 1.55rem; font-weight: 300;
+    font-style: italic; color: var(--silk);
+    text-align: center; line-height: 1.3;
   }
-
   .card-front .tap-hint {
-    font-family: var(--mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
-    color: var(--mist);
-    opacity: 0.5;
-    margin-top: 8px;
+    font-family: var(--mono); font-size: 0.55rem;
+    letter-spacing: 0.25em; color: var(--mist); opacity: 0.5; margin-top: 8px;
   }
-
   .card-back {
     transform: rotateY(180deg);
     background: var(--wa-bg);
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
   }
-
   .wa-header {
-    background: #008069;
-    color: white;
+    background: #008069; color: white;
     padding: 14px 18px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
+    font-weight: 600; font-size: 0.95rem;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
   }
-
   .wa-avatar {
-    width: 32px; height: 32px;
-    border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     background: #25d366;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: white;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; color: white; flex-shrink: 0;
   }
-
   .wa-chat {
     padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-    flex-grow: 1;
+    display: flex; flex-direction: column; gap: 8px;
+    overflow-y: auto; flex-grow: 1;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13.5px;
-    -webkit-overflow-scrolling: touch;
+    font-size: 13.5px; -webkit-overflow-scrolling: touch;
   }
-
   .msg {
-    max-width: 82%;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: #111;
-    line-height: 1.45;
+    max-width: 82%; padding: 8px 12px; border-radius: 8px;
+    color: #111; line-height: 1.45;
     box-shadow: 0 1px 1px rgba(0,0,0,0.08);
     word-break: break-word;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
-
+  .msg.shown { opacity: 1; transform: translateY(0); }
   .msg.recv { background: var(--wa-recv); align-self: flex-start; border-top-left-radius: 2px; }
   .msg.sent { background: var(--wa-sent); align-self: flex-end; border-top-right-radius: 2px; }
+
+  /* WhatsApp typing indicator */
+  .wa-typing {
+    display: none;
+    align-self: flex-start;
+    background: var(--wa-recv);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-top-left-radius: 2px;
+    gap: 4px;
+    align-items: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  }
+  .wa-typing.active { display: flex; }
+  .typing-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #aaa;
+    animation: typing-bounce 1.2s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); background: #aaa; }
+    30% { transform: translateY(-6px); background: #888; }
+  }
 
   /* ─── ACT III ─── */
   #act3 {
     background: linear-gradient(180deg, #0b1120 0%, #0c1018 100%);
-    justify-content: flex-start;
-    padding-top: 80px;
+    justify-content: flex-start; padding-top: 80px;
   }
-
   .polaroid-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 36px;
-    width: 100%;
-    max-width: 340px;
-    margin-bottom: 20px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 36px;
+    width: 100%; max-width: 340px; margin-bottom: 20px;
   }
-
   .polaroid {
     background: #faf8f5;
-    padding: 14px 14px 48px 14px;
+    padding: 14px 14px 52px 14px;
     box-shadow:
       0 4px 6px rgba(0,0,0,0.3),
       0 14px 40px rgba(0,0,0,0.45),
       0 0 0 1px rgba(0,0,0,0.06);
-    width: 100%;
-    border-radius: 1px;
+    width: 100%; border-radius: 1px;
     position: relative;
     transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
     cursor: pointer;
   }
-
   .polaroid:nth-child(1) { transform: rotate(-2.5deg); }
   .polaroid:nth-child(2) { transform: rotate(3deg); }
   .polaroid:nth-child(3) { transform: rotate(-1.5deg); }
@@ -500,37 +433,40 @@
   .polaroid:nth-child(6) { transform: rotate(1.5deg); }
   .polaroid:nth-child(7) { transform: rotate(-2deg); }
   .polaroid:nth-child(8) { transform: rotate(2.5deg); }
-
   .polaroid:hover, .polaroid:active {
     transform: rotate(0deg) scale(1.02) !important;
     box-shadow: 0 8px 16px rgba(0,0,0,0.4), 0 24px 60px rgba(0,0,0,0.5);
     z-index: 10;
   }
-
   .polaroid img {
-    width: 100%;
-    display: block;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    background: #ddd;
+    width: 100%; display: block; aspect-ratio: 4/3;
+    object-fit: cover; background: #ddd;
     filter: sepia(8%) contrast(1.02) brightness(0.98);
     transition: filter 0.4s ease;
   }
-
   .polaroid:hover img, .polaroid:active img {
     filter: sepia(0%) contrast(1.04) brightness(1.04) saturate(1.1);
   }
-
   .polaroid .caption {
+    position: absolute; bottom: 16px;
+    left: 14px; right: 56px;
+    text-align: left;
+    font-family: var(--mono); font-size: 0.75rem;
+    font-weight: 400; letter-spacing: 0.08em; color: #1a1a1a;
+  }
+  /* ── DATE STAMP on polaroid ── */
+  .polaroid .date-stamp {
     position: absolute;
-    bottom: 12px;
-    left: 14px; right: 14px;
-    text-align: center;
+    bottom: 14px; right: 14px;
     font-family: var(--mono);
-    font-size: 0.75rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    color: #cc3322;
+    opacity: 0.85;
     font-weight: 400;
-    letter-spacing: 0.08em;
-    color: #1a1a1a;
+    line-height: 1.3;
+    text-align: right;
+    filter: blur(0.2px);
   }
 
   /* ─── ACT IV ─── */
@@ -539,120 +475,106 @@
     justify-content: flex-start;
     padding-top: 100px;
     padding-bottom: 200px;
+    /* Scroll mode: let content flow naturally */
+    min-height: auto;
   }
-
   .future-wrap {
-    max-width: 680px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    max-width: 680px; width: 100%;
+    display: flex; flex-direction: column; gap: 0;
   }
-
   .future-block {
     padding: 48px 0;
     border-top: 1px solid rgba(201,169,110,0.12);
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1), transform 1.4s cubic-bezier(0.16,1,0.3,1);
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1),
+                transform 1.4s cubic-bezier(0.16,1,0.3,1);
   }
-
   .future-block.revealed { opacity: 1; transform: translateY(0); }
-
   .future-block .block-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 20px;
+    font-family: var(--mono); font-size: 0.6rem;
+    letter-spacing: 0.3em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 20px;
   }
-
   .future-block p {
     font-size: clamp(1.15rem, 3.8vw, 1.4rem);
-    font-weight: 300;
-    line-height: 2;
-    color: var(--silk);
+    font-weight: 300; line-height: 2; color: var(--silk);
   }
-
   .future-block p em { color: var(--gold2); font-style: italic; }
-
   .and-you-block {
-    margin-top: 48px;
-    padding: 60px 40px;
+    margin-top: 48px; padding: 60px 40px;
     background: linear-gradient(180deg, rgba(13,21,38,0.6) 0%, rgba(8,12,20,0) 100%);
     border-left: 2px solid var(--gold);
     border-top: 1px solid rgba(201,169,110,0.15);
     border-radius: 4px;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 1.8s cubic-bezier(0.16,1,0.3,1), transform 1.8s cubic-bezier(0.16,1,0.3,1);
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 1.8s cubic-bezier(0.16,1,0.3,1),
+                transform 1.8s cubic-bezier(0.16,1,0.3,1);
   }
-
   .and-you-block.revealed { opacity: 1; transform: translateY(0); }
-
   .ask-block {
-    padding: 100px 0 0;
-    text-align: center;
-    opacity: 0;
-    transform: scale(0.97);
-    transition: opacity 2.2s cubic-bezier(0.16,1,0.3,1), transform 2.2s cubic-bezier(0.16,1,0.3,1);
+    padding: 100px 0 0; text-align: center;
+    opacity: 0; transform: scale(0.97);
+    transition: opacity 2.2s cubic-bezier(0.16,1,0.3,1),
+                transform 2.2s cubic-bezier(0.16,1,0.3,1);
   }
-
   .ask-block.revealed { opacity: 1; transform: scale(1); }
-
   .ask-question {
     font-size: clamp(2.2rem, 7vw, 3.5rem);
-    font-weight: 300;
-    font-style: italic;
-    line-height: 1.2;
-    color: var(--gold2);
-    margin-bottom: 40px;
-    letter-spacing: 0.02em;
+    font-weight: 300; font-style: italic; line-height: 1.2;
+    color: var(--gold2); margin-bottom: 40px; letter-spacing: 0.02em;
   }
-
   .ask-open {
-    max-width: 580px;
-    margin: 0 auto;
+    max-width: 580px; margin: 0 auto;
     font-size: clamp(1.15rem, 3.8vw, 1.45rem);
-    font-weight: 300;
-    line-height: 2;
-    color: var(--silk);
-    font-family: var(--serif);
-    font-style: italic;
-    text-align: center;
+    font-weight: 300; line-height: 2; color: var(--silk);
+    font-family: var(--serif); font-style: italic; text-align: center;
   }
-
   .alignment-climax {
-    margin-top: 56px;
-    padding-top: 44px;
+    margin-top: 56px; padding-top: 44px;
     border-top: 1px dashed rgba(201,169,110,0.2);
     font-size: clamp(1.2rem, 4vw, 1.55rem);
-    line-height: 1.95;
-    color: var(--silk);
-    font-weight: 300;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    line-height: 1.95; color: var(--silk);
+    font-weight: 300; max-width: 600px;
+    margin-left: auto; margin-right: auto;
   }
-
   .alignment-climax em {
-    letter-spacing: 0.08em;
-    font-style: normal;
-    font-weight: 400;
-    color: var(--gold2);
+    letter-spacing: 0.08em; font-style: normal;
+    font-weight: 400; color: var(--gold2);
   }
-
-  /* ─── ALIGN WORD ANIMATION ─── */
   .align-word {
-    display: inline-block;
-    letter-spacing: 0em;
-    color: var(--gold2);
-    font-style: normal;
+    display: inline-block; letter-spacing: 0em;
+    color: var(--gold2); font-style: normal;
     font-weight: 400;
     transition: letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);
   }
   .align-word.spread { letter-spacing: 0.18em; }
+
+  /* ─── ACT V — EPILOGUE ─── */
+  #act5 {
+    position: fixed; inset: 0;
+    background: var(--night);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 3s ease;
+  }
+  #act5.visible { opacity: 1; pointer-events: auto; }
+  #act5 .epilogue-stars { position: absolute; inset: 0; overflow: hidden; }
+  #act5 .epilogue-text {
+    position: relative; text-align: center;
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    font-weight: 300; font-style: italic;
+    color: var(--mist); letter-spacing: 0.04em;
+    opacity: 0;
+    transition: opacity 3s ease 2s;
+    line-height: 1.8;
+  }
+  #act5.visible .epilogue-text { opacity: 1; }
+  #act5 .epilogue-mark {
+    margin-top: 12px; color: var(--gold); font-style: normal;
+    opacity: 0.6;
+  }
 
   /* ─── SHARED ANIMATIONS ─── */
   @keyframes fadeUp {
@@ -660,18 +582,33 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* Scroll sentinel spacer for act4 */
+  #act4-scroll-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 200px;
+  }
+
 </style>
 </head>
 <body>
 
-<!-- Background music: drop bg-music.mp3 into the same folder -->
 <audio id="bg-music" loop>
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
-<!-- Floating music control pill -->
+<!-- Progress Thread -->
+<div id="progress-thread">
+  <div class="thread-track"></div>
+  <div class="thread-fill" id="thread-fill"></div>
+  <div class="thread-dot" id="thread-dot"></div>
+</div>
+
+<!-- Floating music pill -->
 <div id="music-pill" onclick="toggleMusic()">
   <div class="pill-icon">
     <div class="bars" id="music-bars">
@@ -684,16 +621,56 @@
   <span class="pill-label" id="pill-label">Music on</span>
 </div>
 
+<!-- ACT V — Epilogue (hidden overlay) -->
+<div id="act5">
+  <div class="epilogue-stars" id="epilogue-stars"></div>
+  <div class="epilogue-text">
+    whenever you're ready, I'm here
+    <div class="epilogue-mark">✦</div>
+  </div>
+</div>
+
+<!-- LANDING -->
 <div id="landing" onclick="enterWorld()">
   <div class="star-field" id="stars"></div>
   <div class="center-content">
     <div class="eyebrow">A world built for one person</div>
     <h1>For <em>Zusi Billions</em></h1>
+
+    <!-- Wax Seal -->
+    <div id="wax-seal">
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Wax base -->
+        <circle cx="36" cy="36" r="34" fill="#8B5E2A" opacity="0.9"/>
+        <circle cx="36" cy="36" r="34" fill="url(#wax-grad)" opacity="0.6"/>
+        <!-- Outer ring emboss -->
+        <circle cx="36" cy="36" r="30" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
+        <circle cx="36" cy="36" r="26" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.3"/>
+        <!-- Initials M & Z -->
+        <text x="36" y="32" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
+          font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">M</text>
+        <text x="36" y="46" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
+          font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">Z</text>
+        <!-- Divider line between initials -->
+        <line x1="27" y1="36.5" x2="45" y2="36.5" stroke="#e8d5a3" stroke-width="0.5" opacity="0.5"/>
+        <!-- Tiny stars at top/bottom -->
+        <text x="36" y="18" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
+        <text x="36" y="60" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
+        <defs>
+          <radialGradient id="wax-grad" cx="40%" cy="35%" r="60%">
+            <stop offset="0%" stop-color="#c9a96e"/>
+            <stop offset="100%" stop-color="#5c3510"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+
     <div class="tap-ring"><span class="tap-icon">✦</span></div>
     <div class="tap-label">Tap anywhere to enter</div>
   </div>
 </div>
 
+<!-- ACT I -->
 <div class="act" id="act1">
   <div class="prologue-wrap">
     <div class="act-label">I — Prologue</div>
@@ -709,6 +686,7 @@
   </div>
 </div>
 
+<!-- ACT II -->
 <div class="act hidden" id="act2">
   <div class="act-label">II — The Receipts</div>
   <div class="section-heading">Things that happened<br><em>that we cannot deny</em></div>
@@ -717,7 +695,7 @@
   <div class="cards-grid">
 
     <div class="card-container">
-      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
+      <div class="card" id="card-1" onclick="onCardFlip(this, 0)">
         <div class="card-face card-front">
           <span class="card-num">01 / 05</span>
           <h3>The Titles</h3>
@@ -726,6 +704,7 @@
         <div class="card-face card-back">
           <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
           <div class="wa-chat">
+            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg recv">Good evening, Doctor. Hope I'm permitted to call you that? 😅</div>
             <div class="msg recv">What's Corper, Doctor and finance guru Motolani doing this week and today?</div>
             <div class="msg recv">Good afternoon, Dr 😅</div>
@@ -737,7 +716,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
+      <div class="card" id="card-2" onclick="onCardFlip(this, 1)">
         <div class="card-face card-front">
           <span class="card-num">02 / 05</span>
           <h3>The "Experiment"</h3>
@@ -746,6 +725,7 @@
         <div class="card-face card-back">
           <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
           <div class="wa-chat">
+            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg recv">On the contrary, a better way to look at it is that you can talk a woman to sleep. Sounds like a win. Is this where I get a thank you for participating in the experiment? 🙂‍↔️</div>
             <div class="msg sent">Can you imagine</div>
             <div class="msg sent">I was sharing what blessed me in the message and all but you slept off</div>
@@ -761,7 +741,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
+      <div class="card" id="card-3" onclick="onCardFlip(this, 2)">
         <div class="card-face card-front">
           <span class="card-num">03 / 05</span>
           <h3>The Billing Dept.</h3>
@@ -770,6 +750,7 @@
         <div class="card-face card-back">
           <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
           <div class="wa-chat">
+            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">But before you go, that will be $199.99 please</div>
             <div class="msg recv">All these for $200</div>
             <div class="msg sent">Another 29.99. Thanks</div>
@@ -785,7 +766,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
+      <div class="card" id="card-4" onclick="onCardFlip(this, 3)">
         <div class="card-face card-front">
           <span class="card-num">04 / 05</span>
           <h3>The Experience</h3>
@@ -794,6 +775,7 @@
         <div class="card-face card-back">
           <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
           <div class="wa-chat">
+            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">Ahahn overall besttt 🙌🏾</div>
             <div class="msg sent">Overall best, trust youu're killing it</div>
             <div class="msg sent">Overall besttt I'm not surprised</div>
@@ -806,7 +788,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
+      <div class="card" id="card-5" onclick="onCardFlip(this, 4)">
         <div class="card-face card-front">
           <span class="card-num">05 / 05</span>
           <h3>The Consultant</h3>
@@ -815,6 +797,7 @@
         <div class="card-face card-back">
           <div class="wa-header"><div class="wa-avatar">ZB</div>Zusi Billions</div>
           <div class="wa-chat">
+            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">My consultant ma 🙌🏾</div>
             <div class="msg recv">That should work. Thanks for the suggestion, Business Consultant 😅</div>
             <div class="msg sent">whatt 😂</div>
@@ -829,117 +812,175 @@
   <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
 
+<!-- ACT III -->
 <div class="act hidden" id="act3">
   <div class="act-label">III — The Late Nights</div>
   <div class="section-heading">Everything a screenshot<br><em>couldn't fully hold</em></div>
   <div class="divider"></div>
 
   <div class="polaroid-stack">
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo1.jpg" alt="That laugh">
       <div class="caption">that laugh though</div>
+      <div class="date-stamp">04<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo2.jpg" alt="Peace sign">
       <div class="caption">✌🏾</div>
+      <div class="date-stamp">05<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo3.jpg" alt="Double peace">
       <div class="caption">double the peace, double the energy</div>
+      <div class="date-stamp">05<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo4.jpg" alt="Screen share">
       <div class="caption">even screen-share mode was a vibe</div>
+      <div class="date-stamp">06<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo5.jpg" alt="Lunch call">
       <div class="caption">lunch call era</div>
+      <div class="date-stamp">07<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo6.jpg" alt="Eating and drinking">
       <div class="caption">unbothered &amp; thriving</div>
+      <div class="date-stamp">08<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo7.jpg" alt="Professional headshot 1">
       <div class="caption">CEO ma 🌝</div>
+      <div class="date-stamp">09<br>2025</div>
     </div>
-    <div class="polaroid" onclick="playPolaroid()">
+    <div class="polaroid" onclick="onPolaroidTap(this)">
       <img src="photo8.jpg" alt="Professional headshot 2">
       <div class="caption">overall best. always.</div>
+      <div class="date-stamp">10<br>2025</div>
     </div>
   </div>
 
   <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
 </div>
 
-<div class="act hidden" id="act4">
-  <div class="act-label">IV — The Next Chapter</div>
-  <div class="section-heading">Where this is going</div>
-  <div class="divider"></div>
+<!-- ACT IV — Scroll-triggered reveals -->
+<div class="act hidden" id="act4" style="display:none; flex-direction:column; align-items:center; padding:0; min-height:100vh;">
+  <div style="padding:60px 24px 0; text-align:center; width:100%;">
+    <div class="act-label">IV — The Next Chapter</div>
+    <div class="section-heading">Where this is going</div>
+    <div class="divider"></div>
+  </div>
 
-  <div class="future-wrap">
+  <div id="act4-scroll-container">
+    <div class="future-wrap">
 
-    <div class="future-block" id="fb1">
-      <div class="block-label">The mandate</div>
-      <p>
-        I have been called to be light unto nations, a restorer of path for those who dwell in deserts, to take men from lack to abundance, to create springs of water in deserts, as an extension of the ministry of our Lord Jesus Christ. Serving faithfully as a steward of His manifold grace, under GLT. (as a high functioning steward).
-      </p>
-    </div>
-
-    <div class="future-block" id="fb2">
-      <div class="block-label">Right now</div>
-      <p>
-        Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't "hustle" for the sake of it. They are the foundations of good stewardship.
-      </p>
-    </div>
-
-    <div class="future-block" id="fb3">
-      <div class="block-label">The reality we are building toward</div>
-      <p>
-        A 27-floor institution. Capital management. Infrastructure. Banking.
-        Patents that pioneer new categories of financial engineering.
-        A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence
-        of a mandate fulfilled. A legacy that the generation after us will call
-        their foundation.
-      </p>
-    </div>
-
-    <div class="and-you-block" id="and-you-section">
-      <div class="future-block" id="fb4" style="border-top:none; padding:0; opacity:1; transform:none;">
-        <div class="block-label">And you</div>
+      <div class="future-block" id="fb1">
+        <div class="block-label">The mandate</div>
         <p>
-          Through all of it, from the early mornings, to the invoices for £12.99,
-          to the late calls where you fell asleep mid-sentence and still charged me a thank you,
-          you have been the most natural constant.
-          <em>I want to build all of this with you.</em>
+          I have been called to be light unto nations, a restorer of path for those who dwell in deserts, to take men from lack to abundance, to create springs of water in deserts, as an extension of the ministry of our Lord Jesus Christ. Serving faithfully as a steward of His manifold grace, under GLT. (as a high functioning steward).
         </p>
       </div>
-    </div>
 
-    <div class="ask-block" id="ask-block">
-      <div class="ask-question">
-        I love you, Zusi Billions.
+      <div class="future-block" id="fb2">
+        <div class="block-label">Right now</div>
+        <p>
+          Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't "hustle" for the sake of it. They are the foundations of good stewardship.
+        </p>
       </div>
-      <div class="ask-open">
-        I'm not asking you for an answer tonight.<br>
-        I'm asking you to <em style="color:var(--gold2)">consider a future</em> with me.<br>
-        Sit with it. Let it settle.<br>
-        When it feels right to you, I'll be here.
 
-        <div class="alignment-climax">
-          Here to <span class="align-word" id="align-word">ALIGNNNNNNN</span> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
+      <div class="future-block" id="fb3">
+        <div class="block-label">The reality we are building toward</div>
+        <p>
+          A 27-floor institution. Capital management. Infrastructure. Banking.
+          Patents that pioneer new categories of financial engineering.
+          A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence
+          of a mandate fulfilled. A legacy that the generation after us will call
+          their foundation.
+        </p>
+      </div>
+
+      <div class="and-you-block" id="and-you-section">
+        <div class="future-block" id="fb4" style="border-top:none; padding:0; opacity:1; transform:none;">
+          <div class="block-label">And you</div>
+          <p>
+            Through all of it, from the early mornings, to the invoices for £12.99,
+            to the late calls where you fell asleep mid-sentence and still charged me a thank you,
+            you have been the most natural constant.
+            <em>I want to build all of this with you.</em>
+          </p>
         </div>
       </div>
-    </div>
 
+      <div class="ask-block" id="ask-block">
+        <div class="ask-question">
+          I love you, Zusi Billions.
+        </div>
+        <div class="ask-open">
+          I'm not asking you for an answer tonight.<br>
+          I'm asking you to <em style="color:var(--gold2)">consider a future</em> with me.<br>
+          Sit with it. Let it settle.<br>
+          When it feels right to you, I'll be here.
+
+          <div class="alignment-climax">
+            Here to <span class="align-word" id="align-word">ALIGNNNNNNN</span> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
 <script>
 /* ═══════════════════════════════════════════════════
+   SERVICE WORKER REGISTRATION
+═══════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Inline service worker via blob URL for single-file distribution
+    const swCode = `
+const CACHE = 'zusi-v1';
+const ASSETS = ['./', './index.html', './bg-music.mp3',
+  './photo1.jpg','./photo2.jpg','./photo3.jpg','./photo4.jpg',
+  './photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{}))
+  );
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request).catch(()=>new Response('Offline')))
+  );
+});
+    `;
+    try {
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swURL = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swURL).catch(() => {});
+    } catch(e) {}
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   HAPTIC
+═══════════════════════════════════════════════════ */
+function haptic(ms = 8) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
+/* ═══════════════════════════════════════════════════
    AUDIO ENGINE
 ═══════════════════════════════════════════════════ */
-
 let AC = null;
 let musicPlaying = false;
 const music = document.getElementById('bg-music');
@@ -959,13 +1000,11 @@ function ramp(gainNode, from, to, duration) {
   gainNode.gain.linearRampToValueAtTime(to, ac.currentTime + duration);
 }
 
-/* ── Background music with gentle fade-in ── */
 function startMusic() {
   if (!music.src && !music.querySelector('source')) return;
   music.volume = 0;
   music.play().then(() => {
     musicPlaying = true;
-    // Fade volume up over 4 seconds
     let vol = 0;
     const target = 0.28;
     const step = () => {
@@ -988,7 +1027,6 @@ function toggleMusic() {
   const bars = document.getElementById('music-bars');
   const label = document.getElementById('pill-label');
   if (musicPlaying) {
-    // Fade out then pause
     let vol = music.volume;
     const fade = () => {
       vol = Math.max(vol - 0.015, 0);
@@ -1015,7 +1053,6 @@ function toggleMusic() {
   }
 }
 
-/* ── Ambient drone ── */
 function startAmbient() {
   const ac = getAC();
   if (!ac) return;
@@ -1023,12 +1060,10 @@ function startAmbient() {
   masterGain.gain.setValueAtTime(0, ac.currentTime);
   masterGain.gain.linearRampToValueAtTime(0.05, ac.currentTime + 3);
   masterGain.connect(ac.destination);
-
   const lfo = ac.createOscillator();
   lfo.frequency.value = 0.08; lfo.type = 'sine';
   const lfoG = ac.createGain(); lfoG.gain.value = 0.025;
   lfo.connect(lfoG); lfoG.connect(masterGain.gain); lfo.start();
-
   [[110, 1], [165, 0.6], [55, 0.35]].forEach(([freq, vol]) => {
     const osc = ac.createOscillator();
     osc.type = 'sine'; osc.frequency.value = freq;
@@ -1037,7 +1072,6 @@ function startAmbient() {
   });
 }
 
-/* ── Entry bloom ── */
 function playEntryBloom() {
   const ac = getAC();
   if (!ac) return;
@@ -1060,7 +1094,6 @@ function playEntryBloom() {
   });
 }
 
-/* ── Typewriter tick ── */
 function playTypeTick() {
   const ac = getAC();
   if (!ac) return;
@@ -1076,7 +1109,6 @@ function playTypeTick() {
   src.start();
 }
 
-/* ── Card flip whoosh ── */
 function playCardFlip() {
   const ac = getAC();
   if (!ac) return;
@@ -1097,7 +1129,6 @@ function playCardFlip() {
   src.start(); src.stop(ac.currentTime + dur + 0.05);
 }
 
-/* ── Polaroid shutter ── */
 function playPolaroid() {
   const ac = getAC();
   if (!ac) return;
@@ -1117,7 +1148,6 @@ function playPolaroid() {
   osc.start(ac.currentTime + 0.01); osc.stop(ac.currentTime + 0.3);
 }
 
-/* ── Transition breath ── */
 function playTransition() {
   const ac = getAC();
   if (!ac) return;
@@ -1137,9 +1167,7 @@ function playTransition() {
   osc2.start(); osc2.stop(ac.currentTime + 2);
 }
 
-/* ── Bell chimes ── */
 const CHIME_NOTES = [261.63, 329.63, 392.0, 493.88];
-
 function playChime(index) {
   const ac = getAC();
   if (!ac) return;
@@ -1161,25 +1189,91 @@ function playChime(index) {
 }
 
 /* ═══════════════════════════════════════════════════
+   WHATSAPP TYPING INDICATOR + MESSAGE REPLAY
+═══════════════════════════════════════════════════ */
+const cardFlipped = [false, false, false, false, false];
+
+function onCardFlip(cardEl, cardIndex) {
+  haptic(8);
+  const alreadyFlipped = cardEl.classList.contains('flipped');
+  if (alreadyFlipped) {
+    // unflip
+    cardEl.classList.remove('flipped');
+    playCardFlip();
+    return;
+  }
+  // First flip: typing indicator then messages
+  playCardFlip();
+  cardEl.classList.add('flipped');
+
+  if (!cardFlipped[cardIndex]) {
+    cardFlipped[cardIndex] = true;
+    const chat = cardEl.querySelector('.wa-chat');
+    const typing = chat.querySelector('.wa-typing');
+    const messages = chat.querySelectorAll('.msg');
+
+    // Show typing indicator
+    typing.classList.add('active');
+
+    // After 1.5s, hide typing and reveal messages one by one
+    setTimeout(() => {
+      typing.classList.remove('active');
+      messages.forEach((msg, i) => {
+        setTimeout(() => {
+          msg.classList.add('shown');
+        }, i * 280);
+      });
+    }, 1500);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   POLAROID TAP
+═══════════════════════════════════════════════════ */
+function onPolaroidTap(el) {
+  haptic(8);
+  playPolaroid();
+}
+
+/* ═══════════════════════════════════════════════════
    STAR FIELD
 ═══════════════════════════════════════════════════ */
-(function buildStars() {
-  ['stars','bg-stars'].forEach((id, idx) => {
-    const sf = document.getElementById(id);
-    const count = idx === 0 ? 300 : 200;
-    for (let i = 0; i < count; i++) {
-      const s = document.createElement('div');
-      s.className = 'star';
-      const size = Math.random() * 2.5 + 0.5;
-      s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
-      sf.appendChild(s);
-    }
-  });
-})();
+function buildStarField(containerId, count) {
+  const sf = document.getElementById(containerId);
+  if (!sf) return;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
+    sf.appendChild(s);
+  }
+}
+buildStarField('stars', 300);
+buildStarField('bg-stars', 200);
+buildStarField('epilogue-stars', 350);
+
+/* ═══════════════════════════════════════════════════
+   PROGRESS THREAD
+   Acts: 1→25%, 2→50%, 3→75%, 4→90%, 5→100%
+═══════════════════════════════════════════════════ */
+const ACT_PROGRESS = { act1: 20, act2: 42, act3: 64, act4: 85, act5: 100 };
+
+function setProgress(pct) {
+  document.getElementById('thread-fill').style.height = pct + '%';
+  document.getElementById('thread-dot').style.top = pct + '%';
+}
+
+function showProgressThread() {
+  const thread = document.getElementById('progress-thread');
+  thread.classList.add('visible');
+}
 
 /* ═══════════════════════════════════════════════════
    NAVIGATION
 ═══════════════════════════════════════════════════ */
+let currentAct = 0;
+
 function enterWorld() {
   startAmbient();
   startMusic();
@@ -1189,9 +1283,12 @@ function enterWorld() {
   landing.style.pointerEvents = 'none';
   setTimeout(() => {
     landing.classList.add('hidden');
+    showProgressThread();
+    setProgress(ACT_PROGRESS.act1);
     const act1 = document.getElementById('act1');
     act1.style.display = 'flex';
     setTimeout(() => { act1.classList.add('visible'); startTypewriter(); }, 80);
+    currentAct = 1;
   }, 1200);
 }
 
@@ -1237,58 +1334,114 @@ function fadeIn(id) {
   setTimeout(() => el.classList.add('visible'), 60);
 }
 
-function goToAct2() { playTransition(); fadeOut('act1', () => fadeIn('act2')); }
-function goToAct3() { playTransition(); fadeOut('act2', () => fadeIn('act3')); }
+function goToAct2() {
+  playTransition();
+  setProgress(ACT_PROGRESS.act2);
+  fadeOut('act1', () => fadeIn('act2'));
+  currentAct = 2;
+}
+
+function goToAct3() {
+  playTransition();
+  setProgress(ACT_PROGRESS.act3);
+  fadeOut('act2', () => fadeIn('act3'));
+  currentAct = 3;
+}
+
 function goToAct4() {
   playTransition();
-  fadeOut('act3', () => { fadeIn('act4'); setTimeout(revealFutureBlocks, 800); });
+  setProgress(ACT_PROGRESS.act4);
+  fadeOut('act3', () => {
+    window.scrollTo(0, 0);
+    const act4 = document.getElementById('act4');
+    act4.classList.remove('hidden');
+    act4.style.display = 'flex';
+    setTimeout(() => {
+      act4.classList.add('visible');
+      initScrollReveal();
+    }, 80);
+  });
+  currentAct = 4;
 }
 
 /* ═══════════════════════════════════════════════════
-   ACT IV — SLOW SEQUENTIAL REVEALS
-   Intervals: 2.2s between each block (was 0.9s)
-   Gives her time to actually read each paragraph
-   before the next one breathes into view.
+   ACT IV — INTERSECTION OBSERVER SCROLL REVEALS
 ═══════════════════════════════════════════════════ */
-function revealFutureBlocks() {
-  const INTERVAL = 2200; // ms between each block drop
+let epilogueTriggered = false;
+let chimeIndex = 0;
 
-  // Block 1 — The mandate
-  setTimeout(() => {
-    document.getElementById('fb1').classList.add('revealed');
-    playChime(0);
-  }, 0);
+function initScrollReveal() {
+  const blocks = [
+    document.getElementById('fb1'),
+    document.getElementById('fb2'),
+    document.getElementById('fb3'),
+    document.getElementById('and-you-section'),
+    document.getElementById('ask-block'),
+  ];
 
-  // Block 2 — Right now
-  setTimeout(() => {
-    document.getElementById('fb2').classList.add('revealed');
-    playChime(1);
-  }, INTERVAL);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.classList.contains('revealed')) {
+        entry.target.classList.add('revealed');
+        playChime(chimeIndex++);
 
-  // Block 3 — The reality we are building toward
-  setTimeout(() => {
-    document.getElementById('fb3').classList.add('revealed');
-    playChime(2);
-  }, INTERVAL * 2);
+        // Special: ALIGN word spread after ask-block appears
+        if (entry.target.id === 'ask-block') {
+          playEntryBloom();
+          setTimeout(() => {
+            const aw = document.getElementById('align-word');
+            if (aw) aw.classList.add('spread');
+          }, 1800);
 
-  // Block 4 — And you (inside the gold border block)
-  // Extra pause before this one — the most personal
-  setTimeout(() => {
-    document.getElementById('and-you-section').classList.add('revealed');
-    playChime(3);
-  }, INTERVAL * 2 + 3200); // 3.2s extra rest before "And you"
+          // Epilogue trigger: 14 seconds after the last block appears
+          if (!epilogueTriggered) {
+            epilogueTriggered = true;
+            setTimeout(showEpilogue, 14000);
+          }
+        }
+      }
+    });
+  }, {
+    threshold: 0.25,
+    rootMargin: '0px 0px -60px 0px'
+  });
 
-  // Final declaration — I love you
-  // Another generous pause — let "And you" land fully
-  setTimeout(() => {
-    document.getElementById('ask-block').classList.add('revealed');
-    playEntryBloom();
-    // Trigger the letter-spacing spread on ALIGNNNNNNN after the block appears
-    setTimeout(() => {
-      document.getElementById('align-word').classList.add('spread');
-    }, 1800);
-  }, INTERVAL * 2 + 3200 + 4000); // 4s after "And you"
+  blocks.forEach(b => { if (b) observer.observe(b); });
 }
+
+/* ═══════════════════════════════════════════════════
+   ACT V — EPILOGUE
+═══════════════════════════════════════════════════ */
+function showEpilogue() {
+  setProgress(100);
+  const act5 = document.getElementById('act5');
+  act5.classList.add('visible');
+  // Fade music out gently
+  if (musicPlaying) {
+    let vol = music.volume;
+    const fade = () => {
+      vol = Math.max(vol - 0.004, 0);
+      music.volume = vol;
+      if (vol > 0) setTimeout(fade, 120);
+      else music.pause();
+    };
+    setTimeout(fade, 3000);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   SCROLL PROGRESS UPDATE (for act4 thread fill)
+═══════════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  if (currentAct !== 4) return;
+  const doc = document.documentElement;
+  const scrollTop = window.scrollY || doc.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  if (scrollHeight <= 0) return;
+  const pct = ACT_PROGRESS.act4 + (scrollTop / scrollHeight) * (ACT_PROGRESS.act5 - ACT_PROGRESS.act4);
+  setProgress(Math.min(pct, ACT_PROGRESS.act5 - 2));
+}, { passive: true });
+
 </script>
 </body>
 </html>
