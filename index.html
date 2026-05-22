@@ -472,6 +472,7 @@
     border-radius: 1px;
     position: relative;
     transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
+    cursor: pointer; /* added so it feels clickable for sound */
   }
 
   .polaroid:nth-child(1) { transform: rotate(-2.5deg); }
@@ -500,16 +501,18 @@
     filter: sepia(8%) contrast(1.02) brightness(0.98);
   }
 
+  /* UPDATED: More visible captions */
   .polaroid .caption {
     position: absolute;
-    bottom: 10px;
+    bottom: 12px;
     left: 14px;
     right: 14px;
     text-align: center;
     font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    color: #666;
+    font-size: 0.75rem; 
+    font-weight: 400; 
+    letter-spacing: 0.08em;
+    color: #1a1a1a; 
   }
 
   /* ═══════════════════════════════════════
@@ -660,6 +663,12 @@
 <audio id="bg-music" loop>
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
+<audio id="click-sound">
+  <source src="click.mp3" type="audio/mpeg">
+</audio>
+<audio id="type-sound" loop>
+  <source src="typing.mp3" type="audio/mpeg">
+</audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
@@ -696,7 +705,7 @@
   <div class="cards-grid">
 
     <div class="card-container">
-      <div class="card" onclick="this.classList.toggle('flipped')">
+      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">01 / 05</span>
           <h3>The Titles</h3>
@@ -716,7 +725,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="this.classList.toggle('flipped')">
+      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">02 / 05</span>
           <h3>The "Experiment"</h3>
@@ -740,7 +749,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="this.classList.toggle('flipped')">
+      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">03 / 05</span>
           <h3>The Billing Dept.</h3>
@@ -764,7 +773,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="this.classList.toggle('flipped')">
+      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">04 / 05</span>
           <h3>The Experience</h3>
@@ -785,7 +794,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="this.classList.toggle('flipped')">
+      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">05 / 05</span>
           <h3>The Consultant</h3>
@@ -814,42 +823,42 @@
 
   <div class="polaroid-stack">
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo1.jpg" alt="That laugh">
       <div class="caption">that laugh though</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo2.jpg" alt="Peace sign">
       <div class="caption">✌🏾</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo3.jpg" alt="Double peace">
       <div class="caption">double the peace, double the energy</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo4.jpg" alt="Screen share">
       <div class="caption">even screen-share mode was a vibe</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo5.jpg" alt="Lunch call">
       <div class="caption">lunch call era</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo6.jpg" alt="Eating and drinking">
       <div class="caption">unbothered &amp; thriving</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo7.jpg" alt="Professional headshot 1">
       <div class="caption">CEO ma 🌝</div>
     </div>
 
-    <div class="polaroid">
+    <div class="polaroid" onclick="playClick()">
       <img src="photo8.jpg" alt="Professional headshot 2">
       <div class="caption">overall best. always.</div>
     </div>
@@ -926,6 +935,16 @@
 
 <script>
 
+  /* ─── AUDIO SYSTEM ─── */
+  function playClick() {
+    const clickSound = document.getElementById('click-sound');
+    if (clickSound) {
+      clickSound.currentTime = 0; // reset sound so rapid clicks play immediately
+      clickSound.volume = 0.5; // keep it subtle
+      clickSound.play().catch(e => console.log("Click sound blocked"));
+    }
+  }
+
   /* ─── STAR FIELD ─── */
   (function buildStars() {
     const sf = document.getElementById('stars');
@@ -943,7 +962,6 @@
       `;
       sf.appendChild(s);
     }
-    // Also populate bg-stars for persistent background
     const bg = document.getElementById('bg-stars');
     for (let i = 0; i < 200; i++) {
       const s = document.createElement('div');
@@ -963,12 +981,15 @@
 
   /* ─── LANDING → ACT I ─── */
   function enterWorld() {
-    // Play the background music on first tap!
+    // Play the background music on first tap
     const music = document.getElementById('bg-music');
     if(music) {
-      music.volume = 0.4; // Soft background volume
-      music.play().catch(e => console.log("Audio play prevented by browser policies until user interacts"));
+      music.volume = 0.4; 
+      music.play().catch(e => console.log("Audio play prevented"));
     }
+    
+    // Play initial enter click
+    playClick();
 
     const landing = document.getElementById('landing');
     landing.style.opacity = '0';
@@ -989,6 +1010,14 @@
 
   function startTypewriter() {
     const el = document.getElementById('typewriter-text');
+    const typeSound = document.getElementById('type-sound');
+    
+    // Start typing sound
+    if (typeSound) {
+      typeSound.volume = 0.6;
+      typeSound.play().catch(e => console.log("Typing sound blocked"));
+    }
+
     el.innerHTML = '<span class="cursor"></span>';
     let i = 0;
     function type() {
@@ -1003,7 +1032,11 @@
         i++;
         setTimeout(type, ch === '\n' ? 400 : 38);
       } else {
-        // remove cursor blink, show kicker + button
+        // Stop typing sound the moment it finishes
+        if (typeSound) {
+          typeSound.pause();
+        }
+
         el.querySelector('.cursor').style.display = 'none';
         const kicker = document.getElementById('prologue-kicker');
         const btn    = document.getElementById('btn-act2');
@@ -1034,9 +1067,10 @@
     setTimeout(() => el.classList.add('visible'), 60);
   }
 
-  function goToAct2() { fadeOut('act1', () => fadeIn('act2')); }
-  function goToAct3() { fadeOut('act2', () => fadeIn('act3')); }
+  function goToAct2() { playClick(); fadeOut('act1', () => fadeIn('act2')); }
+  function goToAct3() { playClick(); fadeOut('act2', () => fadeIn('act3')); }
   function goToAct4() {
+    playClick();
     fadeOut('act3', () => {
       fadeIn('act4');
       setTimeout(revealFutureBlocks, 600);
@@ -1051,7 +1085,6 @@
       }, i * 800);
     });
     
-    // Smooth cinematic staggered entrance for the focal point sections
     setTimeout(() => {
       document.getElementById('and-you-section').classList.add('revealed');
     }, 3 * 800);
