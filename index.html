@@ -1175,8 +1175,12 @@
           </p>
         </div>
         <!-- Handwriting image -->
-        <div class="handwriting-wrap">
-          <img src="handwriting.jpg" alt="handwritten note" />
+        <div class="handwriting-wrap" id="handwriting-wrap">
+          <img src="handwriting.jpg" alt="handwritten note"
+            onerror="document.getElementById('handwriting-wrap').style.display='none'; document.getElementById('handwriting-missing').style.display='block';" />
+        </div>
+        <div id="handwriting-missing" style="display:none; margin-top:24px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.2em; color:rgba(201,169,110,0.4);">
+          [ handwriting.jpg not found — check filename in repo ]
         </div>
       </div>
 
@@ -1528,26 +1532,52 @@ voiceAudio.addEventListener('ended', () => {
 
 function toggleVoiceNote() {
   haptic(10);
-  getAC(); // unlock audio context
+  // Always resume AudioContext on user gesture (iOS requirement)
+  if (AC && AC.state === 'suspended') AC.resume();
+
+  const playIcon = document.getElementById('voice-play-icon');
+  const player = document.getElementById('voice-player');
+  const durationEl = document.getElementById('voice-duration');
+
   if (voicePlaying) {
     voiceAudio.pause();
     voicePlaying = false;
-    document.getElementById('voice-play-icon').textContent = '▶';
-    document.getElementById('voice-player').classList.remove('playing');
-  } else {
-    // Dim bg music slightly while voice plays
-    if (musicPlaying) {
-      const target = music.volume * 0.4;
-      let v = music.volume;
-      const fade = () => { v = Math.max(v-0.01, target); music.volume=v; if(v>target) setTimeout(fade,60); };
-      fade();
-    }
-    voiceAudio.play().then(()=>{
-      voicePlaying = true;
-      document.getElementById('voice-play-icon').textContent = '⏸';
-      document.getElementById('voice-player').classList.add('playing');
-    }).catch(()=>{});
+    playIcon.textContent = '▶';
+    player.classList.remove('playing');
+    return;
   }
+
+  // Dim bg music while voice plays
+  if (musicPlaying) {
+    const target = music.volume * 0.4;
+    let v = music.volume;
+    const fade = () => { v = Math.max(v-0.01, target); music.volume=v; if(v>target) setTimeout(fade,60); };
+    fade();
+  }
+
+  // Reset to start if ended
+  if (voiceAudio.ended || voiceAudio.currentTime >= (voiceAudio.duration || Infinity)) {
+    voiceAudio.currentTime = 0;
+  }
+
+  voiceAudio.play().then(() => {
+    voicePlaying = true;
+    playIcon.textContent = '⏸';
+    player.classList.add('playing');
+  }).catch((err) => {
+    // Show error state visually so it's obvious in testing
+    playIcon.textContent = '▶';
+    player.classList.remove('playing');
+    durationEl.textContent = 'error';
+    durationEl.style.color = '#e87070';
+    console.warn('Voice note play failed:', err.message, '| src:', voiceAudio.currentSrc);
+    // Restore music volume on failure
+    if (musicPlaying) {
+      let v = music.volume; const target2 = 0.28;
+      const restore = () => { v = Math.min(v+0.01, target2); music.volume=v; if(v<target2) setTimeout(restore,80); };
+      restore();
+    }
+  });
 }
 
 // Restore music volume when voice ends
