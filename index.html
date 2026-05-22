@@ -195,7 +195,7 @@
   }
   @keyframes twinkle {
     0%, 100% { opacity: 0; transform: scale(0.5); }
-    50%       { opacity: var(--peak, 0.7); transform: scale(1); }
+    50%        { opacity: var(--peak, 0.7); transform: scale(1); }
   }
   #landing .center-content {
     position: relative; text-align: center;
@@ -1380,8 +1380,8 @@ function playChime(i) {
   const freq=CHIME_NOTES[i%CHIME_NOTES.length];
   const o1=ac.createOscillator(); o1.type='sine'; o1.frequency.value=freq;
   const o2=ac.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.756;
-  const g1=ac.createGain(); g1.gain.setValueAtTime(0,ac.currentTime); g1.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01); g1.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+3.5);
-  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.06,ac.currentTime+0.01); g2.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+1.5);
+  const g1=ac.createGain(); g1.gain.setValueAtTime(0,ac.currentTime); g1.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01); g1.exponentialRampToValueAtTime(0.001,ac.currentTime+3.5);
+  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.06,ac.currentTime+0.01); g2.exponentialRampToValueAtTime(0.001,ac.currentTime+1.5);
   o1.connect(g1); g1.connect(ac.destination); o2.connect(g2); g2.connect(ac.destination);
   o1.start(); o1.stop(ac.currentTime+4); o2.start(); o2.stop(ac.currentTime+2);
 }
@@ -1544,14 +1544,22 @@ function toggleVoiceNote() {
     voicePlaying = false;
     playIcon.textContent = '▶';
     player.classList.remove('playing');
+    
+    // --- UPDATED: Restore music volume if paused manually ---
+    if (musicPlaying) {
+      let v = music.volume;
+      const target = 0.28;
+      const fade = () => { v = Math.min(v+0.01, target); music.volume=v; if(v<target) setTimeout(fade,80); };
+      fade();
+    }
     return;
   }
 
-  // Dim bg music while voice plays
+  // --- UPDATED: Dim bg music significantly while voice plays ---
   if (musicPlaying) {
-    const target = music.volume * 0.4;
+    const target = 0.05; // Drop to a fixed low volume instead of relative 40%
     let v = music.volume;
-    const fade = () => { v = Math.max(v-0.01, target); music.volume=v; if(v>target) setTimeout(fade,60); };
+    const fade = () => { v = Math.max(v-0.02, target); music.volume=v; if(v>target) setTimeout(fade,60); };
     fade();
   }
 
@@ -1565,7 +1573,6 @@ function toggleVoiceNote() {
     playIcon.textContent = '⏸';
     player.classList.add('playing');
   }).catch((err) => {
-    // Show error state visually so it's obvious in testing
     playIcon.textContent = '▶';
     player.classList.remove('playing');
     durationEl.textContent = 'error';
@@ -1580,12 +1587,12 @@ function toggleVoiceNote() {
   });
 }
 
-// Restore music volume when voice ends
+// --- UPDATED: Restore music volume when voice ends ---
 voiceAudio.addEventListener('ended', () => {
   if (musicPlaying) {
     let v = music.volume;
     const target = 0.28;
-    const fade = () => { v = Math.min(v+0.008, target); music.volume=v; if(v<target) setTimeout(fade,80); };
+    const fade = () => { v = Math.min(v+0.01, target); music.volume=v; if(v<target) setTimeout(fade,80); };
     fade();
   }
 });
