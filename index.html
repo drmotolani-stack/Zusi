@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 
-  /* ─── TOKENS ─── */
   :root {
     --night:   #080c14;
     --ink:     #0d1526;
@@ -23,7 +22,6 @@
     --mono:    'DM Mono', 'Courier New', monospace;
   }
 
-  /* ─── RESET ─── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
@@ -37,7 +35,6 @@
 
   .hidden { display: none !important; }
 
-  /* ─── NOISE OVERLAY ─── */
   body::before {
     content: '';
     position: fixed;
@@ -48,9 +45,71 @@
     opacity: 0.4;
   }
 
-  /* ═══════════════════════════════════════
-     LANDING — tap to enter
-  ═══════════════════════════════════════ */
+  /* ── MUSIC CONTROL PILL ── */
+  #music-pill {
+    position: fixed;
+    bottom: 28px;
+    right: 24px;
+    z-index: 9000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(13,21,38,0.82);
+    border: 1px solid rgba(201,169,110,0.25);
+    border-radius: 999px;
+    padding: 9px 18px 9px 14px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.3s ease, opacity 0.6s ease;
+    opacity: 0;
+  }
+  #music-pill.visible { opacity: 1; }
+  #music-pill:hover { border-color: rgba(201,169,110,0.55); }
+  #music-pill .pill-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(201,169,110,0.12);
+    border: 1px solid rgba(201,169,110,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.75rem;
+  }
+  #music-pill .pill-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--mist);
+    text-transform: uppercase;
+  }
+  /* Animated bars when music plays */
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+  }
+  .bar {
+    width: 3px;
+    background: var(--gold);
+    border-radius: 1px;
+    animation: bounce var(--spd) ease-in-out infinite alternate;
+    transform-origin: bottom;
+  }
+  .bar:nth-child(1){ --spd:0.6s; height:6px;  animation-delay:0s; }
+  .bar:nth-child(2){ --spd:0.4s; height:12px; animation-delay:0.1s; }
+  .bar:nth-child(3){ --spd:0.7s; height:8px;  animation-delay:0.2s; }
+  .bar:nth-child(4){ --spd:0.5s; height:10px; animation-delay:0.05s;}
+  @keyframes bounce {
+    from { transform: scaleY(0.3); }
+    to   { transform: scaleY(1); }
+  }
+  .bars.paused .bar { animation-play-state: paused; }
+
+  /* ─── LANDING ─── */
   #landing {
     position: fixed;
     inset: 0;
@@ -64,11 +123,7 @@
     cursor: pointer;
   }
 
-  #landing .star-field {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-  }
+  #landing .star-field { position: absolute; inset: 0; overflow: hidden; }
 
   .star {
     position: absolute;
@@ -113,10 +168,7 @@
     animation: fadeUp 1s ease 1.2s forwards;
   }
 
-  #landing h1 em {
-    font-style: normal;
-    color: var(--gold);
-  }
+  #landing h1 em { font-style: normal; color: var(--gold); }
 
   #landing .tap-ring {
     width: 72px;
@@ -133,20 +185,15 @@
 
   #landing .tap-ring::after {
     content: '';
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     border-radius: 50%;
-    background: rgba(201, 169, 110, 0.15);
-    border: 1px solid rgba(201, 169, 110, 0.6);
+    background: rgba(201,169,110,0.15);
+    border: 1px solid rgba(201,169,110,0.6);
     position: absolute;
     animation: pulse-ring 2.5s ease 2.8s infinite;
   }
 
-  #landing .tap-icon {
-    font-size: 1.4rem;
-    position: relative;
-    z-index: 1;
-  }
+  #landing .tap-icon { font-size: 1.4rem; position: relative; z-index: 1; }
 
   #landing .tap-label {
     font-family: var(--mono);
@@ -164,7 +211,7 @@
     100% { box-shadow: 0 0 0 0 rgba(201,169,110,0); }
   }
 
-  /* ─── SHARED SECTION STYLES ─── */
+  /* ─── SHARED ACT ─── */
   .act {
     min-height: 100vh;
     width: 100%;
@@ -198,8 +245,7 @@
   }
 
   .divider {
-    width: 40px;
-    height: 1px;
+    width: 40px; height: 1px;
     background: var(--gold);
     margin: 0 auto 48px;
     opacity: 0.5;
@@ -209,7 +255,7 @@
     margin-top: 56px;
     padding: 14px 40px;
     background: transparent;
-    border: 1px solid rgba(201, 169, 110, 0.5);
+    border: 1px solid rgba(201,169,110,0.5);
     color: var(--gold2);
     border-radius: 2px;
     cursor: pointer;
@@ -224,8 +270,7 @@
 
   .next-btn::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: rgba(201,169,110,0.08);
     transform: scaleX(0);
     transform-origin: left;
@@ -235,19 +280,13 @@
   .next-btn:hover::before { transform: scaleX(1); }
   .next-btn:active { transform: scale(0.97); }
 
-  /* ═══════════════════════════════════════
-     ACT I — PROLOGUE
-  ═══════════════════════════════════════ */
+  /* ─── ACT I ─── */
   #act1 {
     background: radial-gradient(ellipse at 50% 40%, #111827 0%, var(--night) 70%);
     justify-content: center;
   }
 
-  #act1 .prologue-wrap {
-    max-width: 520px;
-    width: 100%;
-    text-align: center;
-  }
+  #act1 .prologue-wrap { max-width: 520px; width: 100%; text-align: center; }
 
   #act1 .date-line {
     font-family: var(--mono);
@@ -268,8 +307,7 @@
 
   .cursor {
     display: inline-block;
-    width: 2px;
-    height: 1em;
+    width: 2px; height: 1em;
     background: var(--gold);
     vertical-align: text-bottom;
     animation: blink 1s step-end infinite;
@@ -288,9 +326,7 @@
     line-height: 1.6;
   }
 
-  /* ═══════════════════════════════════════
-     ACT II — THE RECEIPTS (flip cards)
-  ═══════════════════════════════════════ */
+  /* ─── ACT II ─── */
   #act2 {
     background: linear-gradient(180deg, var(--night) 0%, #0b1120 100%);
     justify-content: flex-start;
@@ -310,14 +346,10 @@
     .cards-grid { grid-template-columns: 1fr; max-width: 340px; }
   }
 
-  .card-container {
-    perspective: 1200px;
-    height: 400px;
-  }
+  .card-container { perspective: 1200px; height: 400px; }
 
   .card {
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     position: relative;
     transition: transform 0.85s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
@@ -327,15 +359,13 @@
   .card.flipped { transform: rotateY(180deg); }
 
   .card-face {
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     border-radius: 4px;
     overflow: hidden;
   }
 
-  /* Card front */
   .card-front {
     background: var(--ink);
     border: 1px solid rgba(201,169,110,0.15);
@@ -373,7 +403,6 @@
     margin-top: 8px;
   }
 
-  /* Card back */
   .card-back {
     transform: rotateY(180deg);
     background: var(--wa-bg);
@@ -395,8 +424,7 @@
   }
 
   .wa-avatar {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     background: #25d366;
     display: flex;
@@ -430,21 +458,10 @@
     word-break: break-word;
   }
 
-  .msg.recv {
-    background: var(--wa-recv);
-    align-self: flex-start;
-    border-top-left-radius: 2px;
-  }
+  .msg.recv { background: var(--wa-recv); align-self: flex-start; border-top-left-radius: 2px; }
+  .msg.sent { background: var(--wa-sent); align-self: flex-end; border-top-right-radius: 2px; }
 
-  .msg.sent {
-    background: var(--wa-sent);
-    align-self: flex-end;
-    border-top-right-radius: 2px;
-  }
-
-  /* ═══════════════════════════════════════
-     ACT III — POLAROID GALLERY
-  ═══════════════════════════════════════ */
+  /* ─── ACT III ─── */
   #act3 {
     background: linear-gradient(180deg, #0b1120 0%, #0c1018 100%);
     justify-content: flex-start;
@@ -472,7 +489,7 @@
     border-radius: 1px;
     position: relative;
     transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease;
-    cursor: pointer; /* added so it feels clickable for sound */
+    cursor: pointer;
   }
 
   .polaroid:nth-child(1) { transform: rotate(-2.5deg); }
@@ -486,9 +503,7 @@
 
   .polaroid:hover, .polaroid:active {
     transform: rotate(0deg) scale(1.02) !important;
-    box-shadow:
-      0 8px 16px rgba(0,0,0,0.4),
-      0 24px 60px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4), 0 24px 60px rgba(0,0,0,0.5);
     z-index: 10;
   }
 
@@ -499,34 +514,35 @@
     object-fit: cover;
     background: #ddd;
     filter: sepia(8%) contrast(1.02) brightness(0.98);
+    transition: filter 0.4s ease;
   }
 
-  /* UPDATED: More visible captions */
+  .polaroid:hover img, .polaroid:active img {
+    filter: sepia(0%) contrast(1.04) brightness(1.04) saturate(1.1);
+  }
+
   .polaroid .caption {
     position: absolute;
     bottom: 12px;
-    left: 14px;
-    right: 14px;
+    left: 14px; right: 14px;
     text-align: center;
     font-family: var(--mono);
-    font-size: 0.75rem; 
-    font-weight: 400; 
+    font-size: 0.75rem;
+    font-weight: 400;
     letter-spacing: 0.08em;
-    color: #1a1a1a; 
+    color: #1a1a1a;
   }
 
-  /* ═══════════════════════════════════════
-     ACT IV — THE FUTURE (ELEVATED & WIDE)
-  ═══════════════════════════════════════ */
+  /* ─── ACT IV ─── */
   #act4 {
     background: radial-gradient(ellipse at 50% 50%, #1a120a 0%, var(--night) 80%);
     justify-content: flex-start;
     padding-top: 100px;
-    padding-bottom: 160px;
+    padding-bottom: 200px;
   }
 
   .future-wrap {
-    max-width: 680px; 
+    max-width: 680px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -534,17 +550,14 @@
   }
 
   .future-block {
-    padding: 40px 0;
+    padding: 48px 0;
     border-top: 1px solid rgba(201,169,110,0.12);
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s ease, transform 1s ease;
+    transform: translateY(28px);
+    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1), transform 1.4s cubic-bezier(0.16,1,0.3,1);
   }
 
-  .future-block.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .future-block.revealed { opacity: 1; transform: translateY(0); }
 
   .future-block .block-label {
     font-family: var(--mono);
@@ -556,46 +569,37 @@
   }
 
   .future-block p {
-    font-size: clamp(1.1rem, 3.8vw, 1.35rem);
+    font-size: clamp(1.15rem, 3.8vw, 1.4rem);
     font-weight: 300;
-    line-height: 1.8;
+    line-height: 2;
     color: var(--silk);
   }
 
-  .future-block p em {
-    color: var(--gold2);
-    font-style: italic;
-  }
+  .future-block p em { color: var(--gold2); font-style: italic; }
 
-  /* ─── CLIMAX EXPERIENCE SECTIONS ─── */
   .and-you-block {
-    margin-top: 40px;
+    margin-top: 48px;
     padding: 60px 40px;
-    background: linear-gradient(180deg, rgba(13, 21, 38, 0.6) 0%, rgba(8, 12, 20, 0) 100%);
+    background: linear-gradient(180deg, rgba(13,21,38,0.6) 0%, rgba(8,12,20,0) 100%);
     border-left: 2px solid var(--gold);
     border-top: 1px solid rgba(201,169,110,0.15);
     border-radius: 4px;
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 1.8s cubic-bezier(0.16,1,0.3,1), transform 1.8s cubic-bezier(0.16,1,0.3,1);
   }
-  .and-you-block.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+  .and-you-block.revealed { opacity: 1; transform: translateY(0); }
 
   .ask-block {
-    padding: 80px 0 0;
+    padding: 100px 0 0;
     text-align: center;
     opacity: 0;
-    transform: scale(0.98);
-    transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.97);
+    transition: opacity 2.2s cubic-bezier(0.16,1,0.3,1), transform 2.2s cubic-bezier(0.16,1,0.3,1);
   }
 
-  .ask-block.revealed { 
-    opacity: 1; 
-    transform: scale(1);
-  }
+  .ask-block.revealed { opacity: 1; transform: scale(1); }
 
   .ask-question {
     font-size: clamp(2.2rem, 7vw, 3.5rem);
@@ -603,13 +607,8 @@
     font-style: italic;
     line-height: 1.2;
     color: var(--gold2);
-    margin-bottom: 32px;
+    margin-bottom: 40px;
     letter-spacing: 0.02em;
-  }
-
-  .ask-question em {
-    color: var(--gold);
-    font-style: normal;
   }
 
   .ask-open {
@@ -617,7 +616,7 @@
     margin: 0 auto;
     font-size: clamp(1.15rem, 3.8vw, 1.45rem);
     font-weight: 300;
-    line-height: 1.9;
+    line-height: 2;
     color: var(--silk);
     font-family: var(--serif);
     font-style: italic;
@@ -625,17 +624,16 @@
   }
 
   .alignment-climax {
-    margin-top: 48px;
-    padding-top: 40px;
-    border-top: 1px dashed rgba(201, 169, 110, 0.2);
+    margin-top: 56px;
+    padding-top: 44px;
+    border-top: 1px dashed rgba(201,169,110,0.2);
     font-size: clamp(1.2rem, 4vw, 1.55rem);
-    line-height: 1.85;
+    line-height: 1.95;
     color: var(--silk);
     font-weight: 300;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    text-shadow: 0 0 20px rgba(232, 213, 163, 0.1);
   }
 
   .alignment-climax em {
@@ -645,32 +643,46 @@
     color: var(--gold2);
   }
 
+  /* ─── ALIGN WORD ANIMATION ─── */
+  .align-word {
+    display: inline-block;
+    letter-spacing: 0em;
+    color: var(--gold2);
+    font-style: normal;
+    font-weight: 400;
+    transition: letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .align-word.spread { letter-spacing: 0.18em; }
+
   /* ─── SHARED ANIMATIONS ─── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
 </style>
 </head>
 <body>
 
+<!-- Background music: drop bg-music.mp3 into the same folder -->
 <audio id="bg-music" loop>
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
-<audio id="click-sound">
-  <source src="click.mp3" type="audio/mpeg">
-</audio>
-<audio id="type-sound" loop>
-  <source src="typing.mp3" type="audio/mpeg">
-</audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
+
+<!-- Floating music control pill -->
+<div id="music-pill" onclick="toggleMusic()">
+  <div class="pill-icon">
+    <div class="bars" id="music-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+  <span class="pill-label" id="pill-label">Music on</span>
+</div>
 
 <div id="landing" onclick="enterWorld()">
   <div class="star-field" id="stars"></div>
@@ -705,7 +717,7 @@
   <div class="cards-grid">
 
     <div class="card-container">
-      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
+      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">01 / 05</span>
           <h3>The Titles</h3>
@@ -725,7 +737,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
+      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">02 / 05</span>
           <h3>The "Experiment"</h3>
@@ -749,7 +761,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
+      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">03 / 05</span>
           <h3>The Billing Dept.</h3>
@@ -773,7 +785,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
+      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">04 / 05</span>
           <h3>The Experience</h3>
@@ -794,7 +806,7 @@
     </div>
 
     <div class="card-container">
-      <div class="card" onclick="playClick(); this.classList.toggle('flipped')">
+      <div class="card" onclick="playCardFlip(); this.classList.toggle('flipped')">
         <div class="card-face card-front">
           <span class="card-num">05 / 05</span>
           <h3>The Consultant</h3>
@@ -813,7 +825,8 @@
       </div>
     </div>
 
-  </div><button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
+  </div>
+  <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
 
 <div class="act hidden" id="act3">
@@ -822,47 +835,38 @@
   <div class="divider"></div>
 
   <div class="polaroid-stack">
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo1.jpg" alt="That laugh">
       <div class="caption">that laugh though</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo2.jpg" alt="Peace sign">
       <div class="caption">✌🏾</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo3.jpg" alt="Double peace">
       <div class="caption">double the peace, double the energy</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo4.jpg" alt="Screen share">
       <div class="caption">even screen-share mode was a vibe</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo5.jpg" alt="Lunch call">
       <div class="caption">lunch call era</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo6.jpg" alt="Eating and drinking">
       <div class="caption">unbothered &amp; thriving</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo7.jpg" alt="Professional headshot 1">
       <div class="caption">CEO ma 🌝</div>
     </div>
-
-    <div class="polaroid" onclick="playClick()">
+    <div class="polaroid" onclick="playPolaroid()">
       <img src="photo8.jpg" alt="Professional headshot 2">
       <div class="caption">overall best. always.</div>
     </div>
-
   </div>
 
   <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
@@ -885,7 +889,7 @@
     <div class="future-block" id="fb2">
       <div class="block-label">Right now</div>
       <p>
-        Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't “hustle” for the sake of it. They are the foundations of good stewardship.
+        Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't "hustle" for the sake of it. They are the foundations of good stewardship.
       </p>
     </div>
 
@@ -916,15 +920,14 @@
       <div class="ask-question">
         I love you, Zusi Billions.
       </div>
-      
       <div class="ask-open">
         I'm not asking you for an answer tonight.<br>
         I'm asking you to <em style="color:var(--gold2)">consider a future</em> with me.<br>
         Sit with it. Let it settle.<br>
         When it feels right to you, I'll be here.
-        
+
         <div class="alignment-climax">
-          Here to <em>ALIGNNNNNNN</em> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
+          Here to <span class="align-word" id="align-word">ALIGNNNNNNN</span> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
         </div>
       </div>
     </div>
@@ -932,168 +935,360 @@
   </div>
 </div>
 
-
 <script>
+/* ═══════════════════════════════════════════════════
+   AUDIO ENGINE
+═══════════════════════════════════════════════════ */
 
-  /* ─── AUDIO SYSTEM ─── */
-  function playClick() {
-    const clickSound = document.getElementById('click-sound');
-    if (clickSound) {
-      clickSound.currentTime = 0; // reset sound so rapid clicks play immediately
-      clickSound.volume = 0.5; // keep it subtle
-      clickSound.play().catch(e => console.log("Click sound blocked"));
-    }
+let AC = null;
+let musicPlaying = false;
+const music = document.getElementById('bg-music');
+
+function getAC() {
+  if (!AC) {
+    try { AC = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { return null; }
   }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
 
-  /* ─── STAR FIELD ─── */
-  (function buildStars() {
-    const sf = document.getElementById('stars');
-    for (let i = 0; i < 300; i++) {
+function ramp(gainNode, from, to, duration) {
+  const ac = gainNode.context;
+  gainNode.gain.setValueAtTime(from, ac.currentTime);
+  gainNode.gain.linearRampToValueAtTime(to, ac.currentTime + duration);
+}
+
+/* ── Background music with gentle fade-in ── */
+function startMusic() {
+  if (!music.src && !music.querySelector('source')) return;
+  music.volume = 0;
+  music.play().then(() => {
+    musicPlaying = true;
+    // Fade volume up over 4 seconds
+    let vol = 0;
+    const target = 0.28;
+    const step = () => {
+      vol = Math.min(vol + 0.01, target);
+      music.volume = vol;
+      if (vol < target) setTimeout(step, 100);
+    };
+    setTimeout(step, 200);
+    showMusicPill();
+  }).catch(() => {});
+}
+
+function showMusicPill() {
+  const pill = document.getElementById('music-pill');
+  pill.style.display = 'flex';
+  setTimeout(() => pill.classList.add('visible'), 100);
+}
+
+function toggleMusic() {
+  const bars = document.getElementById('music-bars');
+  const label = document.getElementById('pill-label');
+  if (musicPlaying) {
+    // Fade out then pause
+    let vol = music.volume;
+    const fade = () => {
+      vol = Math.max(vol - 0.015, 0);
+      music.volume = vol;
+      if (vol > 0) setTimeout(fade, 80);
+      else music.pause();
+    };
+    fade();
+    musicPlaying = false;
+    bars.classList.add('paused');
+    label.textContent = 'Music off';
+  } else {
+    music.play().catch(() => {});
+    musicPlaying = true;
+    let vol = 0;
+    const fade = () => {
+      vol = Math.min(vol + 0.015, 0.28);
+      music.volume = vol;
+      if (vol < 0.28) setTimeout(fade, 80);
+    };
+    fade();
+    bars.classList.remove('paused');
+    label.textContent = 'Music on';
+  }
+}
+
+/* ── Ambient drone ── */
+function startAmbient() {
+  const ac = getAC();
+  if (!ac) return;
+  const masterGain = ac.createGain();
+  masterGain.gain.setValueAtTime(0, ac.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.05, ac.currentTime + 3);
+  masterGain.connect(ac.destination);
+
+  const lfo = ac.createOscillator();
+  lfo.frequency.value = 0.08; lfo.type = 'sine';
+  const lfoG = ac.createGain(); lfoG.gain.value = 0.025;
+  lfo.connect(lfoG); lfoG.connect(masterGain.gain); lfo.start();
+
+  [[110, 1], [165, 0.6], [55, 0.35]].forEach(([freq, vol]) => {
+    const osc = ac.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    const g = ac.createGain(); g.gain.value = vol;
+    osc.connect(g); g.connect(masterGain); osc.start();
+  });
+}
+
+/* ── Entry bloom ── */
+function playEntryBloom() {
+  const ac = getAC();
+  if (!ac) return;
+  const freqs = [110, 138.59, 164.81, 207.65, 220, 277.18];
+  const masterGain = ac.createGain();
+  masterGain.gain.value = 0;
+  masterGain.connect(ac.destination);
+  ramp(masterGain, 0, 0.16, 0.08);
+  ramp(masterGain, 0.16, 0, 3.5);
+  freqs.forEach((freq, i) => {
+    const osc = ac.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    const g = ac.createGain(); g.gain.value = 0;
+    g.gain.setValueAtTime(0, ac.currentTime + i * 0.04);
+    g.gain.linearRampToValueAtTime(0.7 - i * 0.08, ac.currentTime + i * 0.04 + 0.12);
+    g.gain.linearRampToValueAtTime(0, ac.currentTime + 3.5);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(ac.currentTime + i * 0.04);
+    osc.stop(ac.currentTime + 4);
+  });
+}
+
+/* ── Typewriter tick ── */
+function playTypeTick() {
+  const ac = getAC();
+  if (!ac) return;
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.04, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++)
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.15));
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const bp = ac.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = 800 + Math.random() * 400; bp.Q.value = 1.8;
+  const g = ac.createGain(); g.gain.value = 0.28;
+  src.connect(bp); bp.connect(g); g.connect(ac.destination);
+  src.start();
+}
+
+/* ── Card flip whoosh ── */
+function playCardFlip() {
+  const ac = getAC();
+  if (!ac) return;
+  const dur = 0.35;
+  const buf = ac.createBuffer(1, ac.sampleRate * dur, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++)
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.4));
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const hp = ac.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.setValueAtTime(2400, ac.currentTime);
+  hp.frequency.exponentialRampToValueAtTime(300, ac.currentTime + dur);
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0.22, ac.currentTime);
+  g.gain.linearRampToValueAtTime(0, ac.currentTime + dur);
+  src.connect(hp); hp.connect(g); g.connect(ac.destination);
+  src.start(); src.stop(ac.currentTime + dur + 0.05);
+}
+
+/* ── Polaroid shutter ── */
+function playPolaroid() {
+  const ac = getAC();
+  if (!ac) return;
+  const buf1 = ac.createBuffer(1, ac.sampleRate * 0.08, ac.sampleRate);
+  const d1 = buf1.getChannelData(0);
+  for (let i = 0; i < d1.length; i++)
+    d1[i] = (Math.random() * 2 - 1) * Math.exp(-i / (d1.length * 0.1));
+  const s1 = ac.createBufferSource(); s1.buffer = buf1;
+  const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 280;
+  const g1 = ac.createGain(); g1.gain.value = 0.5;
+  s1.connect(lp); lp.connect(g1); g1.connect(ac.destination); s1.start();
+  const osc = ac.createOscillator(); osc.type = 'sine'; osc.frequency.value = 3200;
+  const g2 = ac.createGain();
+  g2.gain.setValueAtTime(0.06, ac.currentTime + 0.01);
+  g2.gain.linearRampToValueAtTime(0, ac.currentTime + 0.25);
+  osc.connect(g2); g2.connect(ac.destination);
+  osc.start(ac.currentTime + 0.01); osc.stop(ac.currentTime + 0.3);
+}
+
+/* ── Transition breath ── */
+function playTransition() {
+  const ac = getAC();
+  if (!ac) return;
+  const osc = ac.createOscillator(); osc.type = 'sine'; osc.frequency.value = 73.4;
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0, ac.currentTime);
+  g.gain.linearRampToValueAtTime(0.12, ac.currentTime + 0.4);
+  g.gain.linearRampToValueAtTime(0, ac.currentTime + 1.8);
+  const osc2 = ac.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 220.4;
+  const g2 = ac.createGain();
+  g2.gain.setValueAtTime(0, ac.currentTime);
+  g2.gain.linearRampToValueAtTime(0.04, ac.currentTime + 0.5);
+  g2.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5);
+  osc.connect(g); g.connect(ac.destination);
+  osc2.connect(g2); g2.connect(ac.destination);
+  osc.start(); osc.stop(ac.currentTime + 2);
+  osc2.start(); osc2.stop(ac.currentTime + 2);
+}
+
+/* ── Bell chimes ── */
+const CHIME_NOTES = [261.63, 329.63, 392.0, 493.88];
+
+function playChime(index) {
+  const ac = getAC();
+  if (!ac) return;
+  const freq = CHIME_NOTES[index % CHIME_NOTES.length];
+  const osc1 = ac.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = freq;
+  const osc2 = ac.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = freq * 2.756;
+  const g1 = ac.createGain();
+  g1.gain.setValueAtTime(0, ac.currentTime);
+  g1.gain.linearRampToValueAtTime(0.12, ac.currentTime + 0.01);
+  g1.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 3.5);
+  const g2 = ac.createGain();
+  g2.gain.setValueAtTime(0, ac.currentTime);
+  g2.gain.linearRampToValueAtTime(0.06, ac.currentTime + 0.01);
+  g2.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1.5);
+  osc1.connect(g1); g1.connect(ac.destination);
+  osc2.connect(g2); g2.connect(ac.destination);
+  osc1.start(); osc1.stop(ac.currentTime + 4);
+  osc2.start(); osc2.stop(ac.currentTime + 2);
+}
+
+/* ═══════════════════════════════════════════════════
+   STAR FIELD
+═══════════════════════════════════════════════════ */
+(function buildStars() {
+  ['stars','bg-stars'].forEach((id, idx) => {
+    const sf = document.getElementById(id);
+    const count = idx === 0 ? 300 : 200;
+    for (let i = 0; i < count; i++) {
       const s = document.createElement('div');
       s.className = 'star';
       const size = Math.random() * 2.5 + 0.5;
-      s.style.cssText = `
-        width:${size}px; height:${size}px;
-        left:${Math.random()*100}%;
-        top:${Math.random()*100}%;
-        --dur:${(Math.random()*4+2).toFixed(1)}s;
-        --delay:${(Math.random()*5).toFixed(1)}s;
-        --peak:${(Math.random()*0.5+0.3).toFixed(2)};
-      `;
+      s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
       sf.appendChild(s);
     }
-    const bg = document.getElementById('bg-stars');
-    for (let i = 0; i < 200; i++) {
-      const s = document.createElement('div');
-      s.className = 'star';
-      const size = Math.random() * 2 + 0.4;
-      s.style.cssText = `
-        width:${size}px; height:${size}px;
-        left:${Math.random()*100}%;
-        top:${Math.random()*100}%;
-        --dur:${(Math.random()*5+2).toFixed(1)}s;
-        --delay:${(Math.random()*6).toFixed(1)}s;
-        --peak:${(Math.random()*0.4+0.2).toFixed(2)};
-      `;
-      bg.appendChild(s);
-    }
-  })();
+  });
+})();
 
-  /* ─── LANDING → ACT I ─── */
-  function enterWorld() {
-    // Play the background music on first tap
-    const music = document.getElementById('bg-music');
-    if(music) {
-      music.volume = 0.4; 
-      music.play().catch(e => console.log("Audio play prevented"));
-    }
-    
-    // Play initial enter click
-    playClick();
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+function enterWorld() {
+  startAmbient();
+  startMusic();
+  playEntryBloom();
+  const landing = document.getElementById('landing');
+  landing.style.opacity = '0';
+  landing.style.pointerEvents = 'none';
+  setTimeout(() => {
+    landing.classList.add('hidden');
+    const act1 = document.getElementById('act1');
+    act1.style.display = 'flex';
+    setTimeout(() => { act1.classList.add('visible'); startTypewriter(); }, 80);
+  }, 1200);
+}
 
-    const landing = document.getElementById('landing');
-    landing.style.opacity = '0';
-    landing.style.pointerEvents = 'none';
-    setTimeout(() => {
-      landing.classList.add('hidden');
-      const act1 = document.getElementById('act1');
-      act1.style.display = 'flex';
-      setTimeout(() => {
-        act1.classList.add('visible');
-        startTypewriter();
-      }, 80);
-    }, 1200);
-  }
+const LINE = '"Hiii, good evening Jennifer, this is Motolani from GLT.\nWe met after church yesterday."';
 
-  /* ─── TYPEWRITER ─── */
-  const LINE = '"Hiii, good evening Jennifer, this is Motolani from GLT.\nWe met after church yesterday."';
-
-  function startTypewriter() {
-    const el = document.getElementById('typewriter-text');
-    const typeSound = document.getElementById('type-sound');
-    
-    // Start typing sound
-    if (typeSound) {
-      typeSound.volume = 0.6;
-      typeSound.play().catch(e => console.log("Typing sound blocked"));
-    }
-
-    el.innerHTML = '<span class="cursor"></span>';
-    let i = 0;
-    function type() {
-      if (i < LINE.length) {
-        const ch = LINE[i];
-        const cursor = el.querySelector('.cursor');
-        if (ch === '\n') {
-          cursor.insertAdjacentHTML('beforebegin', '<br>');
-        } else {
-          cursor.insertAdjacentText('beforebegin', ch);
-        }
-        i++;
-        setTimeout(type, ch === '\n' ? 400 : 38);
-      } else {
-        // Stop typing sound the moment it finishes
-        if (typeSound) {
-          typeSound.pause();
-        }
-
-        el.querySelector('.cursor').style.display = 'none';
-        const kicker = document.getElementById('prologue-kicker');
-        const btn    = document.getElementById('btn-act2');
-        setTimeout(() => { kicker.style.opacity = '1'; }, 600);
-        setTimeout(() => { btn.style.opacity   = '1'; }, 1400);
+function startTypewriter() {
+  const el = document.getElementById('typewriter-text');
+  el.innerHTML = '<span class="cursor"></span>';
+  let i = 0;
+  function type() {
+    if (i < LINE.length) {
+      const ch = LINE[i];
+      const cursor = el.querySelector('.cursor');
+      if (ch === '\n') cursor.insertAdjacentHTML('beforebegin', '<br>');
+      else {
+        cursor.insertAdjacentText('beforebegin', ch);
+        if (ch !== ' ') playTypeTick();
       }
+      i++;
+      const delay = ch === '\n' ? 420 : (ch === ',' || ch === '.' ? 120 : 38 + Math.random() * 18);
+      setTimeout(type, delay);
+    } else {
+      el.querySelector('.cursor').style.display = 'none';
+      setTimeout(() => { document.getElementById('prologue-kicker').style.opacity = '1'; }, 600);
+      setTimeout(() => { document.getElementById('btn-act2').style.opacity = '1'; }, 1400);
     }
-    setTimeout(type, 600);
   }
+  setTimeout(type, 600);
+}
 
-  /* ─── TRANSITION HELPER ─── */
-  function fadeOut(id, cb) {
-    const el = document.getElementById(id);
-    el.classList.remove('visible');
-    el.style.opacity = '0';
+function fadeOut(id, cb) {
+  const el = document.getElementById(id);
+  el.classList.remove('visible');
+  el.style.opacity = '0';
+  setTimeout(() => { el.classList.add('hidden'); el.style.display = ''; if (cb) cb(); }, 1200);
+}
+
+function fadeIn(id) {
+  window.scrollTo(0, 0);
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.display = 'flex';
+  setTimeout(() => el.classList.add('visible'), 60);
+}
+
+function goToAct2() { playTransition(); fadeOut('act1', () => fadeIn('act2')); }
+function goToAct3() { playTransition(); fadeOut('act2', () => fadeIn('act3')); }
+function goToAct4() {
+  playTransition();
+  fadeOut('act3', () => { fadeIn('act4'); setTimeout(revealFutureBlocks, 800); });
+}
+
+/* ═══════════════════════════════════════════════════
+   ACT IV — SLOW SEQUENTIAL REVEALS
+   Intervals: 2.2s between each block (was 0.9s)
+   Gives her time to actually read each paragraph
+   before the next one breathes into view.
+═══════════════════════════════════════════════════ */
+function revealFutureBlocks() {
+  const INTERVAL = 2200; // ms between each block drop
+
+  // Block 1 — The mandate
+  setTimeout(() => {
+    document.getElementById('fb1').classList.add('revealed');
+    playChime(0);
+  }, 0);
+
+  // Block 2 — Right now
+  setTimeout(() => {
+    document.getElementById('fb2').classList.add('revealed');
+    playChime(1);
+  }, INTERVAL);
+
+  // Block 3 — The reality we are building toward
+  setTimeout(() => {
+    document.getElementById('fb3').classList.add('revealed');
+    playChime(2);
+  }, INTERVAL * 2);
+
+  // Block 4 — And you (inside the gold border block)
+  // Extra pause before this one — the most personal
+  setTimeout(() => {
+    document.getElementById('and-you-section').classList.add('revealed');
+    playChime(3);
+  }, INTERVAL * 2 + 3200); // 3.2s extra rest before "And you"
+
+  // Final declaration — I love you
+  // Another generous pause — let "And you" land fully
+  setTimeout(() => {
+    document.getElementById('ask-block').classList.add('revealed');
+    playEntryBloom();
+    // Trigger the letter-spacing spread on ALIGNNNNNNN after the block appears
     setTimeout(() => {
-      el.classList.add('hidden');
-      el.style.display = '';
-      if (cb) cb();
-    }, 1200);
-  }
-
-  function fadeIn(id) {
-    window.scrollTo(0, 0);
-    const el = document.getElementById(id);
-    el.classList.remove('hidden');
-    el.style.display = 'flex';
-    setTimeout(() => el.classList.add('visible'), 60);
-  }
-
-  function goToAct2() { playClick(); fadeOut('act1', () => fadeIn('act2')); }
-  function goToAct3() { playClick(); fadeOut('act2', () => fadeIn('act3')); }
-  function goToAct4() {
-    playClick();
-    fadeOut('act3', () => {
-      fadeIn('act4');
-      setTimeout(revealFutureBlocks, 600);
-    });
-  }
-
-  /* ─── SEQUENTIAL FUTURE BLOCK REVEALS ─── */
-  function revealFutureBlocks() {
-    ['fb1','fb2','fb3'].forEach((id, i) => {
-      setTimeout(() => {
-        document.getElementById(id).classList.add('revealed');
-      }, i * 800);
-    });
-    
-    setTimeout(() => {
-      document.getElementById('and-you-section').classList.add('revealed');
-    }, 3 * 800);
-
-    setTimeout(() => {
-      document.getElementById('ask-block').classList.add('revealed');
-    }, 4 * 800 + 400);
-  }
-
+      document.getElementById('align-word').classList.add('spread');
+    }, 1800);
+  }, INTERVAL * 2 + 3200 + 4000); // 4s after "And you"
+}
 </script>
 </body>
 </html>
