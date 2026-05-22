@@ -813,9 +813,16 @@
 </head>
 <body>
 
+<!-- Original moody background music -->
 <audio id="bg-music" loop>
   <source src="bg-music.mp3" type="audio/mpeg">
 </audio>
+
+<!-- NEW: Upbeat Natalie Cole track for the climax -->
+<audio id="bg-music-2" loop>
+  <source src="this-will-be.mp3" type="audio/mpeg">
+</audio>
+
 <audio id="voice-audio">
   <source src="voicenote.m4a" type="audio/mp4">
 </audio>
@@ -1237,7 +1244,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const swCode = `
 const CACHE = 'zusi-v2';
-const ASSETS = ['./', './index.html', './bg-music.mp3', './voicenote.m4a', './handwriting.jpg',
+const ASSETS = ['./', './index.html', './bg-music.mp3', './this-will-be.mp3', './voicenote.m4a', './handwriting.jpg',
   './photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg',
   './photo6.jpg','./photo7.jpg','./photo8.jpg'];
 self.addEventListener('install', e => {
@@ -1271,7 +1278,12 @@ function haptic(ms = 8) { if (navigator.vibrate) navigator.vibrate(ms); }
 ═══════════════════════════════════════════════════ */
 let AC = null;
 let musicPlaying = false;
-const music = document.getElementById('bg-music');
+const originalMusic = document.getElementById('bg-music');
+const joyMusic = document.getElementById('bg-music-2');
+
+// We use activeMusic to track which track is currently playing
+let activeMusic = originalMusic;
+let targetMusicVolume = 0.28;
 
 function getAC() {
   if (!AC) { try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){return null;} }
@@ -1280,11 +1292,11 @@ function getAC() {
 }
 
 function startMusic() {
-  music.volume = 0;
-  music.play().then(() => {
+  activeMusic.volume = 0;
+  activeMusic.play().then(() => {
     musicPlaying = true;
-    let vol = 0; const target = 0.28;
-    const step = () => { vol = Math.min(vol+0.01, target); music.volume = vol; if(vol<target) setTimeout(step,100); };
+    let vol = 0; 
+    const step = () => { vol = Math.min(vol+0.01, targetMusicVolume); activeMusic.volume = vol; if(vol<targetMusicVolume) setTimeout(step,100); };
     setTimeout(step, 200);
     showMusicPill();
   }).catch(()=>{});
@@ -1300,16 +1312,48 @@ function toggleMusic() {
   const bars = document.getElementById('music-bars');
   const label = document.getElementById('pill-label');
   if (musicPlaying) {
-    let vol = music.volume;
-    const fade = () => { vol = Math.max(vol-0.015,0); music.volume=vol; if(vol>0)setTimeout(fade,80); else music.pause(); };
+    let vol = activeMusic.volume;
+    const fade = () => { vol = Math.max(vol-0.015,0); activeMusic.volume=vol; if(vol>0)setTimeout(fade,80); else activeMusic.pause(); };
     fade(); musicPlaying=false; bars.classList.add('paused'); label.textContent='Music off';
   } else {
-    music.play().catch(()=>{});
+    activeMusic.play().catch(()=>{});
     musicPlaying=true;
     let vol=0;
-    const fade=()=>{ vol=Math.min(vol+0.015,0.28); music.volume=vol; if(vol<0.28)setTimeout(fade,80); };
+    const fade=()=>{ vol=Math.min(vol+0.015, targetMusicVolume); activeMusic.volume=vol; if(vol<targetMusicVolume)setTimeout(fade,80); };
     fade(); bars.classList.remove('paused'); label.textContent='Music on';
   }
+}
+
+/* --- NEW: Crossfade from ambient to Natalie Cole --- */
+function crossfadeToJoy() {
+  if (activeMusic === joyMusic) return; // already crossfaded
+  
+  joyMusic.volume = 0;
+  joyMusic.play().catch(()=>{});
+  
+  let oldMusic = activeMusic;
+  activeMusic = joyMusic; 
+  targetMusicVolume = 0.35; // Bump the volume a bit for the joyful track
+  
+  let volOld = oldMusic.volume;
+  let volNew = 0;
+  
+  // If the voice note happens to be playing while she scrolls, keep it quiet
+  let currentTarget = voicePlaying ? 0.01 : targetMusicVolume; 
+  
+  const fade = () => {
+    volOld = Math.max(volOld - 0.02, 0);
+    volNew = Math.min(volNew + 0.02, currentTarget);
+    oldMusic.volume = volOld;
+    activeMusic.volume = volNew;
+    
+    if (volOld > 0 || volNew < currentTarget) {
+       setTimeout(fade, 60);
+    } else {
+       oldMusic.pause();
+    }
+  };
+  fade();
 }
 
 function startAmbient() {
@@ -1545,21 +1589,20 @@ function toggleVoiceNote() {
     playIcon.textContent = '▶';
     player.classList.remove('playing');
     
-    // --- UPDATED: Restore music volume if paused manually ---
+    // Restore music volume if paused manually
     if (musicPlaying) {
-      let v = music.volume;
-      const target = 0.28;
-      const fade = () => { v = Math.min(v+0.01, target); music.volume=v; if(v<target) setTimeout(fade,80); };
+      let v = activeMusic.volume;
+      const fade = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(fade,80); };
       fade();
     }
     return;
   }
 
-  // --- UPDATED: Dim bg music significantly while voice plays ---
+  // --- UPDATED: Dim bg music to a barely-there whisper (1%) incredibly fast ---
   if (musicPlaying) {
-    const target = 0.05; // Drop to a fixed low volume instead of relative 40%
-    let v = music.volume;
-    const fade = () => { v = Math.max(v-0.02, target); music.volume=v; if(v>target) setTimeout(fade,60); };
+    const target = 0.01; 
+    let v = activeMusic.volume;
+    const fade = () => { v = Math.max(v-0.03, target); activeMusic.volume=v; if(v>target) setTimeout(fade,30); };
     fade();
   }
 
@@ -1580,19 +1623,18 @@ function toggleVoiceNote() {
     console.warn('Voice note play failed:', err.message, '| src:', voiceAudio.currentSrc);
     // Restore music volume on failure
     if (musicPlaying) {
-      let v = music.volume; const target2 = 0.28;
-      const restore = () => { v = Math.min(v+0.01, target2); music.volume=v; if(v<target2) setTimeout(restore,80); };
+      let v = activeMusic.volume;
+      const restore = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(restore,80); };
       restore();
     }
   });
 }
 
-// --- UPDATED: Restore music volume when voice ends ---
+// Restore music volume when voice ends
 voiceAudio.addEventListener('ended', () => {
   if (musicPlaying) {
-    let v = music.volume;
-    const target = 0.28;
-    const fade = () => { v = Math.min(v+0.01, target); music.volume=v; if(v<target) setTimeout(fade,80); };
+    let v = activeMusic.volume;
+    const fade = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(fade,80); };
     fade();
   }
 });
@@ -1749,6 +1791,10 @@ function initScrollReveal() {
 
         if (entry.target.id === 'ask-block') {
           playEntryBloom();
+          
+          // --- NEW: Trigger crossfade to Natalie Cole here ---
+          crossfadeToJoy();
+
           setTimeout(() => {
             const aw = document.getElementById('align-word');
             if (aw) aw.classList.add('spread');
@@ -1778,8 +1824,8 @@ function showEpilogue() {
 
   // Fade out music
   if (musicPlaying) {
-    let vol = music.volume;
-    const fade = () => { vol=Math.max(vol-0.004,0); music.volume=vol; if(vol>0)setTimeout(fade,120); else music.pause(); };
+    let vol = activeMusic.volume;
+    const fade = () => { vol=Math.max(vol-0.004,0); activeMusic.volume=vol; if(vol>0)setTimeout(fade,120); else activeMusic.pause(); };
     setTimeout(fade, 3000);
   }
 
