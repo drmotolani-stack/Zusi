@@ -7,842 +7,223 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-
   :root {
-    --night:   #080c14;
-    --ink:     #0d1526;
-    --mist:    #94a3b8;
-    --silk:    #f1ede6;
-    --gold:    #c9a96e;
-    --gold2:   #e8d5a3;
-    --wa-bg:   #0b141a;
-    --wa-sent: #005c4b;
-    --wa-recv: #1f2c34;
-    --serif:   'Cormorant Garamond', Georgia, serif;
-    --mono:    'DM Mono', 'Courier New', monospace;
+    --night:#080c14;--ink:#0d1526;--mist:#94a3b8;--silk:#f1ede6;
+    --gold:#c9a96e;--gold2:#e8d5a3;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --mono:'DM Mono','Courier New',monospace;
   }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--night);color:var(--silk);font-family:var(--serif);overflow-x:hidden;min-height:100vh;}
+  .hidden{display:none!important;}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  /* INTRO */
+  #intro-screen{position:fixed;inset:0;background:#000;z-index:10000;display:flex;align-items:center;justify-content:center;pointer-events:none;transition:opacity 1.2s cubic-bezier(0.16,1,0.3,1);}
+  #intro-screen.fade-out{opacity:0;}
+  .intro-name{display:flex;gap:0.28em;align-items:center;}
+  .intro-letter{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(2rem,10vw,4.5rem);color:var(--gold);opacity:0;transform:translateY(10px);transition:opacity 0.7s ease,transform 0.7s ease;letter-spacing:0.05em;}
+  .intro-letter.appear{opacity:1;transform:translateY(0);}
 
-  body {
-    background: var(--night);
-    color: var(--silk);
-    font-family: var(--serif);
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
+  /* PROGRESS THREAD */
+  #progress-thread{position:fixed;left:18px;top:0;bottom:0;width:1px;z-index:8000;pointer-events:none;opacity:0;transition:opacity 1s ease;}
+  #progress-thread.visible{opacity:1;}
+  #progress-thread .thread-track{position:absolute;inset:0;background:rgba(201,169,110,0.1);}
+  #progress-thread .thread-fill{position:absolute;top:0;left:0;right:0;height:0%;background:linear-gradient(180deg,rgba(201,169,110,0.8) 0%,rgba(201,169,110,0.3) 100%);transition:height 0.6s cubic-bezier(0.16,1,0.3,1);box-shadow:0 0 6px rgba(201,169,110,0.4);}
+  #progress-thread .thread-dot{position:absolute;left:50%;transform:translateX(-50%) translateY(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(201,169,110,0.8);transition:top 0.6s cubic-bezier(0.16,1,0.3,1);top:0%;}
+  /* Act label tooltip on dot */
+  #progress-thread .thread-dot::after{content:attr(data-label);position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.5rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity 0.3s ease;pointer-events:none;}
+  #progress-thread:hover .thread-dot::after{opacity:0.7;}
 
-  .hidden { display: none !important; }
+  /* MUSIC PILL */
+  #music-pill{position:fixed;bottom:28px;right:24px;z-index:9000;display:none;align-items:center;gap:10px;background:rgba(13,21,38,0.82);border:1px solid rgba(201,169,110,0.25);border-radius:999px;padding:9px 18px 9px 14px;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color 0.3s ease,opacity 0.6s ease;opacity:0;}
+  #music-pill.visible{opacity:1;}
+  #music-pill:hover{border-color:rgba(201,169,110,0.55);}
+  #music-pill .pill-icon{width:28px;height:28px;border-radius:50%;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;}
+  #music-pill .pill-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;color:var(--mist);text-transform:uppercase;}
+  .bars{display:flex;align-items:flex-end;gap:2px;height:14px;}
+  .bar{width:3px;background:var(--gold);border-radius:1px;animation:bounce var(--spd) ease-in-out infinite alternate;transform-origin:bottom;}
+  .bar:nth-child(1){--spd:0.6s;height:6px;animation-delay:0s;}
+  .bar:nth-child(2){--spd:0.4s;height:12px;animation-delay:0.1s;}
+  .bar:nth-child(3){--spd:0.7s;height:8px;animation-delay:0.2s;}
+  .bar:nth-child(4){--spd:0.5s;height:10px;animation-delay:0.05s;}
+  @keyframes bounce{from{transform:scaleY(0.3);}to{transform:scaleY(1);}}
+  .bars.paused .bar{animation-play-state:paused;}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.4;
-  }
+  /* LANDING */
+  #landing{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--night);z-index:100;transition:opacity 1.2s ease;cursor:pointer;opacity:0;}
+  #landing.ready{opacity:1;}
+  #landing .star-field{position:absolute;inset:0;overflow:hidden;}
+  .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--dur,3s) ease-in-out infinite;animation-delay:var(--delay,0s);opacity:0;}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(0.5);}50%{opacity:var(--peak,0.7);transform:scale(1);}}
+  #landing .center-content{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:24px;}
+  #landing .eyebrow{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;opacity:0;animation:fadeUp 1s ease 0.4s forwards;}
+  #landing h1{font-size:clamp(2.4rem,8vw,4.5rem);font-weight:300;font-style:italic;letter-spacing:0.04em;line-height:1.1;opacity:0;animation:fadeUp 1s ease 0.7s forwards;}
+  #landing h1 em{font-style:normal;color:var(--gold);}
 
-  /* ═══════════════════════════════════════════
-     #5 — INTRO SCREEN: "z u s i"
-  ═══════════════════════════════════════════ */
-  #intro-screen {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    transition: opacity 1.2s cubic-bezier(0.16,1,0.3,1);
-  }
-  #intro-screen.fade-out { opacity: 0; }
+  /* WAX SEAL — slow rotation, pauses on hover */
+  #wax-seal{opacity:0;animation:fadeUp 1s ease 1.0s forwards;margin-top:4px;}
+  #wax-seal svg{filter:drop-shadow(0 2px 8px rgba(201,169,110,0.4));animation:sealSpin 12s linear infinite;transition:animation-play-state 0.3s ease;}
+  #wax-seal:hover svg{animation-play-state:paused;transform:scale(1.06);}
+  @keyframes sealSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-  .intro-name {
-    display: flex;
-    gap: 0.28em;
-    align-items: center;
-  }
-  .intro-letter {
-    font-family: var(--serif);
-    font-weight: 300;
-    font-style: italic;
-    font-size: clamp(2rem, 10vw, 4.5rem);
-    color: var(--gold);
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    letter-spacing: 0.05em;
-  }
-  .intro-letter.appear { opacity: 1; transform: translateY(0); }
+  #landing .tap-ring{width:72px;height:72px;border-radius:50%;border:1px solid rgba(201,169,110,0.4);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeUp 1s ease 1.2s forwards,pulse-ring 2.5s ease 2.2s infinite;margin-top:8px;}
+  #landing .tap-ring::after{content:'';width:48px;height:48px;border-radius:50%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.6);position:absolute;animation:pulse-ring 2.5s ease 2.2s infinite;}
+  #landing .tap-icon{font-size:1.4rem;position:relative;z-index:1;}
+  #landing .tap-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.25em;color:var(--mist);text-transform:uppercase;opacity:0;animation:fadeUp 1s ease 1.4s forwards;}
+  @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(201,169,110,0.3);}70%{box-shadow:0 0 0 14px rgba(201,169,110,0);}100%{box-shadow:0 0 0 0 rgba(201,169,110,0);}}
 
-  /* ── PROGRESS THREAD ── */
-  #progress-thread {
-    position: fixed;
-    left: 18px;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    z-index: 8000;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 1s ease;
-  }
-  #progress-thread.visible { opacity: 1; }
-  #progress-thread .thread-track {
-    position: absolute;
-    inset: 0;
-    background: rgba(201,169,110,0.1);
-  }
-  #progress-thread .thread-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 0%;
-    background: linear-gradient(180deg, rgba(201,169,110,0.8) 0%, rgba(201,169,110,0.3) 100%);
-    transition: height 0.6s cubic-bezier(0.16,1,0.3,1);
-    box-shadow: 0 0 6px rgba(201,169,110,0.4);
-  }
-  #progress-thread .thread-dot {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--gold);
-    box-shadow: 0 0 8px rgba(201,169,110,0.8);
-    transition: top 0.6s cubic-bezier(0.16,1,0.3,1);
-    top: 0%;
-  }
+  /* SHARED ACT */
+  .act{min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 80px;opacity:0;transition:opacity 1.2s ease;}
+  .act.visible{opacity:1;}
+  .act-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+  .section-heading{font-size:clamp(1.8rem,6vw,3rem);font-weight:300;font-style:italic;text-align:center;margin-bottom:48px;line-height:1.2;}
+  .divider{width:40px;height:1px;background:var(--gold);margin:0 auto 48px;opacity:0.5;}
+  .next-btn{margin-top:56px;padding:14px 40px;background:transparent;border:1px solid rgba(201,169,110,0.5);color:var(--gold2);border-radius:2px;cursor:pointer;font-family:var(--mono);font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;transition:all 0.3s ease;position:relative;overflow:hidden;}
+  .next-btn::before{content:'';position:absolute;inset:0;background:rgba(201,169,110,0.08);transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease;}
+  .next-btn:hover::before{transform:scaleX(1);}
+  .next-btn:active{transform:scale(0.97);}
 
-  /* ── MUSIC CONTROL PILL ── */
-  #music-pill {
-    position: fixed;
-    bottom: 28px;
-    right: 24px;
-    z-index: 9000;
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background: rgba(13,21,38,0.82);
-    border: 1px solid rgba(201,169,110,0.25);
-    border-radius: 999px;
-    padding: 9px 18px 9px 14px;
-    cursor: pointer;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: border-color 0.3s ease, opacity 0.6s ease;
-    opacity: 0;
-  }
-  #music-pill.visible { opacity: 1; }
-  #music-pill:hover { border-color: rgba(201,169,110,0.55); }
-  #music-pill .pill-icon {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    background: rgba(201,169,110,0.12);
-    border: 1px solid rgba(201,169,110,0.3);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 0.75rem;
-  }
-  #music-pill .pill-label {
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.2em;
-    color: var(--mist);
-    text-transform: uppercase;
-  }
-  .bars { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
-  .bar {
-    width: 3px; background: var(--gold); border-radius: 1px;
-    animation: bounce var(--spd) ease-in-out infinite alternate;
-    transform-origin: bottom;
-  }
-  .bar:nth-child(1){ --spd:0.6s; height:6px;  animation-delay:0s; }
-  .bar:nth-child(2){ --spd:0.4s; height:12px; animation-delay:0.1s; }
-  .bar:nth-child(3){ --spd:0.7s; height:8px;  animation-delay:0.2s; }
-  .bar:nth-child(4){ --spd:0.5s; height:10px; animation-delay:0.05s;}
-  @keyframes bounce {
-    from { transform: scaleY(0.3); }
-    to   { transform: scaleY(1); }
-  }
-  .bars.paused .bar { animation-play-state: paused; }
+  /* ACT I */
+  #act1{background:radial-gradient(ellipse at 50% 40%,#111827 0%,var(--night) 70%);justify-content:center;}
+  #act1 .prologue-wrap{max-width:520px;width:100%;text-align:center;}
+  #act1 .date-line{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.28em;color:var(--mist);margin-bottom:40px;opacity:0.7;}
+  .typewriter{font-size:clamp(1.2rem,4vw,1.55rem);font-weight:300;line-height:1.7;min-height:120px;color:var(--silk);}
+  .cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:2px;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+  .prologue-kicker{margin-top:32px;font-size:clamp(1rem,3.5vw,1.25rem);font-style:italic;color:var(--gold2);opacity:0;transition:opacity 1s ease;line-height:1.6;}
 
-  /* ─── LANDING ─── */
-  #landing {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--night);
-    z-index: 100;
-    transition: opacity 1.2s ease;
-    cursor: pointer;
-    opacity: 0;
-  }
-  #landing.ready { opacity: 1; }
-  #landing .star-field { position: absolute; inset: 0; overflow: hidden; }
-  .star {
-    position: absolute; border-radius: 50%; background: white;
-    animation: twinkle var(--dur, 3s) ease-in-out infinite;
-    animation-delay: var(--delay, 0s); opacity: 0;
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: 0; transform: scale(0.5); }
-    50%        { opacity: var(--peak, 0.7); transform: scale(1); }
-  }
-  #landing .center-content {
-    position: relative; text-align: center;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 24px;
-  }
-  #landing .eyebrow {
-    font-family: var(--mono);
-    font-size: 0.65rem; letter-spacing: 0.3em;
-    color: var(--gold); text-transform: uppercase;
-    opacity: 0; animation: fadeUp 1s ease 0.4s forwards;
-  }
-  #landing h1 {
-    font-size: clamp(2.4rem, 8vw, 4.5rem);
-    font-weight: 300; font-style: italic;
-    letter-spacing: 0.04em; line-height: 1.1;
-    opacity: 0; animation: fadeUp 1s ease 0.7s forwards;
-  }
-  #landing h1 em { font-style: normal; color: var(--gold); }
+  /* ACT II */
+  #act2{background:linear-gradient(180deg,var(--night) 0%,#0b1120 100%);justify-content:flex-start;padding-top:80px;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;width:100%;max-width:680px;margin-bottom:20px;}
+  @media(max-width:500px){.cards-grid{grid-template-columns:1fr;max-width:340px;}}
+  .card-container{perspective:1200px;height:440px;opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .card-container.appeared{opacity:1;transform:translateY(0);}
+  .card{width:100%;height:100%;position:relative;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1);transform-style:preserve-3d;cursor:pointer;}
+  .card.flipped{transform:rotateY(180deg);}
+  .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:4px;overflow:hidden;}
+  .card-front{background:var(--ink);border:1px solid rgba(201,169,110,0.15);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;}
+  .card-front .card-num{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.3em;color:var(--gold);opacity:0.6;}
+  .card-front h3{font-size:1.55rem;font-weight:300;font-style:italic;color:var(--silk);text-align:center;line-height:1.3;}
+  .card-front .tap-hint{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.25em;color:var(--mist);opacity:0.5;margin-top:8px;}
+  .card-back{transform:rotateY(180deg);background:#0b141a;display:flex;flex-direction:column;}
+  .wa-header{background:#1c2b33;border-bottom:0.5px solid rgba(255,255,255,0.08);color:white;padding:10px 14px 10px 10px;font-family:-apple-system,'SF Pro Text',BlinkMacSystemFont,sans-serif;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .wa-back{font-size:1.25rem;color:#25d366;line-height:1;flex-shrink:0;margin-right:2px;}
+  .wa-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#25d366 0%,#128c7e 100%);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;color:white;flex-shrink:0;}
+  .wa-header-info{display:flex;flex-direction:column;flex:1;}
+  .wa-name{font-size:0.92rem;font-weight:600;color:#fff;line-height:1.2;}
+  .wa-status{font-size:0.67rem;color:#8696a0;line-height:1.2;}
+  .wa-icons{display:flex;gap:18px;align-items:center;color:#25d366;font-size:1.1rem;}
+  .wa-chat{padding:8px 10px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;flex-grow:1;font-size:14px;-webkit-overflow-scrolling:touch;background:#0b141a;background-image:radial-gradient(circle at 20% 80%,rgba(18,44,34,0.4) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(11,20,26,0.6) 0%,transparent 50%);}
+  .wa-date-chip{align-self:center;background:rgba(17,27,33,0.85);color:#8696a0;font-size:0.67rem;padding:4px 10px;border-radius:8px;margin:6px 0 4px;}
+  .msg{max-width:78%;padding:7px 10px 18px 10px;border-radius:18px;color:#e9edef;line-height:1.4;word-break:break-word;position:relative;opacity:0;transform:translateY(6px);transition:opacity 0.3s ease,transform 0.3s ease;font-size:14px;}
+  .msg.shown{opacity:1;transform:translateY(0);}
+  .msg.recv{background:#1f2c34;align-self:flex-start;border-bottom-left-radius:4px;margin-left:6px;}
+  .msg.recv::before{content:'';position:absolute;left:-6px;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 10px 8px;border-color:transparent transparent #1f2c34 transparent;}
+  .msg.sent{background:#005c4b;align-self:flex-end;border-bottom-right-radius:4px;margin-right:6px;}
+  .msg.sent::after{content:'';position:absolute;right:-6px;bottom:0;width:0;height:0;border-style:solid;border-width:0 8px 10px 0;border-color:transparent #005c4b transparent transparent;}
+  .msg-time{position:absolute;bottom:4px;right:9px;font-size:10px;color:rgba(233,237,239,0.55);white-space:nowrap;display:flex;align-items:center;gap:3px;}
+  .msg.sent .msg-time{color:#53bdeb;}
+  .tick{font-size:11px;}
+  .wa-typing{display:none;align-self:flex-start;background:#1f2c34;padding:10px 14px;border-radius:18px;border-bottom-left-radius:4px;gap:4px;align-items:center;margin-left:6px;position:relative;}
+  .wa-typing::before{content:'';position:absolute;left:-6px;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 10px 8px;border-color:transparent transparent #1f2c34 transparent;}
+  .wa-typing.active{display:flex;}
+  .typing-dot{width:7px;height:7px;border-radius:50%;background:#8696a0;animation:typing-bounce 1.2s ease-in-out infinite;}
+  .typing-dot:nth-child(2){animation-delay:0.2s;}
+  .typing-dot:nth-child(3){animation-delay:0.4s;}
+  @keyframes typing-bounce{0%,60%,100%{transform:translateY(0);background:#8696a0;}30%{transform:translateY(-6px);background:#aebac1;}}
 
-  /* ── WAX SEAL ── */
-  #wax-seal {
-    opacity: 0;
-    animation: fadeUp 1s ease 1.0s forwards;
-    margin-top: 4px;
-  }
-  #wax-seal svg {
-    filter: drop-shadow(0 2px 8px rgba(201,169,110,0.4));
-    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
-  }
-  #wax-seal:hover svg { transform: rotate(8deg) scale(1.08); }
+  /* ACT III */
+  #act3{background:linear-gradient(180deg,#0b1120 0%,#0c1018 100%);justify-content:flex-start;padding-top:80px;}
+  .polaroid-stack{display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:340px;margin-bottom:20px;will-change:transform;}
+  .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease;}
+  .polaroid:nth-child(1){--base-rot:-2.5deg;transform:rotate(-2.5deg);}
+  .polaroid:nth-child(2){--base-rot:3deg;transform:rotate(3deg);}
+  .polaroid:nth-child(3){--base-rot:-1.5deg;transform:rotate(-1.5deg);}
+  .polaroid:nth-child(4){--base-rot:2deg;transform:rotate(2deg);}
+  .polaroid:nth-child(5){--base-rot:-3deg;transform:rotate(-3deg);}
+  .polaroid:nth-child(6){--base-rot:1.5deg;transform:rotate(1.5deg);}
+  .polaroid:nth-child(7){--base-rot:-2deg;transform:rotate(-2deg);}
+  /* Photo hover: image scales up AND goes full colour */
+  .polaroid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);transition:filter 0.4s ease,transform 0.4s cubic-bezier(0.23,1,0.32,1);pointer-events:none;}
+  .polaroid:hover img,.polaroid:active img{filter:sepia(0%) contrast(1.06) brightness(1.06) saturate(1.15);transform:scale(1.04);}
+  .polaroid:hover,.polaroid:active{box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5);z-index:10;}
+  .polaroid .caption{position:absolute;bottom:16px;left:14px;right:56px;text-align:left;font-family:var(--mono);font-size:0.75rem;font-weight:400;letter-spacing:0.08em;color:#1a1a1a;}
+  .polaroid .date-stamp{position:absolute;bottom:14px;right:14px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:#cc3322;opacity:0.85;font-weight:400;line-height:1.3;text-align:right;filter:blur(0.2px);}
 
-  #landing .tap-ring {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    border: 1px solid rgba(201, 169, 110, 0.4);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0;
-    animation: fadeUp 1s ease 1.2s forwards, pulse-ring 2.5s ease 2.2s infinite;
-    margin-top: 8px;
-  }
-  #landing .tap-ring::after {
-    content: '';
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    background: rgba(201,169,110,0.15);
-    border: 1px solid rgba(201,169,110,0.6);
-    position: absolute;
-    animation: pulse-ring 2.5s ease 2.2s infinite;
-  }
-  #landing .tap-icon { font-size: 1.4rem; position: relative; z-index: 1; }
-  #landing .tap-label {
-    font-family: var(--mono);
-    font-size: 0.6rem; letter-spacing: 0.25em;
-    color: var(--mist); text-transform: uppercase;
-    opacity: 0; animation: fadeUp 1s ease 1.4s forwards;
-  }
-  @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(201,169,110,0.3); }
-    70%  { box-shadow: 0 0 0 14px rgba(201,169,110,0); }
-    100% { box-shadow: 0 0 0 0 rgba(201,169,110,0); }
-  }
+  /* ACT IV */
+  #act4{background:radial-gradient(ellipse at 50% 50%,#1a120a 0%,var(--night) 80%);justify-content:flex-start;padding-top:100px;padding-bottom:200px;min-height:auto;}
+  .future-wrap{max-width:680px;width:100%;display:flex;flex-direction:column;gap:0;}
+  .future-block{padding:48px 0;border-top:1px solid rgba(201,169,110,0.12);opacity:0;transform:translateY(28px);transition:opacity 1.4s cubic-bezier(0.16,1,0.3,1),transform 1.4s cubic-bezier(0.16,1,0.3,1);}
+  .future-block.revealed{opacity:1;transform:translateY(0);}
+  .future-block .block-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+  .future-block p{font-size:clamp(1.15rem,3.8vw,1.4rem);font-weight:300;line-height:2;color:var(--silk);}
+  .future-block p em{color:var(--gold2);font-style:italic;}
+  .and-you-block{margin-top:48px;padding:60px 40px;background:linear-gradient(180deg,rgba(13,21,38,0.6) 0%,rgba(8,12,20,0) 100%);border-left:2px solid var(--gold);border-top:1px solid rgba(201,169,110,0.15);border-radius:4px;opacity:0;transform:translateY(30px);transition:opacity 1.8s cubic-bezier(0.16,1,0.3,1),transform 1.8s cubic-bezier(0.16,1,0.3,1);}
+  .and-you-block.revealed{opacity:1;transform:translateY(0);}
+  .handwriting-wrap{margin-top:36px;display:flex;justify-content:flex-start;opacity:0;transform:rotate(-1.5deg) translateY(12px);transition:opacity 1.2s ease 0.6s,transform 1.2s ease 0.6s;}
+  .and-you-block.revealed .handwriting-wrap{opacity:1;transform:rotate(-1.5deg) translateY(0);}
+  .handwriting-wrap img{max-width:min(260px,80%);border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);filter:sepia(10%) brightness(0.95);}
 
-  /* ─── SHARED ACT ─── */
-  .act {
-    min-height: 100vh; width: 100%;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 60px 24px 80px;
-    opacity: 0; transition: opacity 1.2s ease;
-  }
-  .act.visible { opacity: 1; }
-  .act-label {
-    font-family: var(--mono);
-    font-size: 0.6rem; letter-spacing: 0.3em;
-    color: var(--gold); text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .section-heading {
-    font-size: clamp(1.8rem, 6vw, 3rem);
-    font-weight: 300; font-style: italic;
-    text-align: center; margin-bottom: 48px; line-height: 1.2;
-  }
-  .divider {
-    width: 40px; height: 1px;
-    background: var(--gold); margin: 0 auto 48px; opacity: 0.5;
-  }
-  .next-btn {
-    margin-top: 56px; padding: 14px 40px;
-    background: transparent;
-    border: 1px solid rgba(201,169,110,0.5);
-    color: var(--gold2); border-radius: 2px; cursor: pointer;
-    font-family: var(--mono); font-size: 0.7rem;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    transition: all 0.3s ease; position: relative; overflow: hidden;
-  }
-  .next-btn::before {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(201,169,110,0.08);
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-  .next-btn:hover::before { transform: scaleX(1); }
-  .next-btn:active { transform: scale(0.97); }
+  /* VOICE NOTE */
+  .voice-note-section{max-width:680px;width:100%;margin:0 auto;padding:48px 0;border-top:1px solid rgba(201,169,110,0.12);opacity:0;transform:translateY(28px);transition:opacity 1.4s cubic-bezier(0.16,1,0.3,1),transform 1.4s cubic-bezier(0.16,1,0.3,1);}
+  .voice-note-section.revealed{opacity:1;transform:translateY(0);}
+  .voice-note-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
+  .voice-player{display:flex;align-items:center;gap:16px;background:rgba(13,21,38,0.7);border:1px solid rgba(201,169,110,0.2);border-radius:999px;padding:14px 24px 14px 14px;cursor:pointer;max-width:340px;transition:border-color 0.3s ease;user-select:none;}
+  .voice-player:hover{border-color:rgba(201,169,110,0.5);}
+  .voice-play-btn{width:44px;height:44px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.2s ease;}
+  .voice-player:active .voice-play-btn{transform:scale(0.93);}
+  .voice-play-icon{font-size:1.1rem;color:var(--night);margin-left:3px;}
+  .voice-waveform{display:flex;align-items:center;gap:2.5px;flex:1;}
+  .wv-bar{background:rgba(201,169,110,0.35);border-radius:2px;width:3px;transition:background 0.3s ease;}
+  .wv-bar.played{background:rgba(201,169,110,0.85);}
+  .voice-duration{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--mist);flex-shrink:0;}
+  .voice-player.playing .wv-bar{animation:wv-pulse var(--wv-spd,0.6s) ease-in-out infinite alternate;animation-delay:var(--wv-delay,0s);}
+  @keyframes wv-pulse{from{background:rgba(201,169,110,0.3);transform:scaleY(0.5);}to{background:rgba(201,169,110,0.9);transform:scaleY(1);}}
 
-  /* ─── ACT I ─── */
-  #act1 {
-    background: radial-gradient(ellipse at 50% 40%, #111827 0%, var(--night) 70%);
-    justify-content: center;
-  }
-  #act1 .prologue-wrap { max-width: 520px; width: 100%; text-align: center; }
-  #act1 .date-line {
-    font-family: var(--mono); font-size: 0.62rem;
-    letter-spacing: 0.28em; color: var(--mist);
-    margin-bottom: 40px; opacity: 0.7;
-  }
-  .typewriter {
-    font-size: clamp(1.2rem, 4vw, 1.55rem);
-    font-weight: 300; line-height: 1.7;
-    min-height: 120px; color: var(--silk);
-  }
-  .cursor {
-    display: inline-block; width: 2px; height: 1em;
-    background: var(--gold); vertical-align: text-bottom;
-    animation: blink 1s step-end infinite; margin-left: 2px;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-  .prologue-kicker {
-    margin-top: 32px;
-    font-size: clamp(1rem, 3.5vw, 1.25rem);
-    font-style: italic; color: var(--gold2);
-    opacity: 0; transition: opacity 1s ease; line-height: 1.6;
-  }
+  /* ASK BLOCK */
+  .ask-block{padding:100px 0 0;text-align:center;opacity:0;transform:scale(0.97);transition:opacity 2.2s cubic-bezier(0.16,1,0.3,1),transform 2.2s cubic-bezier(0.16,1,0.3,1);}
+  .ask-block.revealed{opacity:1;transform:scale(1);}
+  .ask-question{font-size:clamp(2.2rem,7vw,3.5rem);font-weight:300;font-style:italic;line-height:1.2;color:var(--gold2);margin-bottom:40px;letter-spacing:0.02em;min-height:1.2em;}
+  .ask-open{max-width:580px;margin:0 auto;font-size:clamp(1.15rem,3.8vw,1.45rem);font-weight:300;line-height:2;color:var(--silk);font-family:var(--serif);font-style:italic;text-align:center;}
+  .alignment-climax{margin-top:56px;padding-top:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
+  .align-word{display:inline-block;letter-spacing:0em;color:var(--gold2);font-style:normal;font-weight:400;transition:letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);}
+  .align-word.spread{letter-spacing:0.18em;}
 
-  /* ─── ACT II ─── */
-  #act2 {
-    background: linear-gradient(180deg, var(--night) 0%, #0b1120 100%);
-    justify-content: flex-start; padding-top: 80px;
-  }
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px; width: 100%; max-width: 680px; margin-bottom: 20px;
-  }
-  @media (max-width: 500px) {
-    .cards-grid { grid-template-columns: 1fr; max-width: 340px; }
-  }
+  /* REPLY FIELD */
+  .reply-section{max-width:580px;width:100%;margin:80px auto 0;padding:56px 0;border-top:1px solid rgba(201,169,110,0.1);opacity:0;transform:translateY(20px);transition:opacity 1.6s ease,transform 1.6s ease;display:flex;flex-direction:column;align-items:center;}
+  .reply-section.revealed{opacity:1;transform:translateY(0);}
+  .reply-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.3em;color:rgba(201,169,110,0.4);text-transform:uppercase;margin-bottom:24px;}
+  .reply-field{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,169,110,0.2);outline:none;resize:none;font-family:var(--serif);font-size:clamp(1.1rem,3.5vw,1.3rem);font-style:italic;font-weight:300;color:var(--gold2);line-height:1.8;padding:8px 0 20px;min-height:80px;caret-color:var(--gold);transition:border-color 0.4s ease;}
+  .reply-field::placeholder{color:rgba(148,163,184,0.35);font-style:italic;}
+  .reply-field:focus{border-bottom-color:rgba(201,169,110,0.45);}
+  .reply-field::-webkit-scrollbar{display:none;}
+  .reply-field{scrollbar-width:none;}
+  .send-btn{margin-top:24px;padding:10px 28px;background:transparent;border:1px solid rgba(201,169,110,0.5);color:var(--gold2);border-radius:2px;cursor:pointer;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;transition:all 0.4s ease;opacity:0;pointer-events:none;transform:translateY(10px);}
+  .send-btn.show{opacity:1;pointer-events:auto;transform:translateY(0);}
+  .send-btn.sent{border-color:rgba(148,163,184,0.3);color:var(--mist);pointer-events:none;}
 
-  /* Card stagger fade-in */
-  .card-container {
-    perspective: 1200px; height: 440px;
-    opacity: 0; transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .card-container.appeared { opacity: 1; transform: translateY(0); }
+  /* ACT V */
+  #act5{position:fixed;inset:0;background:var(--night);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity 3s ease;}
+  #act5.visible{opacity:1;pointer-events:auto;}
+  #act5 .epilogue-stars{position:absolute;inset:0;overflow:hidden;}
+  #act5 .epilogue-text{position:relative;text-align:center;font-size:clamp(1.1rem,4vw,1.5rem);font-weight:300;font-style:italic;color:var(--mist);letter-spacing:0.04em;line-height:1.8;min-height:3em;}
+  #act5 .epilogue-mark{margin-top:12px;color:var(--gold);font-style:normal;opacity:0;transition:opacity 2s ease;}
+  #act5.visible .epilogue-mark.show{opacity:0.6;}
 
-  .card {
-    width: 100%; height: 100%; position: relative;
-    transition: transform 0.85s cubic-bezier(0.23, 1, 0.32, 1);
-    transform-style: preserve-3d; cursor: pointer;
-  }
-  .card.flipped { transform: rotateY(180deg); }
-  .card-face {
-    position: absolute; inset: 0;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    border-radius: 4px; overflow: hidden;
-  }
-  .card-front {
-    background: var(--ink);
-    border: 1px solid rgba(201,169,110,0.15);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 16px; padding: 28px;
-  }
-  .card-front .card-num {
-    font-family: var(--mono); font-size: 0.55rem;
-    letter-spacing: 0.3em; color: var(--gold); opacity: 0.6;
-  }
-  .card-front h3 {
-    font-size: 1.55rem; font-weight: 300;
-    font-style: italic; color: var(--silk);
-    text-align: center; line-height: 1.3;
-  }
-  .card-front .tap-hint {
-    font-family: var(--mono); font-size: 0.55rem;
-    letter-spacing: 0.25em; color: var(--mist); opacity: 0.5; margin-top: 8px;
-  }
-  .card-back {
-    transform: rotateY(180deg);
-    background: var(--wa-bg);
-    display: flex; flex-direction: column;
-  }
-
-  /* ── iOS WhatsApp header ── */
-  .wa-header {
-    background: #1c2b33;
-    border-bottom: 0.5px solid rgba(255,255,255,0.08);
-    color: white;
-    padding: 10px 14px 10px 10px;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-  }
-  .wa-back { font-size: 1.25rem; color: #25d366; line-height: 1; flex-shrink: 0; margin-right: 2px; }
-  .wa-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem; font-weight: 600; color: white; flex-shrink: 0;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-  }
-  .wa-header-info { display: flex; flex-direction: column; flex: 1; }
-  .wa-name {
-    font-size: 0.92rem; font-weight: 600; color: #fff; line-height: 1.2;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-  }
-  .wa-status {
-    font-size: 0.67rem; color: #8696a0; line-height: 1.2;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-  }
-  .wa-icons { display: flex; gap: 18px; align-items: center; color: #25d366; font-size: 1.1rem; }
-  .wa-chat {
-    padding: 8px 10px;
-    display: flex; flex-direction: column; gap: 3px;
-    overflow-y: auto; flex-grow: 1;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-    font-size: 14px; -webkit-overflow-scrolling: touch;
-    background: #0b141a;
-    background-image: radial-gradient(circle at 20% 80%, rgba(18,44,34,0.4) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 20%, rgba(11,20,26,0.6) 0%, transparent 50%);
-  }
-  .wa-date-chip {
-    align-self: center;
-    background: rgba(17,27,33,0.85);
-    color: #8696a0; font-size: 0.67rem;
-    padding: 4px 10px; border-radius: 8px; margin: 6px 0 4px;
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-  }
-  .msg {
-    max-width: 78%;
-    padding: 7px 10px 18px 10px;
-    border-radius: 18px;
-    color: #e9edef; line-height: 1.4;
-    word-break: break-word;
-    position: relative;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    font-size: 14px;
-  }
-  .msg.shown { opacity: 1; transform: translateY(0); }
-  .msg.recv {
-    background: #1f2c34; align-self: flex-start;
-    border-bottom-left-radius: 4px; margin-left: 6px;
-  }
-  .msg.recv::before {
-    content: ''; position: absolute;
-    left: -6px; bottom: 0; width: 0; height: 0;
-    border-style: solid; border-width: 0 0 10px 8px;
-    border-color: transparent transparent #1f2c34 transparent;
-  }
-  .msg.sent {
-    background: #005c4b; align-self: flex-end;
-    border-bottom-right-radius: 4px; margin-right: 6px;
-  }
-  .msg.sent::after {
-    content: ''; position: absolute;
-    right: -6px; bottom: 0; width: 0; height: 0;
-    border-style: solid; border-width: 0 8px 10px 0;
-    border-color: transparent #005c4b transparent transparent;
-  }
-  .msg-time {
-    position: absolute; bottom: 4px; right: 9px;
-    font-size: 10px; color: rgba(233,237,239,0.55);
-    font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
-    white-space: nowrap; display: flex; align-items: center; gap: 3px;
-  }
-  .msg.sent .msg-time { color: #53bdeb; }
-  .tick { font-size: 11px; }
-  .wa-typing {
-    display: none; align-self: flex-start;
-    background: #1f2c34; padding: 10px 14px;
-    border-radius: 18px; border-bottom-left-radius: 4px;
-    gap: 4px; align-items: center; margin-left: 6px; position: relative;
-  }
-  .wa-typing::before {
-    content: ''; position: absolute;
-    left: -6px; bottom: 0; width: 0; height: 0;
-    border-style: solid; border-width: 0 0 10px 8px;
-    border-color: transparent transparent #1f2c34 transparent;
-  }
-  .wa-typing.active { display: flex; }
-  .typing-dot {
-    width: 7px; height: 7px; border-radius: 50%; background: #8696a0;
-    animation: typing-bounce 1.2s ease-in-out infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typing-bounce {
-    0%, 60%, 100% { transform: translateY(0); background: #8696a0; }
-    30% { transform: translateY(-6px); background: #aebac1; }
-  }
-
-  /* ─── ACT III ─── */
-  #act3 {
-    background: linear-gradient(180deg, #0b1120 0%, #0c1018 100%);
-    justify-content: flex-start; padding-top: 80px;
-  }
-  .polaroid-stack {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 36px;
-    width: 100%; max-width: 340px; margin-bottom: 20px;
-    will-change: transform;
-  }
-  .polaroid {
-    background: #faf8f5;
-    padding: 14px 14px 52px 14px;
-    box-shadow:
-      0 4px 6px rgba(0,0,0,0.3),
-      0 14px 40px rgba(0,0,0,0.45),
-      0 0 0 1px rgba(0,0,0,0.06);
-    width: 100%; border-radius: 1px;
-    position: relative;
-    will-change: transform;
-    cursor: pointer;
-  }
-  /* Base rotations — parallax applied via JS inline transform */
-  .polaroid:nth-child(1)  { --base-rot: -2.5deg; transform: rotate(-2.5deg); }
-  .polaroid:nth-child(2)  { --base-rot: 3deg;    transform: rotate(3deg); }
-  .polaroid:nth-child(3)  { --base-rot: -1.5deg; transform: rotate(-1.5deg); }
-  .polaroid:nth-child(4)  { --base-rot: 2deg;    transform: rotate(2deg); }
-  .polaroid:nth-child(5)  { --base-rot: -3deg;   transform: rotate(-3deg); }
-  .polaroid:nth-child(6)  { --base-rot: 1.5deg;  transform: rotate(1.5deg); }
-  .polaroid:nth-child(7)  { --base-rot: -2deg;   transform: rotate(-2deg); }
-  .polaroid img {
-    width: 100%; display: block; aspect-ratio: 4/3;
-    object-fit: cover; background: #ddd;
-    filter: sepia(8%) contrast(1.02) brightness(0.98);
-    transition: filter 0.4s ease;
-    pointer-events: none;
-  }
-  .polaroid .caption {
-    position: absolute; bottom: 16px;
-    left: 14px; right: 56px;
-    text-align: left;
-    font-family: var(--mono); font-size: 0.75rem;
-    font-weight: 400; letter-spacing: 0.08em; color: #1a1a1a;
-  }
-  .polaroid .date-stamp {
-    position: absolute; bottom: 14px; right: 14px;
-    font-family: var(--mono); font-size: 0.6rem;
-    letter-spacing: 0.06em; color: #cc3322; opacity: 0.85;
-    font-weight: 400; line-height: 1.3; text-align: right;
-    filter: blur(0.2px);
-  }
-
-  /* ─── ACT IV ─── */
-  #act4 {
-    background: radial-gradient(ellipse at 50% 50%, #1a120a 0%, var(--night) 80%);
-    justify-content: flex-start;
-    padding-top: 100px;
-    padding-bottom: 200px;
-    min-height: auto;
-  }
-  .future-wrap {
-    max-width: 680px; width: 100%;
-    display: flex; flex-direction: column; gap: 0;
-  }
-  .future-block {
-    padding: 48px 0;
-    border-top: 1px solid rgba(201,169,110,0.12);
-    opacity: 0; transform: translateY(28px);
-    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1),
-                transform 1.4s cubic-bezier(0.16,1,0.3,1);
-  }
-  .future-block.revealed { opacity: 1; transform: translateY(0); }
-  .future-block .block-label {
-    font-family: var(--mono); font-size: 0.6rem;
-    letter-spacing: 0.3em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 20px;
-  }
-  .future-block p {
-    font-size: clamp(1.15rem, 3.8vw, 1.4rem);
-    font-weight: 300; line-height: 2; color: var(--silk);
-  }
-  .future-block p em { color: var(--gold2); font-style: italic; }
-  .and-you-block {
-    margin-top: 48px; padding: 60px 40px;
-    background: linear-gradient(180deg, rgba(13,21,38,0.6) 0%, rgba(8,12,20,0) 100%);
-    border-left: 2px solid var(--gold);
-    border-top: 1px solid rgba(201,169,110,0.15);
-    border-radius: 4px;
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 1.8s cubic-bezier(0.16,1,0.3,1),
-                transform 1.8s cubic-bezier(0.16,1,0.3,1);
-  }
-  .and-you-block.revealed { opacity: 1; transform: translateY(0); }
-
-  /* ── Handwritten note ── */
-  .handwriting-wrap {
-    margin-top: 36px;
-    display: flex;
-    justify-content: flex-start;
-    opacity: 0; transform: rotate(-1.5deg) translateY(12px);
-    transition: opacity 1.2s ease 0.6s, transform 1.2s ease 0.6s;
-  }
-  .and-you-block.revealed .handwriting-wrap {
-    opacity: 1; transform: rotate(-1.5deg) translateY(0);
-  }
-  .handwriting-wrap img {
-    max-width: min(260px, 80%);
-    border-radius: 2px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
-    filter: sepia(10%) brightness(0.95);
-  }
-
-  /* ── Voice note player ── */
-  .voice-note-section {
-    max-width: 680px; width: 100%;
-    margin: 0 auto;
-    padding: 48px 0;
-    border-top: 1px solid rgba(201,169,110,0.12);
-    opacity: 0; transform: translateY(28px);
-    transition: opacity 1.4s cubic-bezier(0.16,1,0.3,1),
-                transform 1.4s cubic-bezier(0.16,1,0.3,1);
-  }
-  .voice-note-section.revealed { opacity: 1; transform: translateY(0); }
-  .voice-note-label {
-    font-family: var(--mono); font-size: 0.6rem;
-    letter-spacing: 0.3em; color: var(--gold);
-    text-transform: uppercase; margin-bottom: 20px;
-  }
-  .voice-player {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: rgba(13,21,38,0.7);
-    border: 1px solid rgba(201,169,110,0.2);
-    border-radius: 999px;
-    padding: 14px 24px 14px 14px;
-    cursor: pointer;
-    max-width: 340px;
-    transition: border-color 0.3s ease;
-    user-select: none;
-  }
-  .voice-player:hover { border-color: rgba(201,169,110,0.5); }
-  .voice-play-btn {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: var(--gold);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.2s ease, background 0.2s ease;
-  }
-  .voice-player:active .voice-play-btn { transform: scale(0.93); }
-  .voice-play-icon {
-    font-size: 1.1rem;
-    color: var(--night);
-    margin-left: 3px; /* optical center for play triangle */
-  }
-  .voice-waveform {
-    display: flex;
-    align-items: center;
-    gap: 2.5px;
-    flex: 1;
-  }
-  .wv-bar {
-    background: rgba(201,169,110,0.35);
-    border-radius: 2px;
-    width: 3px;
-    transition: background 0.3s ease, height 0.3s ease;
-  }
-  .wv-bar.played { background: rgba(201,169,110,0.85); }
-  .voice-duration {
-    font-family: var(--mono); font-size: 0.65rem;
-    letter-spacing: 0.1em; color: var(--mist);
-    flex-shrink: 0;
-  }
-  /* Animating waveform bars when playing */
-  .voice-player.playing .wv-bar {
-    animation: wv-pulse var(--wv-spd, 0.6s) ease-in-out infinite alternate;
-    animation-delay: var(--wv-delay, 0s);
-  }
-  @keyframes wv-pulse {
-    from { background: rgba(201,169,110,0.3); transform: scaleY(0.5); }
-    to   { background: rgba(201,169,110,0.9); transform: scaleY(1); }
-  }
-
-  .ask-block {
-    padding: 100px 0 0; text-align: center;
-    opacity: 0; transform: scale(0.97);
-    transition: opacity 2.2s cubic-bezier(0.16,1,0.3,1),
-                transform 2.2s cubic-bezier(0.16,1,0.3,1);
-  }
-  .ask-block.revealed { opacity: 1; transform: scale(1); }
-  .ask-question {
-    font-size: clamp(2.2rem, 7vw, 3.5rem);
-    font-weight: 300; font-style: italic; line-height: 1.2;
-    color: var(--gold2); margin-bottom: 40px; letter-spacing: 0.02em;
-  }
-  .ask-open {
-    max-width: 580px; margin: 0 auto;
-    font-size: clamp(1.15rem, 3.8vw, 1.45rem);
-    font-weight: 300; line-height: 2; color: var(--silk);
-    font-family: var(--serif); font-style: italic; text-align: center;
-  }
-  .alignment-climax {
-    margin-top: 56px; padding-top: 44px;
-    border-top: 1px dashed rgba(201,169,110,0.2);
-    font-size: clamp(1.2rem, 4vw, 1.55rem);
-    line-height: 1.95; color: var(--silk);
-    font-weight: 300; max-width: 600px;
-    margin-left: auto; margin-right: auto;
-  }
-  .alignment-climax em {
-    letter-spacing: 0.08em; font-style: normal;
-    font-weight: 400; color: var(--gold2);
-  }
-  .align-word {
-    display: inline-block; letter-spacing: 0em;
-    color: var(--gold2); font-style: normal;
-    font-weight: 400;
-    transition: letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);
-  }
-  .align-word.spread { letter-spacing: 0.18em; }
-
-  /* ═══════════════════════════════════════════
-     #10 — REPLY FIELD
-  ═══════════════════════════════════════════ */
-  .reply-section {
-    max-width: 580px; width: 100%;
-    margin: 80px auto 0;
-    padding: 56px 0;
-    border-top: 1px solid rgba(201,169,110,0.1);
-    opacity: 0; transform: translateY(20px);
-    transition: opacity 1.6s ease, transform 1.6s ease;
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .reply-section.revealed { opacity: 1; transform: translateY(0); }
-  .reply-label {
-    font-family: var(--mono); font-size: 0.55rem;
-    letter-spacing: 0.3em; color: rgba(201,169,110,0.4);
-    text-transform: uppercase; margin-bottom: 24px;
-  }
-  .reply-field {
-    width: 100%;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(201,169,110,0.2);
-    outline: none;
-    resize: none;
-    font-family: var(--serif);
-    font-size: clamp(1.1rem, 3.5vw, 1.3rem);
-    font-style: italic;
-    font-weight: 300;
-    color: var(--gold2);
-    line-height: 1.8;
-    padding: 8px 0 20px;
-    min-height: 80px;
-    caret-color: var(--gold);
-    transition: border-color 0.4s ease;
-  }
-  .reply-field::placeholder {
-    color: rgba(148, 163, 184, 0.35);
-    font-style: italic;
-  }
-  .reply-field:focus {
-    border-bottom-color: rgba(201,169,110,0.45);
-  }
-  /* Disable scrollbar on the textarea */
-  .reply-field::-webkit-scrollbar { display: none; }
-  .reply-field { scrollbar-width: none; }
-
-  .send-btn {
-    margin-top: 24px; padding: 10px 28px;
-    background: transparent;
-    border: 1px solid rgba(201,169,110,0.5);
-    color: var(--gold2); border-radius: 2px; cursor: pointer;
-    font-family: var(--mono); font-size: 0.65rem;
-    letter-spacing: 0.2em; text-transform: uppercase;
-    transition: all 0.4s ease;
-    opacity: 0; pointer-events: none; transform: translateY(10px);
-  }
-  .send-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
-  .send-btn.sent { border-color: rgba(148, 163, 184, 0.3); color: var(--mist); pointer-events: none; }
-
-  /* ─── ACT V — EPILOGUE ─── */
-  #act5 {
-    position: fixed; inset: 0;
-    background: var(--night);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 200;
-    opacity: 0; pointer-events: none;
-    transition: opacity 3s ease;
-  }
-  #act5.visible { opacity: 1; pointer-events: auto; }
-  #act5 .epilogue-stars { position: absolute; inset: 0; overflow: hidden; }
-  #act5 .epilogue-text {
-    position: relative; text-align: center;
-    font-size: clamp(1.1rem, 4vw, 1.5rem);
-    font-weight: 300; font-style: italic;
-    color: var(--mist); letter-spacing: 0.04em;
-    line-height: 1.8;
-    min-height: 3em;
-  }
-  #act5 .epilogue-mark {
-    margin-top: 12px; color: var(--gold); font-style: normal;
-    opacity: 0; transition: opacity 2s ease;
-  }
-  #act5.visible .epilogue-mark.show { opacity: 0.6; }
-
-  /* ─── SHARED ANIMATIONS ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Scroll sentinel spacer for act4 */
-  #act4-scroll-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0 24px 200px;
-  }
-
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  #act4-scroll-container{width:100%;display:flex;flex-direction:column;align-items:center;padding:0 24px 200px;}
 </style>
 </head>
 <body>
 
-<!-- Original moody background music -->
-<audio id="bg-music" loop>
-  <source src="bg-music.mp3" type="audio/mpeg">
-</audio>
-
-<!-- NEW: Upbeat Natalie Cole track for the climax -->
-<audio id="bg-music-2" loop>
-  <source src="this-will-be.mp3" type="audio/mpeg">
-</audio>
-
-<audio id="voice-audio">
-  <source src="voicenote.m4a" type="audio/mp4">
-</audio>
+<audio id="bg-music" loop><source src="bg-music.mp3" type="audio/mpeg"></audio>
+<audio id="bg-music-2" loop><source src="this-will-be.mp3" type="audio/mpeg"></audio>
+<audio id="voice-audio"><source src="voicenote.m4a" type="audio/mp4"></audio>
 
 <div class="star-field" id="bg-stars" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
 
-<!-- ═══ #5 INTRO SCREEN ═══ -->
 <div id="intro-screen">
   <div class="intro-name">
     <span class="intro-letter">z</span>
@@ -852,62 +233,46 @@
   </div>
 </div>
 
-<!-- Progress Thread -->
 <div id="progress-thread">
   <div class="thread-track"></div>
   <div class="thread-fill" id="thread-fill"></div>
-  <div class="thread-dot" id="thread-dot"></div>
+  <div class="thread-dot" id="thread-dot" data-label="prologue"></div>
 </div>
 
-<!-- Floating music pill -->
 <div id="music-pill" onclick="toggleMusic()">
   <div class="pill-icon">
     <div class="bars" id="music-bars">
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
-      <div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
     </div>
   </div>
   <span class="pill-label" id="pill-label">Music on</span>
 </div>
 
-<!-- ACT V — Epilogue (hidden overlay) -->
 <div id="act5">
   <div class="epilogue-stars" id="epilogue-stars"></div>
   <div class="epilogue-text" id="epilogue-typed"></div>
   <div class="epilogue-mark" id="epilogue-mark">✦</div>
 </div>
 
-<!-- LANDING -->
 <div id="landing" onclick="enterWorld()">
   <div class="star-field" id="stars"></div>
   <div class="center-content">
     <div class="eyebrow">A world built for one person</div>
     <h1>For <em>Zusi Billions</em></h1>
-
     <div id="wax-seal">
       <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="36" cy="36" r="34" fill="#8B5E2A" opacity="0.9"/>
         <circle cx="36" cy="36" r="34" fill="url(#wax-grad)" opacity="0.6"/>
         <circle cx="36" cy="36" r="30" stroke="#c9a96e" stroke-width="1" fill="none" opacity="0.5"/>
         <circle cx="36" cy="36" r="26" stroke="#c9a96e" stroke-width="0.5" fill="none" opacity="0.3"/>
-        <text x="36" y="32" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
-          font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">M</text>
-        <text x="36" y="46" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif"
-          font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">Z</text>
+        <text x="36" y="32" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">M</text>
+        <text x="36" y="46" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="11" font-weight="400" fill="#e8d5a3" opacity="0.95" letter-spacing="1">Z</text>
         <line x1="27" y1="36.5" x2="45" y2="36.5" stroke="#e8d5a3" stroke-width="0.5" opacity="0.5"/>
         <text x="36" y="18" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
         <text x="36" y="60" text-anchor="middle" font-size="5" fill="#c9a96e" opacity="0.6">✦</text>
-        <defs>
-          <radialGradient id="wax-grad" cx="40%" cy="35%" r="60%">
-            <stop offset="0%" stop-color="#c9a96e"/>
-            <stop offset="100%" stop-color="#5c3510"/>
-          </radialGradient>
-        </defs>
+        <defs><radialGradient id="wax-grad" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#c9a96e"/><stop offset="100%" stop-color="#5c3510"/></radialGradient></defs>
       </svg>
     </div>
-
     <div class="tap-ring"><span class="tap-icon">✦</span></div>
     <div class="tap-label">Tap anywhere to enter</div>
   </div>
@@ -920,12 +285,8 @@
     <div class="date-line">GLT · October 6th 2025 → Today</div>
     <div class="divider"></div>
     <div class="typewriter" id="typewriter-text"><span class="cursor"></span></div>
-    <div class="prologue-kicker" id="prologue-kicker">
-      And just like that, you went from Jennifer to <em style="color:var(--gold)">Zusi Billions.</em>
-    </div>
-    <button class="next-btn" id="btn-act2" style="opacity:0; transition: opacity 0.8s ease;" onclick="goToAct2()">
-      The Receipts &nbsp;→
-    </button>
+    <div class="prologue-kicker" id="prologue-kicker">And just like that, you went from Jennifer to <em style="color:var(--gold)">Zusi Billions.</em></div>
+    <button class="next-btn" id="btn-act2" style="opacity:0;transition:opacity 0.8s ease;" onclick="goToAct2()">The Receipts &nbsp;→</button>
   </div>
 </div>
 
@@ -934,29 +295,13 @@
   <div class="act-label">II — The Receipts</div>
   <div class="section-heading">Things that happened<br><em>that we cannot deny</em></div>
   <div class="divider"></div>
-
   <div class="cards-grid">
-
     <div class="card-container" data-card-idx="0">
-      <div class="card" id="card-1" onclick="onCardFlip(this, 0)">
-        <div class="card-face card-front">
-          <span class="card-num">01 / 05</span>
-          <h3>The Titles</h3>
-          <span class="tap-hint">tap to open</span>
-        </div>
+      <div class="card" id="card-1" onclick="onCardFlip(this,0)">
+        <div class="card-face card-front"><span class="card-num">01 / 05</span><h3>The Titles</h3><span class="tap-hint">tap to open</span></div>
         <div class="card-face card-back">
-          <div class="wa-header">
-            <div class="wa-back">‹</div>
-            <div class="wa-avatar">ZB</div>
-            <div class="wa-header-info">
-              <div class="wa-name">Zusi Billions</div>
-              <div class="wa-status">online</div>
-            </div>
-            <div class="wa-icons">📞 📹</div>
-          </div>
-          <div class="wa-chat">
-            <div class="wa-date-chip">Today</div>
-            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="wa-header"><div class="wa-back">‹</div><div class="wa-avatar">ZB</div><div class="wa-header-info"><div class="wa-name">Zusi Billions</div><div class="wa-status">online</div></div><div class="wa-icons">📞 📹</div></div>
+          <div class="wa-chat"><div class="wa-date-chip">Today</div><div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg recv">Good evening, Doctor. Hope I'm permitted to call you that? 😅<span class="msg-time">8:41 pm</span></div>
             <div class="msg recv">What's Corper, Doctor and finance guru Motolani doing this week and today?<span class="msg-time">8:41 pm</span></div>
             <div class="msg recv">Good afternoon, Dr 😅<span class="msg-time">1:14 pm</span></div>
@@ -966,27 +311,12 @@
         </div>
       </div>
     </div>
-
     <div class="card-container" data-card-idx="1">
-      <div class="card" id="card-2" onclick="onCardFlip(this, 1)">
-        <div class="card-face card-front">
-          <span class="card-num">02 / 05</span>
-          <h3>The "Experiment"</h3>
-          <span class="tap-hint">tap to open</span>
-        </div>
+      <div class="card" id="card-2" onclick="onCardFlip(this,1)">
+        <div class="card-face card-front"><span class="card-num">02 / 05</span><h3>The "Experiment"</h3><span class="tap-hint">tap to open</span></div>
         <div class="card-face card-back">
-          <div class="wa-header">
-            <div class="wa-back">‹</div>
-            <div class="wa-avatar">ZB</div>
-            <div class="wa-header-info">
-              <div class="wa-name">Zusi Billions</div>
-              <div class="wa-status">online</div>
-            </div>
-            <div class="wa-icons">📞 📹</div>
-          </div>
-          <div class="wa-chat">
-            <div class="wa-date-chip">Today</div>
-            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="wa-header"><div class="wa-back">‹</div><div class="wa-avatar">ZB</div><div class="wa-header-info"><div class="wa-name">Zusi Billions</div><div class="wa-status">online</div></div><div class="wa-icons">📞 📹</div></div>
+          <div class="wa-chat"><div class="wa-date-chip">Today</div><div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg recv">On the contrary, a better way to look at it is that you can talk a woman to sleep. Sounds like a win. Is this where I get a thank you for participating in the experiment? 🙂‍↔️<span class="msg-time">11:03 pm</span></div>
             <div class="msg sent">Can you imagine<span class="msg-time">11:04 pm <span class="tick">✓✓</span></span></div>
             <div class="msg sent">I was sharing what blessed me in the message and all but you slept off<span class="msg-time">11:04 pm <span class="tick">✓✓</span></span></div>
@@ -1000,27 +330,12 @@
         </div>
       </div>
     </div>
-
     <div class="card-container" data-card-idx="2">
-      <div class="card" id="card-3" onclick="onCardFlip(this, 2)">
-        <div class="card-face card-front">
-          <span class="card-num">03 / 05</span>
-          <h3>The Billing Dept.</h3>
-          <span class="tap-hint">tap to open</span>
-        </div>
+      <div class="card" id="card-3" onclick="onCardFlip(this,2)">
+        <div class="card-face card-front"><span class="card-num">03 / 05</span><h3>The Billing Dept.</h3><span class="tap-hint">tap to open</span></div>
         <div class="card-face card-back">
-          <div class="wa-header">
-            <div class="wa-back">‹</div>
-            <div class="wa-avatar">ZB</div>
-            <div class="wa-header-info">
-              <div class="wa-name">Zusi Billions</div>
-              <div class="wa-status">online</div>
-            </div>
-            <div class="wa-icons">📞 📹</div>
-          </div>
-          <div class="wa-chat">
-            <div class="wa-date-chip">Today</div>
-            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="wa-header"><div class="wa-back">‹</div><div class="wa-avatar">ZB</div><div class="wa-header-info"><div class="wa-name">Zusi Billions</div><div class="wa-status">online</div></div><div class="wa-icons">📞 📹</div></div>
+          <div class="wa-chat"><div class="wa-date-chip">Today</div><div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">But before you go, that will be $199.99 please<span class="msg-time">9:48 pm <span class="tick">✓✓</span></span></div>
             <div class="msg recv">All these for $200<span class="msg-time">9:49 pm</span></div>
             <div class="msg sent">Another 29.99. Thanks<span class="msg-time">9:49 pm <span class="tick">✓✓</span></span></div>
@@ -1034,27 +349,12 @@
         </div>
       </div>
     </div>
-
     <div class="card-container" data-card-idx="3">
-      <div class="card" id="card-4" onclick="onCardFlip(this, 3)">
-        <div class="card-face card-front">
-          <span class="card-num">04 / 05</span>
-          <h3>The Experience</h3>
-          <span class="tap-hint">tap to open</span>
-        </div>
+      <div class="card" id="card-4" onclick="onCardFlip(this,3)">
+        <div class="card-face card-front"><span class="card-num">04 / 05</span><h3>The Experience</h3><span class="tap-hint">tap to open</span></div>
         <div class="card-face card-back">
-          <div class="wa-header">
-            <div class="wa-back">‹</div>
-            <div class="wa-avatar">ZB</div>
-            <div class="wa-header-info">
-              <div class="wa-name">Zusi Billions</div>
-              <div class="wa-status">online</div>
-            </div>
-            <div class="wa-icons">📞 📹</div>
-          </div>
-          <div class="wa-chat">
-            <div class="wa-date-chip">Today</div>
-            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="wa-header"><div class="wa-back">‹</div><div class="wa-avatar">ZB</div><div class="wa-header-info"><div class="wa-name">Zusi Billions</div><div class="wa-status">online</div></div><div class="wa-icons">📞 📹</div></div>
+          <div class="wa-chat"><div class="wa-date-chip">Today</div><div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">Ahahn overall besttt 🙌🏾<span class="msg-time">3:17 pm <span class="tick">✓✓</span></span></div>
             <div class="msg sent">Overall best, trust youu're killing it<span class="msg-time">3:17 pm <span class="tick">✓✓</span></span></div>
             <div class="msg sent">Overall besttt I'm not surprised<span class="msg-time">3:18 pm <span class="tick">✓✓</span></span></div>
@@ -1065,27 +365,12 @@
         </div>
       </div>
     </div>
-
     <div class="card-container" data-card-idx="4">
-      <div class="card" id="card-5" onclick="onCardFlip(this, 4)">
-        <div class="card-face card-front">
-          <span class="card-num">05 / 05</span>
-          <h3>The Consultant</h3>
-          <span class="tap-hint">tap to open</span>
-        </div>
+      <div class="card" id="card-5" onclick="onCardFlip(this,4)">
+        <div class="card-face card-front"><span class="card-num">05 / 05</span><h3>The Consultant</h3><span class="tap-hint">tap to open</span></div>
         <div class="card-face card-back">
-          <div class="wa-header">
-            <div class="wa-back">‹</div>
-            <div class="wa-avatar">ZB</div>
-            <div class="wa-header-info">
-              <div class="wa-name">Zusi Billions</div>
-              <div class="wa-status">online</div>
-            </div>
-            <div class="wa-icons">📞 📹</div>
-          </div>
-          <div class="wa-chat">
-            <div class="wa-date-chip">Today</div>
-            <div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+          <div class="wa-header"><div class="wa-back">‹</div><div class="wa-avatar">ZB</div><div class="wa-header-info"><div class="wa-name">Zusi Billions</div><div class="wa-status">online</div></div><div class="wa-icons">📞 📹</div></div>
+          <div class="wa-chat"><div class="wa-date-chip">Today</div><div class="wa-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
             <div class="msg sent">My consultant ma 🙌🏾<span class="msg-time">2:05 pm <span class="tick">✓✓</span></span></div>
             <div class="msg recv">That should work. Thanks for the suggestion, Business Consultant 😅<span class="msg-time">2:07 pm</span></div>
             <div class="msg sent">whatt 😂<span class="msg-time">2:07 pm <span class="tick">✓✓</span></span></div>
@@ -1095,7 +380,6 @@
         </div>
       </div>
     </div>
-
   </div>
   <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
@@ -1105,843 +389,512 @@
   <div class="act-label">III — The Late Nights</div>
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
   <div class="divider"></div>
-
   <div class="polaroid-stack" id="polaroid-stack">
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo1.jpg" alt="That laugh">
-      <div class="caption">that laugh though ✌🏾</div>
-      <div class="date-stamp">05·02<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo3.jpg" alt="Double peace">
-      <div class="caption">double the peace, double the energy</div>
-      <div class="date-stamp">05·02<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo4.jpg" alt="Screen share">
-      <div class="caption">even screen-share mode was a vibe</div>
-      <div class="date-stamp">05·02<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo5.jpg" alt="Lunch call">
-      <div class="caption">lunch call era</div>
-      <div class="date-stamp">05·13<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo6.jpg" alt="Eating and drinking">
-      <div class="caption">unbothered &amp; thriving</div>
-      <div class="date-stamp">05·13<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo7.jpg" alt="Professional headshot 1">
-      <div class="caption">CEO ma 🌝</div>
-      <div class="date-stamp">05·13<br>2026</div>
-    </div>
-    <div class="polaroid" onclick="onPolaroidTap(this)">
-      <img src="photo8.jpg" alt="Professional headshot 2">
-      <div class="caption">overall best. always.</div>
-      <div class="date-stamp">05·13<br>2026</div>
-    </div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo1.jpg" alt="That laugh"><div class="caption">that laugh though ✌🏾</div><div class="date-stamp">05·02<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo3.jpg" alt="Double peace"><div class="caption">double the peace, double the energy</div><div class="date-stamp">05·02<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo4.jpg" alt="Screen share"><div class="caption">even screen-share mode was a vibe</div><div class="date-stamp">05·02<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo5.jpg" alt="Lunch call"><div class="caption">lunch call era</div><div class="date-stamp">05·13<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo6.jpg" alt="Eating and drinking"><div class="caption">unbothered &amp; thriving</div><div class="date-stamp">05·13<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo7.jpg" alt="Professional headshot 1"><div class="caption">CEO ma 🌝</div><div class="date-stamp">05·13<br>2026</div></div>
+    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo8.jpg" alt="Professional headshot 2"><div class="caption">overall best. always.</div><div class="date-stamp">05·13<br>2026</div></div>
   </div>
-
   <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
 </div>
 
-<!-- ACT IV — Scroll-triggered reveals -->
-<div class="act hidden" id="act4" style="display:none; flex-direction:column; align-items:center; padding:0; min-height:100vh;">
-  <div style="padding:60px 24px 0; text-align:center; width:100%;">
+<!-- ACT IV -->
+<div class="act hidden" id="act4" style="display:none;flex-direction:column;align-items:center;padding:0;min-height:100vh;">
+  <div style="padding:60px 24px 0;text-align:center;width:100%;">
     <div class="act-label">IV — The Next Chapter</div>
     <div class="section-heading">Where this is going</div>
     <div class="divider"></div>
   </div>
-
   <div id="act4-scroll-container">
     <div class="future-wrap">
-
       <div class="future-block" id="fb1">
         <div class="block-label">The mandate</div>
-        <p>
-          I have been called to be light unto nations, a restorer of path for those who dwell in deserts, to take men from lack to abundance, to create springs of water in deserts, as an extension of the ministry of our Lord Jesus Christ. Serving faithfully as a steward of His manifold grace, under GLT. (as a high functioning steward).
-        </p>
+        <p>I have been called to be light unto nations, a restorer of path for those who dwell in deserts, to take men from lack to abundance, to create springs of water in deserts, as an extension of the ministry of our Lord Jesus Christ. Serving faithfully as a steward of His manifold grace, under GLT. (as a high functioning steward).</p>
       </div>
-
       <div class="future-block" id="fb2">
         <div class="block-label">Right now</div>
-        <p>
-          Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't "hustle" for the sake of it. They are the foundations of good stewardship.
-        </p>
+        <p>Every day is a deliberate act of construction. The models, the frameworks, the 10-Ks at midnight, the networking, the prayersssss, devotion, these aren't "hustle" for the sake of it. They are the foundations of good stewardship.</p>
       </div>
-
       <div class="future-block" id="fb3">
         <div class="block-label">The reality we are building toward</div>
-        <p>
-          A 27-floor institution. Capital management. Infrastructure. Banking.
-          Patents that pioneer new categories of financial engineering.
-          A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence
-          of a mandate fulfilled. A legacy that the generation after us will call
-          their foundation.
-        </p>
+        <p>A 27-floor institution. Capital management. Infrastructure. Banking. Patents that pioneer new categories of financial engineering. A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence of a mandate fulfilled. A legacy that the generation after us will call their foundation.</p>
       </div>
-
-      <!-- AND YOU BLOCK with handwriting -->
       <div class="and-you-block" id="and-you-section">
-        <div class="future-block" id="fb4" style="border-top:none; padding:0; opacity:1; transform:none;">
+        <div class="future-block" id="fb4" style="border-top:none;padding:0;opacity:1;transform:none;">
           <div class="block-label">And you</div>
-          <p>
-            Through all of it, from the early mornings, to the invoices for £12.99,
-            to the late calls where you fell asleep mid-sentence and still charged me a thank you,
-            you have been the most natural constant.
-            <em>I want to build all of this with you.</em>
-          </p>
+          <p>Through all of it, from the early mornings, to the invoices for £12.99, to the late calls where you fell asleep mid-sentence and still charged me a thank you, you have been the most natural constant. <em>I want to build all of this with you.</em></p>
         </div>
-        <!-- Handwriting image -->
         <div class="handwriting-wrap" id="handwriting-wrap">
           <img src="handwriting.jpg" alt="handwritten note"
-            onerror="document.getElementById('handwriting-wrap').style.display='none'; document.getElementById('handwriting-missing').style.display='block';" />
+            onerror="document.getElementById('handwriting-wrap').style.display='none';document.getElementById('handwriting-missing').style.display='block';" />
         </div>
-        <div id="handwriting-missing" style="display:none; margin-top:24px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.2em; color:rgba(201,169,110,0.4);">
-          [ handwriting.jpg not found — check filename in repo ]
-        </div>
+        <div id="handwriting-missing" style="display:none;margin-top:24px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,169,110,0.4);">[ handwriting.jpg not found — check filename ]</div>
       </div>
-
-      <!-- #2 VOICE NOTE PLAYER -->
       <div class="voice-note-section" id="voice-note-section">
         <div class="voice-note-label">a voice note</div>
         <div class="voice-player" id="voice-player" onclick="toggleVoiceNote()">
-          <div class="voice-play-btn" id="voice-play-btn">
-            <span class="voice-play-icon" id="voice-play-icon">▶</span>
-          </div>
+          <div class="voice-play-btn" id="voice-play-btn"><span class="voice-play-icon" id="voice-play-icon">▶</span></div>
           <div class="voice-waveform" id="voice-waveform"></div>
           <span class="voice-duration" id="voice-duration">1:10</span>
         </div>
       </div>
-
       <div class="ask-block" id="ask-block">
-        <div class="ask-question">
-          I love you, Zusi Billions.
-        </div>
-        <div class="ask-open">
+        <div class="ask-question" id="ask-question"></div>
+        <div class="ask-open" id="ask-open" style="opacity:0;transition:opacity 1.2s ease 0.5s;">
           I'm not asking you for an answer tonight.<br>
           I'm asking you to <em style="color:var(--gold2)">consider a future</em> with me.<br>
           Sit with it. Let it settle.<br>
           When it feels right to you, I'll be here.
-
           <div class="alignment-climax">
             Here to <span class="align-word" id="align-word">ALIGNNNNNNN</span> with you under God, slipping in my painfully dry jokes and quietly admiring the way you laugh at them anyway, partly out of kindness and partly because your heart is just that gentle.
           </div>
         </div>
       </div>
-
-      <!-- #10 REPLY FIELD -->
       <div class="reply-section" id="reply-section">
-        <div class="reply-label">for you, if you want</div>
-        <textarea
-          class="reply-field"
-          id="reply-field"
-          name="message"
-          placeholder="you can type here if you want. i won't see it tonight."
-          rows="3"
-          spellcheck="false"
-          autocomplete="off"
-        ></textarea>
-        <!-- The button is hidden by default -->
+        <div class="reply-label">the floor is yours.</div>
+        <textarea class="reply-field" id="reply-field" name="message" placeholder="you can type here if you want. i won't see it tonight." rows="3" spellcheck="false" autocomplete="off"></textarea>
         <button id="send-reply-btn" class="send-btn">Leave note</button>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   SERVICE WORKER
-═══════════════════════════════════════════════════ */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const swCode = `
-const CACHE = 'zusi-v2';
-const ASSETS = ['./', './index.html', './bg-music.mp3', './this-will-be.mp3', './voicenote.m4a', './handwriting.jpg',
-  './photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg',
-  './photo6.jpg','./photo7.jpg','./photo8.jpg'];
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(()=>{})));
-  self.skipWaiting();
-});
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))
-  ));
-  self.clients.claim();
-});
-self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(()=>new Response('Offline'))));
-});
-    `;
-    try {
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-    } catch(e) {}
-  });
-}
+/* SERVICE WORKER */
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{const sw=`const CACHE='zusi-v3';const ASSETS=['./', './index.html','./bg-music.mp3','./this-will-be.mp3','./voicenote.m4a','./handwriting.jpg','./photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline'))));});`;try{const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}catch(e){}});}
 
-/* ═══════════════════════════════════════════════════
-   HAPTIC
-═══════════════════════════════════════════════════ */
-function haptic(ms = 8) { if (navigator.vibrate) navigator.vibrate(ms); }
+/* HAPTIC */
+function haptic(ms=8){if(navigator.vibrate)navigator.vibrate(ms);}
 
-/* ═══════════════════════════════════════════════════
-   AUDIO ENGINE
-═══════════════════════════════════════════════════ */
-let AC = null;
-let musicPlaying = false;
-const originalMusic = document.getElementById('bg-music');
-const joyMusic = document.getElementById('bg-music-2');
+/* AUDIO */
+let AC=null,musicPlaying=false;
+const origMusic=document.getElementById('bg-music');
+const joyMusic=document.getElementById('bg-music-2');
+let activeMusic=origMusic,targetVol=0.28;
 
-// We use activeMusic to track which track is currently playing
-let activeMusic = originalMusic;
-let targetMusicVolume = 0.28;
-
-function getAC() {
-  if (!AC) { try { AC = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){return null;} }
-  if (AC.state === 'suspended') AC.resume();
+function getAC(){
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}}
+  if(AC.state==='suspended')AC.resume();
   return AC;
 }
 
-function startMusic() {
-  activeMusic.volume = 0;
-  activeMusic.play().then(() => {
-    musicPlaying = true;
-    let vol = 0; 
-    const step = () => { vol = Math.min(vol+0.01, targetMusicVolume); activeMusic.volume = vol; if(vol<targetMusicVolume) setTimeout(step,100); };
-    setTimeout(step, 200);
+function startMusic(){
+  activeMusic.volume=0;
+  activeMusic.play().then(()=>{
+    musicPlaying=true;
+    let v=0;
+    const step=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(step,100);};
+    setTimeout(step,200);
     showMusicPill();
   }).catch(()=>{});
 }
 
-function showMusicPill() {
-  const pill = document.getElementById('music-pill');
-  pill.style.display = 'flex';
-  setTimeout(()=>pill.classList.add('visible'),100);
+function showMusicPill(){
+  const p=document.getElementById('music-pill');
+  p.style.display='flex';
+  setTimeout(()=>p.classList.add('visible'),100);
 }
 
-function toggleMusic() {
-  const bars = document.getElementById('music-bars');
-  const label = document.getElementById('pill-label');
-  if (musicPlaying) {
-    let vol = activeMusic.volume;
-    const fade = () => { vol = Math.max(vol-0.015,0); activeMusic.volume=vol; if(vol>0)setTimeout(fade,80); else activeMusic.pause(); };
-    fade(); musicPlaying=false; bars.classList.add('paused'); label.textContent='Music off';
-  } else {
-    activeMusic.play().catch(()=>{});
-    musicPlaying=true;
-    let vol=0;
-    const fade=()=>{ vol=Math.min(vol+0.015, targetMusicVolume); activeMusic.volume=vol; if(vol<targetMusicVolume)setTimeout(fade,80); };
-    fade(); bars.classList.remove('paused'); label.textContent='Music on';
+function toggleMusic(){
+  const bars=document.getElementById('music-bars'),label=document.getElementById('pill-label');
+  if(musicPlaying){
+    let v=activeMusic.volume;
+    const fade=()=>{v=Math.max(v-0.015,0);activeMusic.volume=v;if(v>0)setTimeout(fade,80);else activeMusic.pause();};
+    fade();musicPlaying=false;bars.classList.add('paused');label.textContent='Music off';
+  }else{
+    activeMusic.play().catch(()=>{});musicPlaying=true;
+    let v=0;const fade=()=>{v=Math.min(v+0.015,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};
+    fade();bars.classList.remove('paused');label.textContent='Music on';
   }
 }
 
-/* --- NEW: Crossfade from ambient to Natalie Cole --- */
-function crossfadeToJoy() {
-  if (activeMusic === joyMusic) return; // already crossfaded
-  
-  joyMusic.volume = 0;
-  joyMusic.play().catch(()=>{});
-  
-  let oldMusic = activeMusic;
-  activeMusic = joyMusic; 
-  targetMusicVolume = 0.35; // Bump the volume a bit for the joyful track
-  
-  let volOld = oldMusic.volume;
-  let volNew = 0;
-  
-  // If the voice note happens to be playing while she scrolls, keep it quiet
-  let currentTarget = voicePlaying ? 0.01 : targetMusicVolume; 
-  
-  const fade = () => {
-    volOld = Math.max(volOld - 0.02, 0);
-    volNew = Math.min(volNew + 0.02, currentTarget);
-    oldMusic.volume = volOld;
-    activeMusic.volume = volNew;
-    
-    if (volOld > 0 || volNew < currentTarget) {
-       setTimeout(fade, 60);
-    } else {
-       oldMusic.pause();
-    }
+/* ═══ CROSSFADE FIX ═══
+   The trick: on first user tap (enterWorld), we play joyMusic at volume 0 and leave
+   it playing silently. This satisfies iOS's "user gesture" requirement. When 
+   crossfadeToJoy() fires later (no gesture required), we just ramp volumes.
+   We NEVER pause joyMusic after priming it. */
+let joyPrimed=false;
+
+function primeJoyMusic(){
+  if(joyPrimed)return;
+  joyPrimed=true;
+  joyMusic.volume=0;
+  joyMusic.play().then(()=>{
+    // Leave it running silently — this is intentional.
+    // Do NOT call joyMusic.pause() here.
+  }).catch(()=>{joyPrimed=false;});
+}
+
+function crossfadeToJoy(){
+  if(activeMusic===joyMusic)return;
+  if(!joyPrimed){
+    // Fallback if prime failed (shouldn't happen but just in case)
+    joyMusic.volume=0;
+    joyMusic.play().catch(()=>{});
+  }
+  const oldMusic=activeMusic;
+  activeMusic=joyMusic;
+  targetVol=0.38;
+  let vOld=oldMusic.volume,vNew=joyMusic.volume;
+  const step=()=>{
+    vOld=Math.max(vOld-0.015,0);
+    vNew=Math.min(vNew+0.015,targetVol);
+    oldMusic.volume=vOld;
+    joyMusic.volume=vNew;
+    if(vOld>0||vNew<targetVol)setTimeout(step,40);
+    else oldMusic.pause();
   };
-  fade();
+  step();
 }
 
-function startAmbient() {
-  const ac = getAC(); if (!ac) return;
-  const mg = ac.createGain(); mg.gain.setValueAtTime(0,ac.currentTime); mg.gain.linearRampToValueAtTime(0.05,ac.currentTime+3); mg.connect(ac.destination);
-  const lfo = ac.createOscillator(); lfo.frequency.value=0.08; lfo.type='sine';
-  const lfoG = ac.createGain(); lfoG.gain.value=0.025;
-  lfo.connect(lfoG); lfoG.connect(mg.gain); lfo.start();
-  [[110,1],[165,0.6],[55,0.35]].forEach(([f,v])=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=f; const g=ac.createGain(); g.gain.value=v; o.connect(g); g.connect(mg); o.start(); });
+function startAmbient(){
+  const ac=getAC();if(!ac)return;
+  const mg=ac.createGain();mg.gain.setValueAtTime(0,ac.currentTime);mg.gain.linearRampToValueAtTime(0.05,ac.currentTime+3);mg.connect(ac.destination);
+  const lfo=ac.createOscillator();lfo.frequency.value=0.08;lfo.type='sine';
+  const lfoG=ac.createGain();lfoG.gain.value=0.025;
+  lfo.connect(lfoG);lfoG.connect(mg.gain);lfo.start();
+  [[110,1],[165,0.6],[55,0.35]].forEach(([f,v])=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;const g=ac.createGain();g.gain.value=v;o.connect(g);g.connect(mg);o.start();});
 }
 
-function playEntryBloom() {
-  const ac = getAC(); if (!ac) return;
-  const freqs = [110,138.59,164.81,207.65,220,277.18];
-  const mg = ac.createGain(); mg.gain.value=0; mg.connect(ac.destination);
-  mg.gain.setValueAtTime(0,ac.currentTime); mg.gain.linearRampToValueAtTime(0.16,ac.currentTime+0.08); mg.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);
-  freqs.forEach((f,i)=>{ const o=ac.createOscillator(); o.type='sine'; o.frequency.value=f; const g=ac.createGain(); g.gain.value=0; g.gain.setValueAtTime(0,ac.currentTime+i*0.04); g.gain.linearRampToValueAtTime(0.7-i*0.08,ac.currentTime+i*0.04+0.12); g.gain.linearRampToValueAtTime(0,ac.currentTime+3.5); o.connect(g); g.connect(mg); o.start(ac.currentTime+i*0.04); o.stop(ac.currentTime+4); });
+function playEntryBloom(){
+  const ac=getAC();if(!ac)return;
+  const freqs=[110,138.59,164.81,207.65,220,277.18];
+  const mg=ac.createGain();mg.gain.value=0;mg.connect(ac.destination);
+  mg.gain.setValueAtTime(0,ac.currentTime);mg.gain.linearRampToValueAtTime(0.16,ac.currentTime+0.08);mg.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);
+  freqs.forEach((f,i)=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;const g=ac.createGain();g.gain.value=0;g.gain.setValueAtTime(0,ac.currentTime+i*0.04);g.gain.linearRampToValueAtTime(0.7-i*0.08,ac.currentTime+i*0.04+0.12);g.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);o.connect(g);g.connect(mg);o.start(ac.currentTime+i*0.04);o.stop(ac.currentTime+4);});
 }
 
-function playTypeTick() {
-  const ac=getAC(); if(!ac)return;
-  const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);
-  const data=buf.getChannelData(0);
-  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.15));
-  const src=ac.createBufferSource(); src.buffer=buf;
-  const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=800+Math.random()*400; bp.Q.value=1.8;
-  const g=ac.createGain(); g.gain.value=0.28;
-  src.connect(bp); bp.connect(g); g.connect(ac.destination); src.start();
+function playTypeTick(){
+  const ac=getAC();if(!ac)return;
+  const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.15));
+  const src=ac.createBufferSource();src.buffer=buf;
+  const bp=ac.createBiquadFilter();bp.type='bandpass';bp.frequency.value=800+Math.random()*400;bp.Q.value=1.8;
+  const g=ac.createGain();g.gain.value=0.28;
+  src.connect(bp);bp.connect(g);g.connect(ac.destination);src.start();
 }
 
-function playCardFlip() {
-  const ac=getAC(); if(!ac)return;
-  const dur=0.35; const buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate);
-  const data=buf.getChannelData(0);
-  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.4));
-  const src=ac.createBufferSource(); src.buffer=buf;
-  const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.setValueAtTime(2400,ac.currentTime); hp.frequency.exponentialRampToValueAtTime(300,ac.currentTime+dur);
-  const g=ac.createGain(); g.gain.setValueAtTime(0.22,ac.currentTime); g.gain.linearRampToValueAtTime(0,ac.currentTime+dur);
-  src.connect(hp); hp.connect(g); g.connect(ac.destination); src.start(); src.stop(ac.currentTime+dur+0.05);
+function playCardFlip(){
+  const ac=getAC();if(!ac)return;
+  const dur=0.35;const buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate);const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.4));
+  const src=ac.createBufferSource();src.buffer=buf;
+  const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.setValueAtTime(2400,ac.currentTime);hp.frequency.exponentialRampToValueAtTime(300,ac.currentTime+dur);
+  const g=ac.createGain();g.gain.setValueAtTime(0.22,ac.currentTime);g.gain.linearRampToValueAtTime(0,ac.currentTime+dur);
+  src.connect(hp);hp.connect(g);g.connect(ac.destination);src.start();src.stop(ac.currentTime+dur+0.05);
 }
 
-function playPolaroid() {
-  const ac=getAC(); if(!ac)return;
-  const buf1=ac.createBuffer(1,ac.sampleRate*0.08,ac.sampleRate); const d1=buf1.getChannelData(0);
-  for(let i=0;i<d1.length;i++) d1[i]=(Math.random()*2-1)*Math.exp(-i/(d1.length*0.1));
-  const s1=ac.createBufferSource(); s1.buffer=buf1;
-  const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=280;
-  const g1=ac.createGain(); g1.gain.value=0.5;
-  s1.connect(lp); lp.connect(g1); g1.connect(ac.destination); s1.start();
-  const osc=ac.createOscillator(); osc.type='sine'; osc.frequency.value=3200;
-  const g2=ac.createGain(); g2.gain.setValueAtTime(0.06,ac.currentTime+0.01); g2.gain.linearRampToValueAtTime(0,ac.currentTime+0.25);
-  osc.connect(g2); g2.connect(ac.destination); osc.start(ac.currentTime+0.01); osc.stop(ac.currentTime+0.3);
+function playPolaroid(){
+  const ac=getAC();if(!ac)return;
+  const buf=ac.createBuffer(1,ac.sampleRate*0.08,ac.sampleRate);const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(d.length*0.1));
+  const s=ac.createBufferSource();s.buffer=buf;
+  const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=280;
+  const g1=ac.createGain();g1.gain.value=0.5;s.connect(lp);lp.connect(g1);g1.connect(ac.destination);s.start();
+  const osc=ac.createOscillator();osc.type='sine';osc.frequency.value=3200;
+  const g2=ac.createGain();g2.gain.setValueAtTime(0.06,ac.currentTime+0.01);g2.gain.linearRampToValueAtTime(0,ac.currentTime+0.25);
+  osc.connect(g2);g2.connect(ac.destination);osc.start(ac.currentTime+0.01);osc.stop(ac.currentTime+0.3);
 }
 
-function playTransition() {
-  const ac=getAC(); if(!ac)return;
-  const osc=ac.createOscillator(); osc.type='sine'; osc.frequency.value=73.4;
-  const g=ac.createGain(); g.gain.setValueAtTime(0,ac.currentTime); g.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.4); g.gain.linearRampToValueAtTime(0,ac.currentTime+1.8);
-  const osc2=ac.createOscillator(); osc2.type='sine'; osc2.frequency.value=220.4;
-  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.04,ac.currentTime+0.5); g2.gain.linearRampToValueAtTime(0,ac.currentTime+1.5);
-  osc.connect(g); g.connect(ac.destination); osc2.connect(g2); g2.connect(ac.destination);
-  osc.start(); osc.stop(ac.currentTime+2); osc2.start(); osc2.stop(ac.currentTime+2);
+function playTransition(){
+  const ac=getAC();if(!ac)return;
+  const osc=ac.createOscillator();osc.type='sine';osc.frequency.value=73.4;
+  const g=ac.createGain();g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.4);g.gain.linearRampToValueAtTime(0,ac.currentTime+1.8);
+  const osc2=ac.createOscillator();osc2.type='sine';osc2.frequency.value=220.4;
+  const g2=ac.createGain();g2.gain.setValueAtTime(0,ac.currentTime);g2.gain.linearRampToValueAtTime(0.04,ac.currentTime+0.5);g2.gain.linearRampToValueAtTime(0,ac.currentTime+1.5);
+  osc.connect(g);g.connect(ac.destination);osc2.connect(g2);g2.connect(ac.destination);
+  osc.start();osc.stop(ac.currentTime+2);osc2.start();osc2.stop(ac.currentTime+2);
 }
 
 const CHIME_NOTES=[261.63,329.63,392.0,493.88];
-function playChime(i) {
-  const ac=getAC(); if(!ac)return;
+function playChime(i){
+  const ac=getAC();if(!ac)return;
   const freq=CHIME_NOTES[i%CHIME_NOTES.length];
-  const o1=ac.createOscillator(); o1.type='sine'; o1.frequency.value=freq;
-  const o2=ac.createOscillator(); o2.type='sine'; o2.frequency.value=freq*2.756;
-  const g1=ac.createGain(); g1.gain.setValueAtTime(0,ac.currentTime); g1.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01); g1.exponentialRampToValueAtTime(0.001,ac.currentTime+3.5);
-  const g2=ac.createGain(); g2.gain.setValueAtTime(0,ac.currentTime); g2.gain.linearRampToValueAtTime(0.06,ac.currentTime+0.01); g2.exponentialRampToValueAtTime(0.001,ac.currentTime+1.5);
-  o1.connect(g1); g1.connect(ac.destination); o2.connect(g2); g2.connect(ac.destination);
-  o1.start(); o1.stop(ac.currentTime+4); o2.start(); o2.stop(ac.currentTime+2);
+  const o1=ac.createOscillator();o1.type='sine';o1.frequency.value=freq;
+  const o2=ac.createOscillator();o2.type='sine';o2.frequency.value=freq*2.756;
+  const g1=ac.createGain();g1.gain.setValueAtTime(0,ac.currentTime);g1.gain.linearRampToValueAtTime(0.12,ac.currentTime+0.01);g1.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+3.5);
+  const g2=ac.createGain();g2.gain.setValueAtTime(0,ac.currentTime);g2.gain.linearRampToValueAtTime(0.06,ac.currentTime+0.01);g2.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+1.5);
+  o1.connect(g1);g1.connect(ac.destination);o2.connect(g2);g2.connect(ac.destination);
+  o1.start();o1.stop(ac.currentTime+4);o2.start();o2.stop(ac.currentTime+2);
 }
 
-/* ═══════════════════════════════════════════════════
-   #5 — INTRO SCREEN: z u s i
-═══════════════════════════════════════════════════ */
-function runIntroScreen() {
-  const letters = document.querySelectorAll('.intro-letter');
-  const intro = document.getElementById('intro-screen');
-
-  // Stagger letters in
-  letters.forEach((l, i) => {
-    setTimeout(() => l.classList.add('appear'), 300 + i * 220);
-  });
-
-  // After all letters visible, hold then dissolve
-  const holdTime = 300 + (letters.length - 1) * 220 + 900;
-  setTimeout(() => {
+/* INTRO */
+function runIntroScreen(){
+  const letters=document.querySelectorAll('.intro-letter'),intro=document.getElementById('intro-screen');
+  letters.forEach((l,i)=>setTimeout(()=>l.classList.add('appear'),300+i*220));
+  const holdTime=300+(letters.length-1)*220+900;
+  setTimeout(()=>{
     intro.classList.add('fade-out');
-    setTimeout(() => {
-      intro.style.display = 'none';
-      // Now fade in landing
-      const landing = document.getElementById('landing');
-      landing.classList.add('ready');
-    }, 1200);
-  }, holdTime);
+    setTimeout(()=>{intro.style.display='none';document.getElementById('landing').classList.add('ready');},1200);
+  },holdTime);
 }
 runIntroScreen();
 
-/* ═══════════════════════════════════════════════════
-   CARD FLIP (with stagger reveal)
-═══════════════════════════════════════════════════ */
-const cardFlipped = [false,false,false,false,false];
-
-function onCardFlip(cardEl, cardIndex) {
+/* CARD FLIP */
+const cardFlipped=[false,false,false,false,false];
+function onCardFlip(cardEl,idx){
   haptic(8);
-  const alreadyFlipped = cardEl.classList.contains('flipped');
-  if (alreadyFlipped) { cardEl.classList.remove('flipped'); playCardFlip(); return; }
-  playCardFlip();
-  cardEl.classList.add('flipped');
-  if (!cardFlipped[cardIndex]) {
-    cardFlipped[cardIndex] = true;
-    const chat = cardEl.querySelector('.wa-chat');
-    const typing = chat.querySelector('.wa-typing');
-    const messages = chat.querySelectorAll('.msg');
+  if(cardEl.classList.contains('flipped')){cardEl.classList.remove('flipped');playCardFlip();return;}
+  playCardFlip();cardEl.classList.add('flipped');
+  if(!cardFlipped[idx]){
+    cardFlipped[idx]=true;
+    const chat=cardEl.querySelector('.wa-chat'),typing=chat.querySelector('.wa-typing'),msgs=chat.querySelectorAll('.msg');
     typing.classList.add('active');
-    setTimeout(() => {
-      typing.classList.remove('active');
-      messages.forEach((msg, i) => { setTimeout(() => msg.classList.add('shown'), i * 280); });
-    }, 1500);
+    setTimeout(()=>{typing.classList.remove('active');msgs.forEach((m,i)=>setTimeout(()=>m.classList.add('shown'),i*280));},1500);
   }
 }
+function staggerCards(){document.querySelectorAll('.card-container').forEach((c,i)=>setTimeout(()=>c.classList.add('appeared'),i*160));}
 
-/* Stagger cards when act2 becomes visible */
-function staggerCards() {
-  const containers = document.querySelectorAll('.card-container');
-  containers.forEach((c, i) => {
-    setTimeout(() => c.classList.add('appeared'), i * 160);
-  });
-}
+/* POLAROID PARALLAX */
+function onPolaroidTap(el){haptic(8);playPolaroid();}
+const PARALLAX_SPEEDS=[0.06,-0.04,0.08,-0.06,0.05,-0.07,0.04];
+const BASE_ROTS=[-2.5,3,-1.5,2,-3,1.5,-2];
+let act3ScrollActive=false;
 
-/* ═══════════════════════════════════════════════════
-   POLAROID TAP + #7 PARALLAX
-═══════════════════════════════════════════════════ */
-function onPolaroidTap(el) { haptic(8); playPolaroid(); }
-
-const PARALLAX_SPEEDS = [0.06, -0.04, 0.08, -0.06, 0.05, -0.07, 0.04];
-const BASE_ROTS = [-2.5, 3, -1.5, 2, -3, 1.5, -2];
-let act3ScrollActive = false;
-
-function initPolaroidParallax() {
-  const stack = document.getElementById('polaroid-stack');
-  const polaroids = stack.querySelectorAll('.polaroid');
-  act3ScrollActive = true;
-
-  function onScroll() {
-    if (!act3ScrollActive) return;
-    const stackRect = stack.getBoundingClientRect();
-    const viewH = window.innerHeight;
-    // Progress of the stack through the viewport (0 = just entering, 1 = leaving)
-    const progress = (viewH - stackRect.top) / (viewH + stackRect.height);
-
-    polaroids.forEach((p, i) => {
-      const speed = PARALLAX_SPEEDS[i] || 0.05;
-      const baseRot = BASE_ROTS[i] || 0;
-      const offset = (progress - 0.5) * viewH * speed;
-      p.style.transform = `rotate(${baseRot}deg) translateY(${offset}px)`;
+function initPolaroidParallax(){
+  const stack=document.getElementById('polaroid-stack'),polaroids=stack.querySelectorAll('.polaroid');
+  act3ScrollActive=true;
+  function onScroll(){
+    if(!act3ScrollActive)return;
+    const r=stack.getBoundingClientRect(),vh=window.innerHeight,progress=(vh-r.top)/(vh+r.height);
+    polaroids.forEach((p,i)=>{
+      const offset=(progress-0.5)*vh*(PARALLAX_SPEEDS[i]||0.05);
+      p.style.transform=`rotate(${BASE_ROTS[i]||0}deg) translateY(${offset}px)`;
     });
   }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // initial
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
 }
 
-/* ═══════════════════════════════════════════════════
-   #2 — VOICE NOTE PLAYER
-═══════════════════════════════════════════════════ */
-const voiceAudio = document.getElementById('voice-audio');
-let voicePlaying = false;
-let voiceDurationKnown = false;
+/* VOICE NOTE */
+const voiceAudio=document.getElementById('voice-audio');
+let voicePlaying=false;
 
-// Build decorative waveform bars
-function buildWaveform() {
-  const wf = document.getElementById('voice-waveform');
-  const heights = [30, 50, 70, 55, 80, 45, 65, 90, 50, 40, 75, 60, 85, 45, 55, 70, 40, 65, 80, 50, 45, 70, 55, 60, 40];
-  heights.forEach((h, i) => {
-    const bar = document.createElement('div');
-    bar.className = 'wv-bar';
-    bar.style.height = h + '%';
-    bar.style.setProperty('--wv-spd', (0.4 + Math.random() * 0.4).toFixed(2) + 's');
-    bar.style.setProperty('--wv-delay', (i * 0.04).toFixed(2) + 's');
-    wf.appendChild(bar);
+function buildWaveform(){
+  const wf=document.getElementById('voice-waveform');
+  [30,50,70,55,80,45,65,90,50,40,75,60,85,45,55,70,40,65,80,50,45,70,55,60,40].forEach((h,i)=>{
+    const b=document.createElement('div');b.className='wv-bar';b.style.height=h+'%';
+    b.style.setProperty('--wv-spd',(0.4+Math.random()*0.4).toFixed(2)+'s');
+    b.style.setProperty('--wv-delay',(i*0.04).toFixed(2)+'s');
+    wf.appendChild(b);
   });
 }
 buildWaveform();
 
-voiceAudio.addEventListener('loadedmetadata', () => {
-  if (voiceAudio.duration && isFinite(voiceAudio.duration)) {
-    voiceDurationKnown = true;
-    const mins = Math.floor(voiceAudio.duration / 60);
-    const secs = Math.floor(voiceAudio.duration % 60).toString().padStart(2,'0');
-    document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+voiceAudio.addEventListener('loadedmetadata',()=>{
+  if(voiceAudio.duration&&isFinite(voiceAudio.duration)){
+    const m=Math.floor(voiceAudio.duration/60),s=Math.floor(voiceAudio.duration%60).toString().padStart(2,'0');
+    document.getElementById('voice-duration').textContent=`${m}:${s}`;
   }
 });
 
-voiceAudio.addEventListener('timeupdate', () => {
-  if (!voicePlaying) return;
-  const pct = voiceAudio.duration ? voiceAudio.currentTime / voiceAudio.duration : 0;
-  const bars = document.querySelectorAll('.wv-bar');
-  const played = Math.floor(pct * bars.length);
-  bars.forEach((b, i) => b.classList.toggle('played', i < played));
-  // Show elapsed time
-  const mins = Math.floor(voiceAudio.currentTime / 60);
-  const secs = Math.floor(voiceAudio.currentTime % 60).toString().padStart(2,'0');
-  document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+voiceAudio.addEventListener('timeupdate',()=>{
+  if(!voicePlaying)return;
+  const pct=voiceAudio.duration?voiceAudio.currentTime/voiceAudio.duration:0;
+  const bars=document.querySelectorAll('.wv-bar'),played=Math.floor(pct*bars.length);
+  bars.forEach((b,i)=>b.classList.toggle('played',i<played));
+  const m=Math.floor(voiceAudio.currentTime/60),s=Math.floor(voiceAudio.currentTime%60).toString().padStart(2,'0');
+  document.getElementById('voice-duration').textContent=`${m}:${s}`;
 });
 
-voiceAudio.addEventListener('ended', () => {
-  voicePlaying = false;
-  document.getElementById('voice-play-icon').textContent = '▶';
+voiceAudio.addEventListener('ended',()=>{
+  voicePlaying=false;
+  document.getElementById('voice-play-icon').textContent='▶';
   document.getElementById('voice-player').classList.remove('playing');
-  document.querySelectorAll('.wv-bar').forEach(b => b.classList.remove('played'));
-  const mins = Math.floor(voiceAudio.duration / 60);
-  const secs = Math.floor(voiceAudio.duration % 60).toString().padStart(2,'0');
-  document.getElementById('voice-duration').textContent = `${mins}:${secs}`;
+  document.querySelectorAll('.wv-bar').forEach(b=>b.classList.remove('played'));
+  if(voiceAudio.duration&&isFinite(voiceAudio.duration)){
+    const m=Math.floor(voiceAudio.duration/60),s=Math.floor(voiceAudio.duration%60).toString().padStart(2,'0');
+    document.getElementById('voice-duration').textContent=`${m}:${s}`;
+  }
+  // Restore music
+  if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
 });
 
-function toggleVoiceNote() {
+function toggleVoiceNote(){
   haptic(10);
-  // Always resume AudioContext on user gesture (iOS requirement)
-  if (AC && AC.state === 'suspended') AC.resume();
-
-  const playIcon = document.getElementById('voice-play-icon');
-  const player = document.getElementById('voice-player');
-  const durationEl = document.getElementById('voice-duration');
-
-  if (voicePlaying) {
-    voiceAudio.pause();
-    voicePlaying = false;
-    playIcon.textContent = '▶';
-    player.classList.remove('playing');
-    
-    // Restore music volume if paused manually
-    if (musicPlaying) {
-      let v = activeMusic.volume;
-      const fade = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(fade,80); };
-      fade();
-    }
+  if(AC&&AC.state==='suspended')AC.resume();
+  const icon=document.getElementById('voice-play-icon'),player=document.getElementById('voice-player'),dur=document.getElementById('voice-duration');
+  if(voicePlaying){
+    voiceAudio.pause();voicePlaying=false;icon.textContent='▶';player.classList.remove('playing');
+    if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
     return;
   }
-
-  // --- UPDATED: Dim bg music to a barely-there whisper (1%) incredibly fast ---
-  if (musicPlaying) {
-    const target = 0.01; 
-    let v = activeMusic.volume;
-    const fade = () => { v = Math.max(v-0.03, target); activeMusic.volume=v; if(v>target) setTimeout(fade,30); };
-    fade();
-  }
-
-  // Reset to start if ended
-  if (voiceAudio.ended || voiceAudio.currentTime >= (voiceAudio.duration || Infinity)) {
-    voiceAudio.currentTime = 0;
-  }
-
-  voiceAudio.play().then(() => {
-    voicePlaying = true;
-    playIcon.textContent = '⏸';
-    player.classList.add('playing');
-  }).catch((err) => {
-    playIcon.textContent = '▶';
-    player.classList.remove('playing');
-    durationEl.textContent = 'error';
-    durationEl.style.color = '#e87070';
-    console.warn('Voice note play failed:', err.message, '| src:', voiceAudio.currentSrc);
-    // Restore music volume on failure
-    if (musicPlaying) {
-      let v = activeMusic.volume;
-      const restore = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(restore,80); };
-      restore();
-    }
+  // Dim music to near-zero fast
+  if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.max(v-0.03,0.01);activeMusic.volume=v;if(v>0.01)setTimeout(fade,30);};fade();}
+  if(voiceAudio.ended||voiceAudio.currentTime>=(voiceAudio.duration||Infinity))voiceAudio.currentTime=0;
+  voiceAudio.play().then(()=>{
+    voicePlaying=true;icon.textContent='⏸';player.classList.add('playing');
+  }).catch(err=>{
+    icon.textContent='▶';player.classList.remove('playing');dur.textContent='error';dur.style.color='#e87070';
+    console.warn('Voice note error:',err.message,'src:',voiceAudio.currentSrc);
+    if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
   });
 }
 
-// Restore music volume when voice ends
-voiceAudio.addEventListener('ended', () => {
-  if (musicPlaying) {
-    let v = activeMusic.volume;
-    const fade = () => { v = Math.min(v+0.01, targetMusicVolume); activeMusic.volume=v; if(v<targetMusicVolume) setTimeout(fade,80); };
-    fade();
-  }
-});
-
-/* ═══════════════════════════════════════════════════
-   STAR FIELD
-═══════════════════════════════════════════════════ */
-function buildStarField(id, count) {
-  const sf = document.getElementById(id); if(!sf) return;
+/* STAR FIELD */
+function buildStarField(id,count){
+  const sf=document.getElementById(id);if(!sf)return;
   for(let i=0;i<count;i++){
-    const s=document.createElement('div'); s.className='star';
-    const size=Math.random()*2.5+0.5;
+    const s=document.createElement('div');s.className='star';const size=Math.random()*2.5+0.5;
     s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
     sf.appendChild(s);
   }
 }
-buildStarField('stars', 300);
-buildStarField('bg-stars', 200);
-buildStarField('epilogue-stars', 350);
+buildStarField('stars',300);buildStarField('bg-stars',200);buildStarField('epilogue-stars',350);
 
-/* ═══════════════════════════════════════════════════
-   PROGRESS THREAD
-═══════════════════════════════════════════════════ */
-const ACT_PROGRESS = { act1:20, act2:42, act3:64, act4:85, act5:100 };
+/* PROGRESS THREAD */
+const ACT_LABELS={act1:'prologue',act2:'receipts',act3:'gallery',act4:'chapter',act5:'here'};
+const ACT_PROGRESS={act1:20,act2:42,act3:64,act4:85,act5:100};
+function setProgress(pct,label){
+  document.getElementById('thread-fill').style.height=pct+'%';
+  const dot=document.getElementById('thread-dot');dot.style.top=pct+'%';
+  if(label)dot.setAttribute('data-label',label);
+}
+function showProgressThread(){document.getElementById('progress-thread').classList.add('visible');}
 
-function setProgress(pct) {
-  document.getElementById('thread-fill').style.height = pct+'%';
-  document.getElementById('thread-dot').style.top = pct+'%';
+/* NAV */
+let currentAct=0;
+
+function enterWorld(){
+  getAC();
+  primeJoyMusic(); // prime while we have a user gesture
+  startAmbient();startMusic();playEntryBloom();
+  const landing=document.getElementById('landing');
+  landing.style.opacity='0';landing.style.pointerEvents='none';
+  setTimeout(()=>{
+    landing.classList.add('hidden');showProgressThread();setProgress(ACT_PROGRESS.act1,ACT_LABELS.act1);
+    const a=document.getElementById('act1');a.style.display='flex';
+    setTimeout(()=>{a.classList.add('visible');startTypewriter();},80);
+    currentAct=1;
+  },1200);
 }
 
-function showProgressThread() {
-  document.getElementById('progress-thread').classList.add('visible');
-}
-
-/* ═══════════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════════ */
-let currentAct = 0;
-
-function enterWorld() {
-  // --- NEW: Unlock the Natalie Cole track immediately on first tap ---
-  joyMusic.volume = 0;
-  joyMusic.play().then(() => { 
-    joyMusic.pause(); // Pause it immediately, now the browser trusts it
-  }).catch(()=>{});
-
-  // Start the actual opening music and effects
-  startAmbient();
-  startMusic();
-  playEntryBloom();
-  
-  const landing = document.getElementById('landing');
-  landing.style.opacity = '0';
-  landing.style.pointerEvents = 'none';
-  setTimeout(() => {
-    landing.classList.add('hidden');
-    showProgressThread();
-    setProgress(ACT_PROGRESS.act1);
-    const act1 = document.getElementById('act1');
-    act1.style.display = 'flex';
-    setTimeout(() => { act1.classList.add('visible'); startTypewriter(); }, 80);
-    currentAct = 1;
-  }, 1200);
-}
-
-const LINE = '"Hiii, good evening Jennifer, this is Motolani from GLT.\nWe met after church yesterday."';
-
-function startTypewriter() {
-  const el = document.getElementById('typewriter-text');
-  el.innerHTML = '<span class="cursor"></span>';
-  let i = 0;
-  function type() {
-    if (i < LINE.length) {
-      const ch = LINE[i];
-      const cursor = el.querySelector('.cursor');
-      if (ch==='\n') cursor.insertAdjacentHTML('beforebegin','<br>');
-      else { cursor.insertAdjacentText('beforebegin', ch); if(ch!==' ') playTypeTick(); }
-      i++;
-      const delay = ch==='\n'?420:(ch===','||ch==='.'?120:38+Math.random()*18);
-      setTimeout(type, delay);
-    } else {
+const LINE='"Hiii, good evening Jennifer, this is Motolani from GLT.\nWe met after church yesterday."';
+function startTypewriter(){
+  const el=document.getElementById('typewriter-text');el.innerHTML='<span class="cursor"></span>';let i=0;
+  function type(){
+    if(i<LINE.length){
+      const ch=LINE[i],cursor=el.querySelector('.cursor');
+      if(ch==='\n')cursor.insertAdjacentHTML('beforebegin','<br>');
+      else{cursor.insertAdjacentText('beforebegin',ch);if(ch!==' ')playTypeTick();}
+      i++;setTimeout(type,ch==='\n'?420:(ch===','||ch==='.'?120:38+Math.random()*18));
+    }else{
       el.querySelector('.cursor').style.display='none';
-      setTimeout(()=>{ document.getElementById('prologue-kicker').style.opacity='1'; },600);
-      setTimeout(()=>{ document.getElementById('btn-act2').style.opacity='1'; },1400);
+      setTimeout(()=>document.getElementById('prologue-kicker').style.opacity='1',600);
+      setTimeout(()=>document.getElementById('btn-act2').style.opacity='1',1400);
     }
   }
-  setTimeout(type, 600);
+  setTimeout(type,600);
 }
 
-function fadeOut(id, cb) {
-  const el = document.getElementById(id);
-  el.classList.remove('visible');
-  el.style.opacity = '0';
-  setTimeout(()=>{ el.classList.add('hidden'); el.style.display=''; if(cb) cb(); }, 1200);
+function fadeOut(id,cb){
+  const el=document.getElementById(id);el.classList.remove('visible');el.style.opacity='0';
+  setTimeout(()=>{el.classList.add('hidden');el.style.display='';if(cb)cb();},1200);
+}
+function fadeIn(id){
+  window.scrollTo(0,0);const el=document.getElementById(id);el.classList.remove('hidden');el.style.display='flex';
+  setTimeout(()=>el.classList.add('visible'),60);
 }
 
-function fadeIn(id) {
-  window.scrollTo(0,0);
-  const el = document.getElementById(id);
-  el.classList.remove('hidden');
-  el.style.display = 'flex';
-  setTimeout(()=>el.classList.add('visible'), 60);
+function goToAct2(){playTransition();setProgress(ACT_PROGRESS.act2,ACT_LABELS.act2);fadeOut('act1',()=>{fadeIn('act2');setTimeout(staggerCards,200);});currentAct=2;}
+function goToAct3(){playTransition();setProgress(ACT_PROGRESS.act3,ACT_LABELS.act3);act3ScrollActive=false;fadeOut('act2',()=>{fadeIn('act3');setTimeout(initPolaroidParallax,300);});currentAct=3;}
+function goToAct4(){
+  playTransition();act3ScrollActive=false;setProgress(ACT_PROGRESS.act4,ACT_LABELS.act4);
+  fadeOut('act3',()=>{
+    window.scrollTo(0,0);const a=document.getElementById('act4');a.classList.remove('hidden');a.style.display='flex';
+    setTimeout(()=>{a.classList.add('visible');initScrollReveal();},80);
+  });currentAct=4;
 }
 
-function goToAct2() {
-  playTransition();
-  setProgress(ACT_PROGRESS.act2);
-  fadeOut('act1', () => {
-    fadeIn('act2');
-    setTimeout(staggerCards, 200);
-  });
-  currentAct = 2;
-}
+/* ACT IV SCROLL REVEAL */
+let epilogueTriggered=false,chimeIndex=0;
 
-function goToAct3() {
-  playTransition();
-  setProgress(ACT_PROGRESS.act3);
-  act3ScrollActive = false; // reset old listener flag
-  fadeOut('act2', () => {
-    fadeIn('act3');
-    setTimeout(initPolaroidParallax, 300);
-  });
-  currentAct = 3;
-}
-
-function goToAct4() {
-  playTransition();
-  act3ScrollActive = false;
-  setProgress(ACT_PROGRESS.act4);
-  fadeOut('act3', () => {
-    window.scrollTo(0,0);
-    const act4 = document.getElementById('act4');
-    act4.classList.remove('hidden');
-    act4.style.display = 'flex';
-    setTimeout(()=>{ act4.classList.add('visible'); initScrollReveal(); }, 80);
-  });
-  currentAct = 4;
-}
-
-/* ═══════════════════════════════════════════════════
-   ACT IV — INTERSECTION OBSERVER
-═══════════════════════════════════════════════════ */
-let epilogueTriggered = false;
-let chimeIndex = 0;
-
-function initScrollReveal() {
-  const blocks = [
-    document.getElementById('fb1'),
-    document.getElementById('fb2'),
-    document.getElementById('fb3'),
-    document.getElementById('and-you-section'),
-    document.getElementById('voice-note-section'),
-    document.getElementById('ask-block'),
-    document.getElementById('reply-section'),
-  ];
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !entry.target.classList.contains('revealed')) {
-        entry.target.classList.add('revealed');
-        playChime(chimeIndex++);
-
-        if (entry.target.id === 'ask-block') {
-          playEntryBloom();
-          
-          // --- NEW: Trigger crossfade to Natalie Cole here ---
+function initScrollReveal(){
+  const blocks=['fb1','fb2','fb3','and-you-section','voice-note-section','ask-block','reply-section'].map(id=>document.getElementById(id));
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
+        entry.target.classList.add('revealed');playChime(chimeIndex++);
+        if(entry.target.id==='ask-block'){
+          // Crossfade music THEN type out "I love you, Zusi Billions."
           crossfadeToJoy();
-
-          setTimeout(() => {
-            const aw = document.getElementById('align-word');
-            if (aw) aw.classList.add('spread');
-          }, 1800);
-
-          if (!epilogueTriggered) {
-            epilogueTriggered = true;
-            setTimeout(showEpilogue, 90000);
-          }
+          playEntryBloom();
+          setTimeout(typeAskQuestion,600);
+          if(!epilogueTriggered){epilogueTriggered=true;setTimeout(showEpilogue,90000);}
         }
       }
     });
-  }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
-
-  blocks.forEach(b => { if(b) observer.observe(b); });
+  },{threshold:0.2,rootMargin:'0px 0px -60px 0px'});
+  blocks.forEach(b=>{if(b)obs.observe(b);});
 }
 
-/* ═══════════════════════════════════════════════════
-   #6 — ACT V: TYPED EPILOGUE
-═══════════════════════════════════════════════════ */
-const EPILOGUE_TEXT = 'whenever you\'re ready, I\'m here';
-
-function showEpilogue() {
-  setProgress(100);
-  const act5 = document.getElementById('act5');
-  act5.classList.add('visible');
-
-  // Fade out music
-  if (musicPlaying) {
-    let vol = activeMusic.volume;
-    const fade = () => { vol=Math.max(vol-0.004,0); activeMusic.volume=vol; if(vol>0)setTimeout(fade,120); else activeMusic.pause(); };
-    setTimeout(fade, 3000);
-  }
-
-  // Type epilogue text after act5 fades in
-  setTimeout(() => typeEpilogue(), 2500);
-}
-
-function typeEpilogue() {
-  const el = document.getElementById('epilogue-typed');
-  el.textContent = '';
-  let i = 0;
-  function type() {
-    if (i < EPILOGUE_TEXT.length) {
-      el.textContent += EPILOGUE_TEXT[i];
-      i++;
-      const delay = 75 + Math.random() * 40;
-      setTimeout(type, delay);
-    } else {
-      // After text finishes, fade in the ✦
-      setTimeout(() => {
-        const mark = document.getElementById('epilogue-mark');
-        mark.classList.add('show');
-      }, 800);
+/* TYPE OUT "I love you, Zusi Billions." */
+const ASK_TEXT='I love you, Zusi Billions.';
+function typeAskQuestion(){
+  const el=document.getElementById('ask-question');el.textContent='';let i=0;
+  function type(){
+    if(i<ASK_TEXT.length){
+      el.textContent+=ASK_TEXT[i];i++;
+      playTypeTick();
+      const ch=ASK_TEXT[i-1];
+      setTimeout(type,ch===','?280:ch==='.'?400:90+Math.random()*30);
+    }else{
+      // After text complete, fade in the body copy and spread align word
+      setTimeout(()=>{
+        document.getElementById('ask-open').style.opacity='1';
+        setTimeout(()=>{const aw=document.getElementById('align-word');if(aw)aw.classList.add('spread');},1200);
+      },400);
     }
   }
   type();
 }
 
-/* ═══════════════════════════════════════════════════
-   SCROLL PROGRESS (act4)
-═══════════════════════════════════════════════════ */
-window.addEventListener('scroll', () => {
-  if (currentAct !== 4) return;
-  const doc = document.documentElement;
-  const scrollTop = window.scrollY || doc.scrollTop;
-  const scrollHeight = doc.scrollHeight - doc.clientHeight;
-  if (scrollHeight <= 0) return;
-  const pct = ACT_PROGRESS.act4 + (scrollTop/scrollHeight)*(ACT_PROGRESS.act5 - ACT_PROGRESS.act4);
-  setProgress(Math.min(pct, ACT_PROGRESS.act5 - 2));
-}, { passive: true });
-
-/* ═══════════════════════════════════════════════════
-   #10 — REPLY FIELD & FORMSPREE LOGIC
-═══════════════════════════════════════════════════ */
-const replyField = document.getElementById('reply-field');
-const sendBtn = document.getElementById('send-reply-btn');
-
-replyField.addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 200) + 'px';
-  
-  // Fade in the button as soon as she types something
-  if (this.value.trim().length > 0) {
-    sendBtn.classList.add('show');
-  } else {
-    sendBtn.classList.remove('show');
+/* ACT V EPILOGUE */
+const EPILOGUE_TEXT="whenever you're ready, I'm here";
+function showEpilogue(){
+  setProgress(100,ACT_LABELS.act5);
+  document.getElementById('act5').classList.add('visible');
+  if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.max(v-0.004,0);activeMusic.volume=v;if(v>0)setTimeout(fade,120);else activeMusic.pause();};setTimeout(fade,3000);}
+  setTimeout(typeEpilogue,2500);
+}
+function typeEpilogue(){
+  const el=document.getElementById('epilogue-typed');el.textContent='';let i=0;
+  function type(){
+    if(i<EPILOGUE_TEXT.length){el.textContent+=EPILOGUE_TEXT[i];i++;setTimeout(type,75+Math.random()*40);}
+    else setTimeout(()=>document.getElementById('epilogue-mark').classList.add('show'),800);
   }
+  type();
+}
+
+/* SCROLL PROGRESS act4 */
+window.addEventListener('scroll',()=>{
+  if(currentAct!==4)return;
+  const doc=document.documentElement,st=window.scrollY||doc.scrollTop,sh=doc.scrollHeight-doc.clientHeight;
+  if(sh<=0)return;
+  const pct=ACT_PROGRESS.act4+(st/sh)*(ACT_PROGRESS.act5-ACT_PROGRESS.act4);
+  setProgress(Math.min(pct,ACT_PROGRESS.act5-2));
+},{passive:true});
+
+/* REPLY FIELD */
+const replyField=document.getElementById('reply-field'),sendBtn=document.getElementById('send-reply-btn');
+replyField.addEventListener('input',function(){
+  this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px';
+  sendBtn.classList.toggle('show',this.value.trim().length>0);
 });
-
-sendBtn.addEventListener('click', () => {
-  const text = replyField.value.trim();
-  if (!text) return;
-
-  // Change button state to show it's working
-  sendBtn.textContent = 'Sending...';
-  sendBtn.style.pointerEvents = 'none';
-
-  // Your actual Formspree endpoint
-  const formspreeURL = "https://formspree.io/f/mnjrvyvn";
-
-  fetch(formspreeURL, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ message: text })
-  }).then(response => {
-    if (response.ok) {
-      sendBtn.textContent = 'Safely kept.';
-      sendBtn.classList.add('sent');
-      replyField.readOnly = true; // Lock the text box
-    } else {
-      sendBtn.textContent = 'Error. Try again?';
-      sendBtn.style.pointerEvents = 'auto';
-    }
-  }).catch(error => {
-    sendBtn.textContent = 'Error. Try again?';
-    sendBtn.style.pointerEvents = 'auto';
-  });
+sendBtn.addEventListener('click',()=>{
+  const text=replyField.value.trim();if(!text)return;
+  sendBtn.textContent='Sending...';sendBtn.style.pointerEvents='none';
+  fetch('https://formspree.io/f/mnjrvyvn',{
+    method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},
+    body:JSON.stringify({message:text})
+  }).then(r=>{
+    if(r.ok){sendBtn.textContent='Safely kept.';sendBtn.classList.add('sent');replyField.readOnly=true;}
+    else{sendBtn.textContent='Error. Try again?';sendBtn.style.pointerEvents='auto';}
+  }).catch(()=>{sendBtn.textContent='Error. Try again?';sendBtn.style.pointerEvents='auto';});
 });
-
 </script>
 </body>
 </html>
