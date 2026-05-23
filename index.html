@@ -768,6 +768,19 @@
   .reply-field::-webkit-scrollbar { display: none; }
   .reply-field { scrollbar-width: none; }
 
+  .send-btn {
+    margin-top: 24px; padding: 10px 28px;
+    background: transparent;
+    border: 1px solid rgba(201,169,110,0.5);
+    color: var(--gold2); border-radius: 2px; cursor: pointer;
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.4s ease;
+    opacity: 0; pointer-events: none; transform: translateY(10px);
+  }
+  .send-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .send-btn.sent { border-color: rgba(148, 163, 184, 0.3); color: var(--mist); pointer-events: none; }
+
   /* ─── ACT V — EPILOGUE ─── */
   #act5 {
     position: fixed; inset: 0;
@@ -1225,11 +1238,14 @@
         <textarea
           class="reply-field"
           id="reply-field"
+          name="message"
           placeholder="you can type here if you want. i won't see it tonight."
           rows="3"
           spellcheck="false"
           autocomplete="off"
         ></textarea>
+        <!-- The button is hidden by default -->
+        <button id="send-reply-btn" class="send-btn">Leave note</button>
       </div>
 
     </div>
@@ -1875,11 +1891,55 @@ window.addEventListener('scroll', () => {
   setProgress(Math.min(pct, ACT_PROGRESS.act5 - 2));
 }, { passive: true });
 
-/* Auto-grow textarea */
+/* ═══════════════════════════════════════════════════
+   #10 — REPLY FIELD & FORMSPREE LOGIC
+═══════════════════════════════════════════════════ */
 const replyField = document.getElementById('reply-field');
+const sendBtn = document.getElementById('send-reply-btn');
+
 replyField.addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+  
+  // Fade in the button as soon as she types something
+  if (this.value.trim().length > 0) {
+    sendBtn.classList.add('show');
+  } else {
+    sendBtn.classList.remove('show');
+  }
+});
+
+sendBtn.addEventListener('click', () => {
+  const text = replyField.value.trim();
+  if (!text) return;
+
+  // Change button state to show it's working
+  sendBtn.textContent = 'Sending...';
+  sendBtn.style.pointerEvents = 'none';
+
+  // Your actual Formspree endpoint
+  const formspreeURL = "https://formspree.io/f/mnjrvyvn";
+
+  fetch(formspreeURL, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ message: text })
+  }).then(response => {
+    if (response.ok) {
+      sendBtn.textContent = 'Safely kept.';
+      sendBtn.classList.add('sent');
+      replyField.readOnly = true; // Lock the text box
+    } else {
+      sendBtn.textContent = 'Error. Try again?';
+      sendBtn.style.pointerEvents = 'auto';
+    }
+  }).catch(error => {
+    sendBtn.textContent = 'Error. Try again?';
+    sendBtn.style.pointerEvents = 'auto';
+  });
 });
 
 </script>
