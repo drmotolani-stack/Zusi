@@ -142,13 +142,6 @@
   /* UPGRADE 1: Polaroid flip system */
   .polaroid-wrap{perspective:1400px;width:100%;}
   .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease,transform 0.85s cubic-bezier(0.23,1,0.32,1);transform-style:preserve-3d;}
-  .polaroid:nth-child(1){--base-rot:-2.5deg;transform:rotate(-2.5deg);}
-  .polaroid:nth-child(2){--base-rot:3deg;transform:rotate(3deg);}
-  .polaroid:nth-child(3){--base-rot:-1.5deg;transform:rotate(-1.5deg);}
-  .polaroid:nth-child(4){--base-rot:2deg;transform:rotate(2deg);}
-  .polaroid:nth-child(5){--base-rot:-3deg;transform:rotate(-3deg);}
-  .polaroid:nth-child(6){--base-rot:1.5deg;transform:rotate(1.5deg);}
-  .polaroid:nth-child(7){--base-rot:-2deg;transform:rotate(-2deg);}
   .polaroid-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1);}
   .polaroid.secret-flipped .polaroid-inner{transform:rotateY(180deg);}
   .polaroid-front,.polaroid-back-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
@@ -156,6 +149,7 @@
   .polaroid-back-face{transform:rotateY(180deg);background:#fdf9f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border-radius:1px;}
   .polaroid-secret-text{font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:300;color:#2a1f0e;text-align:center;line-height:1.8;letter-spacing:0.02em;}
   .polaroid-secret-mark{margin-top:16px;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.3em;color:rgba(201,169,110,0.6);text-transform:uppercase;}
+  
   /* For non-secret polaroids, use simpler structure */
   .polaroid.simple-polaroid{transform-style:flat;}
   .polaroid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);transition:filter 0.4s ease,transform 0.4s cubic-bezier(0.23,1,0.32,1);pointer-events:none;}
@@ -209,7 +203,7 @@
   .ask-block.revealed{opacity:1;transform:scale(1);}
   .ask-question{font-size:clamp(2.2rem,7vw,3.5rem);font-weight:300;font-style:italic;line-height:1.2;color:var(--gold2);margin-bottom:40px;letter-spacing:0.02em;min-height:1.2em;}
   .ask-open{max-width:580px;margin:0 auto;font-size:clamp(1.15rem,3.8vw,1.45rem);font-weight:300;line-height:2;color:var(--silk);font-family:var(--serif);font-style:italic;text-align:center;}
-  .alignment-climax{margin-top:56px;padding-top:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
+  .alignment-climax{margin-top:56px;padding:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
   .align-word{display:inline-block;letter-spacing:0em;color:var(--gold2);font-style:normal;font-weight:400;transition:letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);}
   .align-word.spread{letter-spacing:0.18em;}
 
@@ -371,7 +365,7 @@
         </div>
       </div>
     </div>
-    <!-- CARD 03: THE BILLING DEPT. — with slip message (Upgrade 5) -->
+    <!-- CARD 03: THE BILLING DEPT. -->
     <div class="card-container" data-card-idx="2">
       <div class="card" id="card-3" onclick="onCardFlip(this,2)">
         <div class="card-face card-front"><span class="card-num">03 / 05</span><h3>The Billing Dept.</h3><span class="tap-hint">tap to open</span></div>
@@ -428,7 +422,7 @@
   <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
 
-<!-- ACT III — UPGRADE 1: Secret polaroid -->
+<!-- ACT III -->
 <div class="act hidden" id="act3">
   <div class="act-label">III — The Late Nights</div>
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
@@ -436,21 +430,21 @@
   <div class="polaroid-stack" id="polaroid-stack">
 
     <!-- Polaroid 1: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo1.jpg" alt="That laugh">
       <div class="caption">that laugh though ✌🏾</div>
       <div class="date-stamp">05·02<br>2026</div>
     </div>
 
     <!-- Polaroid 2: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo3.jpg" alt="Double peace">
       <div class="caption">double the peace, double the energy</div>
       <div class="date-stamp">05·02<br>2026</div>
     </div>
 
     <!-- Polaroid 3: SECRET — flips to reveal message -->
-    <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)" style="transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease;">
+    <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)">
       <div class="polaroid-inner" id="secret-polaroid-inner">
         <div class="polaroid-front">
           <img src="photo4.jpg" alt="Screen share" style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);pointer-events:none;">
@@ -465,28 +459,28 @@
     </div>
 
     <!-- Polaroid 4: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo5.jpg" alt="Lunch call">
       <div class="caption">lunch call era</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
     <!-- Polaroid 5: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo6.jpg" alt="Eating and drinking">
       <div class="caption">unbothered &amp; thriving</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
     <!-- Polaroid 6: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo7.jpg" alt="Professional headshot 1">
       <div class="caption">CEO ma 🌝</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
     <!-- Polaroid 7: simple -->
-    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo8.jpg" alt="Professional headshot 2">
       <div class="caption">overall best. always.</div>
       <div class="date-stamp">05·13<br>2026</div>
@@ -764,7 +758,7 @@ function staggerCards(){document.querySelectorAll('.card-container').forEach((c,
 
 /* ── POLAROID PARALLAX ── */
 const PARALLAX_SPEEDS=[0.06,-0.04,0.08,-0.06,0.05,-0.07,0.04];
-const BASE_ROTS=[-2.5,3,0,2,-3,1.5,-2]; // secret polaroid (idx 2) has no rotation class, managed separately
+const BASE_ROTS=[-2.5,3,-1.5,2,-3,1.5,-2];
 let act3ScrollActive=false;
 
 function onPolaroidTap(el,isSecret){
@@ -776,14 +770,13 @@ function onPolaroidTap(el,isSecret){
 let secretFlipped=false;
 function onSecretPolaroidTap(el){
   haptic(12);
-  const inner=document.getElementById('secret-polaroid-inner');
   if(!secretFlipped){
     playSecretFlip();
-    el.style.transform='rotate(0deg) rotateY(180deg)';
+    el.classList.add('secret-flipped');
     secretFlipped=true;
   } else {
     playCardFlip();
-    el.style.transform='rotate(-1.5deg) rotateY(0deg)';
+    el.classList.remove('secret-flipped');
     secretFlipped=false;
   }
 }
@@ -796,14 +789,6 @@ function initPolaroidParallax(){
     if(!act3ScrollActive)return;
     const r=stack.getBoundingClientRect(),vh=window.innerHeight,progress=(vh-r.top)/(vh+r.height);
     allPolaroids.forEach((p,i)=>{
-      if(p.id==='secret-polaroid'){
-        // managed by flip system; just translate
-        if(!secretFlipped){
-          const offset=(progress-0.5)*vh*(PARALLAX_SPEEDS[i]||0.05);
-          p.style.transform=`rotate(-1.5deg) rotateY(0deg) translateY(${offset}px)`;
-        }
-        return;
-      }
       const rot=BASE_ROTS[i]||0;
       const offset=(progress-0.5)*vh*(PARALLAX_SPEEDS[i]||0.05);
       p.style.transform=`rotate(${rot}deg) translateY(${offset}px)`;
