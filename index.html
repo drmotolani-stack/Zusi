@@ -122,11 +122,8 @@
   .msg-time{position:absolute;bottom:4px;right:9px;font-size:10px;color:rgba(233,237,239,0.55);white-space:nowrap;display:flex;align-items:center;gap:3px;}
   .msg.sent .msg-time{color:#53bdeb;}
   .tick{font-size:11px;}
-
-  /* UPGRADE 5: Special slip message styling */
   .msg.slip{background:linear-gradient(135deg,#1a3a2f 0%,#005c4b 100%);border:1px solid rgba(201,169,110,0.25);font-style:italic;}
   .msg.slip .msg-time{color:rgba(201,169,110,0.7);}
-
   .wa-typing{display:none;align-self:flex-start;background:#1f2c34;padding:10px 14px;border-radius:18px;border-bottom-left-radius:4px;gap:4px;align-items:center;margin-left:6px;position:relative;}
   .wa-typing::before{content:'';position:absolute;left:-6px;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 10px 8px;border-color:transparent transparent #1f2c34 transparent;}
   .wa-typing.active{display:flex;}
@@ -138,27 +135,37 @@
   /* ACT III */
   #act3{background:linear-gradient(180deg,#0b1120 0%,#0c1018 100%);justify-content:flex-start;padding-top:80px;}
   .polaroid-stack{display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:340px;margin-bottom:20px;will-change:transform;}
-
-  /* UPGRADE 1: Polaroid flip system */
   .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease,transform 0.85s cubic-bezier(0.23,1,0.32,1);}
-  
-  /* Fixed Secret Polaroid Structure */
   .polaroid.secret-polaroid { background: transparent; padding: 0; box-shadow: none; perspective: 1400px; }
   .polaroid.secret-polaroid:hover, .polaroid.secret-polaroid:active { box-shadow: none; z-index: 10; }
   .polaroid-inner{width:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);border-radius:1px;}
   .polaroid.secret-polaroid:hover .polaroid-inner, .polaroid.secret-polaroid:active .polaroid-inner { box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5); }
   .polaroid.secret-flipped .polaroid-inner{transform:rotateY(180deg);}
-
   .polaroid-front {position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#faf8f5;padding:14px 14px 52px 14px;display:flex;flex-direction:column;border-radius:1px;}
   .polaroid-back-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:#fdf9f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border-radius:1px;}
   .polaroid-secret-text{font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:300;color:#2a1f0e;text-align:center;line-height:1.8;letter-spacing:0.02em;}
   .polaroid-secret-mark{margin-top:16px;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.3em;color:rgba(201,169,110,0.6);text-transform:uppercase;}
-  
   .polaroid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);transition:filter 0.4s ease,transform 0.4s cubic-bezier(0.23,1,0.32,1);pointer-events:none;}
   .polaroid:hover img,.polaroid:active img{filter:sepia(0%) contrast(1.06) brightness(1.06) saturate(1.15);transform:scale(1.04);}
   .polaroid:hover,.polaroid:active{box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5);z-index:10;}
   .polaroid .caption{position:absolute;bottom:16px;left:14px;right:56px;text-align:left;font-family:var(--mono);font-size:0.75rem;font-weight:400;letter-spacing:0.08em;color:#1a1a1a;}
   .polaroid .date-stamp{position:absolute;bottom:14px;right:14px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.06em;color:#cc3322;opacity:0.85;font-weight:400;line-height:1.3;text-align:right;filter:blur(0.2px);}
+
+  /* ACT III.V */
+  #act3-5 { background: linear-gradient(180deg, #0c1018 0%, #080c14 100%); justify-content: flex-start; padding-top: 80px; padding-left: 0; padding-right: 0; }
+  .cinematic-wrapper { width: 100%; display: flex; flex-direction: column; gap: 24px; padding: 0; }
+  .cinematic-panel { width: 100%; height: 82vh; position: relative; overflow: hidden; opacity: 0; transform: translateY(40px); transition: opacity 1.2s cubic-bezier(0.16,1,0.3,1), transform 1.2s cubic-bezier(0.16,1,0.3,1); }
+  .cinematic-panel.revealed { opacity: 1; transform: translateY(0); }
+  .cinematic-panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 2s cubic-bezier(0.16,1,0.3,1); z-index: 1; pointer-events: none; }
+  .cinematic-panel:hover img { transform: scale(1.04); }
+  .cinematic-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(8,12,20,0) 0%, rgba(8,12,20,0.1) 40%, rgba(8,12,20,0.85) 90%, rgba(8,12,20,0.98) 100%); z-index: 2; pointer-events: none; }
+  .panel-content { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: space-between; padding: 40px 24px; pointer-events: none; }
+  .panel-top { align-self: flex-end; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.3em; color: rgba(201,169,110,0.8); text-transform: uppercase; }
+  .panel-bottom { display: flex; flex-direction: column; gap: 14px; }
+  .coord-line { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+  .coord-line::before { content: ''; width: 24px; height: 1px; background: var(--gold); display: block; opacity: 0.6; }
+  .promise-text { font-family: var(--serif); font-size: clamp(1.2rem, 4.5vw, 1.8rem); font-weight: 300; font-style: italic; line-height: 1.5; color: var(--silk); max-width: 600px; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
+  .promise-mark { font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.3em; color: rgba(201,169,110,0.5); text-transform: uppercase; margin-top: 4px; }
 
   /* ACT IV */
   #act4{background:radial-gradient(ellipse at 50% 50%,#1a120a 0%,var(--night) 80%);justify-content:flex-start;padding-top:100px;padding-bottom:200px;min-height:auto;}
@@ -168,8 +175,6 @@
   .future-block .block-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
   .future-block p{font-size:clamp(1.15rem,3.8vw,1.4rem);font-weight:300;line-height:2;color:var(--silk);}
   .future-block p em{color:var(--gold2);font-style:italic;}
-
-  /* UPGRADE 2: "And you" typed block */
   .and-you-block{margin-top:48px;padding:60px 40px;background:linear-gradient(180deg,rgba(13,21,38,0.6) 0%,rgba(8,12,20,0) 100%);border-left:2px solid var(--gold);border-top:1px solid rgba(201,169,110,0.15);border-radius:4px;opacity:0;transform:translateY(30px);transition:opacity 1.8s cubic-bezier(0.16,1,0.3,1),transform 1.8s cubic-bezier(0.16,1,0.3,1);}
   .and-you-block.revealed{opacity:1;transform:translateY(0);}
   .and-you-typed-text{font-size:clamp(1.15rem,3.8vw,1.4rem);font-weight:300;line-height:2.1;color:var(--silk);min-height:4em;}
@@ -179,7 +184,7 @@
   .handwriting-wrap.show{opacity:1;transform:rotate(-1.5deg) translateY(0);}
   .handwriting-wrap img{max-width:min(260px,80%);border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);filter:sepia(10%) brightness(0.95);}
 
-  /* UPGRADE 3: Stillness veil */
+  /* STILLNESS VEIL */
   #stillness-veil{position:fixed;inset:0;background:var(--night);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1.2s ease;}
   #stillness-veil.visible{opacity:1;pointer-events:auto;}
   #stillness-veil .veil-stars{position:absolute;inset:0;overflow:hidden;}
@@ -205,7 +210,7 @@
   .ask-block.revealed{opacity:1;transform:scale(1);}
   .ask-question{font-size:clamp(2.2rem,7vw,3.5rem);font-weight:300;font-style:italic;line-height:1.2;color:var(--gold2);margin-bottom:40px;letter-spacing:0.02em;min-height:1.2em;}
   .ask-open{max-width:580px;margin:0 auto;font-size:clamp(1.15rem,3.8vw,1.45rem);font-weight:300;line-height:2;color:var(--silk);font-family:var(--serif);font-style:italic;text-align:center;}
-  .alignment-climax{margin-top:56px;padding:top:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
+  .alignment-climax{margin-top:56px;padding-top:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
   .align-word{display:inline-block;letter-spacing:0em;color:var(--gold2);font-style:normal;font-weight:400;transition:letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);}
   .align-word.spread{letter-spacing:0.18em;}
 
@@ -222,7 +227,7 @@
   .send-btn.show{opacity:1;pointer-events:auto;transform:translateY(0);}
   .send-btn.sent{border-color:rgba(148,163,184,0.3);color:var(--mist);pointer-events:none;}
 
-  /* UPGRADE 4: Manual epilogue trigger */
+  /* MANUAL EPILOGUE TRIGGER */
   .epilogue-trigger{margin-top:48px;display:none;flex-direction:column;align-items:center;gap:12px;opacity:0;transition:opacity 1.4s ease;}
   .epilogue-trigger.show{display:flex;}
   .epilogue-trigger.visible{opacity:1;}
@@ -231,7 +236,7 @@
   .epilogue-arrow{font-size:1rem;transition:transform 0.3s ease;}
   .epilogue-arrow-line:hover .epilogue-arrow{transform:translateX(4px);}
 
-  /* UPGRADE 6: 7-minute ghost line */
+  /* 7-MINUTE GHOST LINE */
   .seven-min-line{margin-top:64px;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,169,110,0);text-transform:lowercase;text-align:center;transition:color 3s ease,opacity 3s ease;opacity:0;font-style:italic;}
   .seven-min-line.appeared{color:rgba(201,169,110,0.55);opacity:1;}
   .seven-min-line.fading{color:rgba(201,169,110,0);opacity:0;}
@@ -280,7 +285,7 @@
   <span class="pill-label" id="pill-label">Music on</span>
 </div>
 
-<!-- UPGRADE 3: Stillness veil -->
+<!-- STILLNESS VEIL -->
 <div id="stillness-veil">
   <div class="veil-stars" id="veil-stars"></div>
 </div>
@@ -318,7 +323,7 @@
 <!-- ACT I -->
 <div class="act" id="act1">
   <div class="prologue-wrap">
-    <div class="act-label">I — Prologue</div>
+    <div class="act-label">I - Prologue</div>
     <div class="date-line">GLT · October 6th 2025 → Today</div>
     <div class="divider"></div>
     <div class="typewriter" id="typewriter-text"><span class="cursor"></span></div>
@@ -329,7 +334,7 @@
 
 <!-- ACT II -->
 <div class="act hidden" id="act2">
-  <div class="act-label">II — The Receipts</div>
+  <div class="act-label">II - The Receipts</div>
   <div class="section-heading">Things that happened<br><em>that we cannot deny</em></div>
   <div class="divider"></div>
   <div class="cards-grid">
@@ -424,7 +429,7 @@
 
 <!-- ACT III -->
 <div class="act hidden" id="act3">
-  <div class="act-label">III — The Late Nights</div>
+  <div class="act-label">III - The Late Nights</div>
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
   <div class="divider"></div>
   <div class="polaroid-stack" id="polaroid-stack">
@@ -480,13 +485,93 @@
       <div class="date-stamp">05·13<br>2026</div>
     </div>
   </div>
-  <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
+  <button class="next-btn" onclick="goToAct3_5()">Vivid Imaginationsss &nbsp;→</button>
+</div>
+
+<!-- ACT III.V -->
+<div class="act hidden" id="act3-5">
+  <div style="padding: 0 24px; width: 100%; text-align: center;">
+    <div class="act-label">III.V - Vivid Imaginationsss</div>
+    <div class="section-heading">Where I am taking you</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="cinematic-wrapper">
+    <div class="cinematic-panel">
+      <img src="dominica.jpg" alt="Dominica">
+      <div class="cinematic-overlay"></div>
+      <div class="panel-content">
+        <div class="panel-top">01 / 05</div>
+        <div class="panel-bottom">
+          <div class="coord-line">Dominica · Caribbean</div>
+          <div class="promise-text">A beach with no agenda. Juice in hand. You laughing at something I said that wasn't even that funny, and neither of us reaching for our phones. Just this.</div>
+          <div class="promise-mark">Promise 01</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cinematic-panel">
+      <img src="dubai.jpg" alt="Dubai">
+      <div class="cinematic-overlay"></div>
+      <div class="panel-content">
+        <div class="panel-top">02 / 05</div>
+        <div class="panel-bottom">
+          <div class="coord-line">Dubai · UAE</div>
+          <div class="promise-text">Dinner a hundred and fifty floors above the city. All of Dubai performing below us like it dressed up for the occasion. You, unbothered and radiant, as always.</div>
+          <div class="promise-mark">Promise 02</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cinematic-panel">
+      <img src="davos.jpg" alt="Davos">
+      <div class="cinematic-overlay"></div>
+      <div class="panel-content">
+        <div class="panel-top">03 / 05</div>
+        <div class="panel-bottom">
+          <div class="coord-line">Davos · Switzerland</div>
+          <div class="promise-text">You, at the podium. World Economic Forum. I am somewhere in the third row trying to look composed and failing, because I always knew this was inevitable for you.</div>
+          <div class="promise-mark">Promise 03</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cinematic-panel">
+      <img src="kyoto.jpg" alt="Kyoto">
+      <div class="cinematic-overlay"></div>
+      <div class="panel-content">
+        <div class="panel-top">04 / 05</div>
+        <div class="panel-bottom">
+          <div class="coord-line">Kyoto · Japan</div>
+          <div class="promise-text">A garden so breathtaking it feels unfair. Cherry blossoms falling like they were arranged for you specifically. You walking through it all, looking like the most beautiful thing there. And there was a lot to look at.</div>
+          <div class="promise-mark">Promise 04</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cinematic-panel">
+      <img src="amalfi.jpg" alt="Amalfi Coast">
+      <div class="cinematic-overlay"></div>
+      <div class="panel-content">
+        <div class="panel-top">05 / 05</div>
+        <div class="panel-bottom">
+          <div class="coord-line">Amalfi Coast · Italy</div>
+          <div class="promise-text">A cliffside table. Blue water that goes on forever. The kind of afternoon that slows itself down on your behalf. A reservation that took three weeks to get. Worth every single one.</div>
+          <div class="promise-mark">Promise 05</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="padding: 0 24px; width: 100%; display: flex; justify-content: center; margin-top: 32px;">
+    <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
+  </div>
 </div>
 
 <!-- ACT IV -->
 <div class="act hidden" id="act4" style="display:none;flex-direction:column;align-items:center;padding:0;min-height:100vh;">
   <div style="padding:60px 24px 0;text-align:center;width:100%;">
-    <div class="act-label">IV — The Next Chapter</div>
+    <div class="act-label">IV - The Next Chapter</div>
     <div class="section-heading">Where this is going</div>
     <div class="divider"></div>
   </div>
@@ -558,7 +643,7 @@
 
 <script>
 /* ── SERVICE WORKER ── */
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{const sw=`const CACHE='zusi-v4';const ASSETS=['./', './index.html','./bg-music.mp3','./this-will-be.mp3','./voicenote.m4a','./handwriting.jpg','./photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline'))));});`;try{const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}catch(e){}});}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{const sw=`const CACHE='zusi-v4';const ASSETS=['./', './index.html','./bg-music.mp3','./this-will-be.mp3','./voicenote.m4a','./handwriting.jpg','./photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg','./dominica.jpg','./dubai.jpg','./davos.jpg','./kyoto.jpg','./amalfi.jpg'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline'))));});`;try{const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}catch(e){}});}
 
 /* ── HAPTIC ── */
 function haptic(ms=8){if(navigator.vibrate)navigator.vibrate(ms);}
@@ -784,6 +869,19 @@ function initPolaroidParallax(){
   onScroll();
 }
 
+/* ── ACT III.V CINEMATIC REVEAL ── */
+function initCinematicReveal(){
+  const panels=document.querySelectorAll('.cinematic-panel');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
+        entry.target.classList.add('revealed');
+      }
+    });
+  },{threshold:0.15});
+  panels.forEach(p=>obs.observe(p));
+}
+
 /* ── VOICE NOTE ── */
 const voiceAudio=document.getElementById('voice-audio');
 let voicePlaying=false;
@@ -884,8 +982,8 @@ buildStarField('bg-stars',200);
 buildStarField('epilogue-stars',350);
 
 /* ── PROGRESS THREAD ── */
-const ACT_LABELS={act1:'prologue',act2:'receipts',act3:'gallery',act4:'chapter',act5:'here'};
-const ACT_PROGRESS={act1:20,act2:42,act3:64,act4:85,act5:100};
+const ACT_LABELS={act1:'prologue',act2:'receipts',act3:'gallery',act3_5:'imagination',act4:'chapter',act5:'here'};
+const ACT_PROGRESS={act1:20,act2:42,act3:56,act3_5:72,act4:88,act5:100};
 function setProgress(pct,label){
   document.getElementById('thread-fill').style.height=pct+'%';
   const dot=document.getElementById('thread-dot');dot.style.top=pct+'%';
@@ -939,9 +1037,20 @@ function fadeIn(id){
 
 function goToAct2(){playTransition();setProgress(ACT_PROGRESS.act2,ACT_LABELS.act2);fadeOut('act1',()=>{fadeIn('act2');setTimeout(staggerCards,200);});currentAct=2;}
 function goToAct3(){playTransition();setProgress(ACT_PROGRESS.act3,ACT_LABELS.act3);act3ScrollActive=false;fadeOut('act2',()=>{fadeIn('act3');setTimeout(initPolaroidParallax,300);});currentAct=3;}
+function goToAct3_5(){
+  playTransition();
+  act3ScrollActive=false;
+  setProgress(ACT_PROGRESS.act3_5, ACT_LABELS.act3_5);
+  fadeOut('act3', () => {
+    fadeIn('act3-5');
+    initCinematicReveal();
+  });
+  currentAct=3.5;
+}
 function goToAct4(){
-  playTransition();act3ScrollActive=false;setProgress(ACT_PROGRESS.act4,ACT_LABELS.act4);
-  fadeOut('act3',()=>{
+  playTransition();
+  setProgress(ACT_PROGRESS.act4,ACT_LABELS.act4);
+  fadeOut('act3-5',()=>{
     window.scrollTo(0,0);const a=document.getElementById('act4');a.classList.remove('hidden');a.style.display='flex';
     setTimeout(()=>{a.classList.add('visible');initScrollReveal();},80);
     start7MinTimer();
