@@ -140,18 +140,20 @@
   .polaroid-stack{display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:340px;margin-bottom:20px;will-change:transform;}
 
   /* UPGRADE 1: Polaroid flip system */
-  .polaroid-wrap{perspective:1400px;width:100%;}
-  .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease,transform 0.85s cubic-bezier(0.23,1,0.32,1);transform-style:preserve-3d;}
-  .polaroid-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1);}
+  .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease,transform 0.85s cubic-bezier(0.23,1,0.32,1);}
+  
+  /* Fixed Secret Polaroid Structure */
+  .polaroid.secret-polaroid { background: transparent; padding: 0; box-shadow: none; perspective: 1400px; }
+  .polaroid.secret-polaroid:hover, .polaroid.secret-polaroid:active { box-shadow: none; z-index: 10; }
+  .polaroid-inner{width:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);border-radius:1px;}
+  .polaroid.secret-polaroid:hover .polaroid-inner, .polaroid.secret-polaroid:active .polaroid-inner { box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5); }
   .polaroid.secret-flipped .polaroid-inner{transform:rotateY(180deg);}
-  .polaroid-front,.polaroid-back-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
-  .polaroid-front{background:#faf8f5;padding:14px 14px 52px 14px;display:flex;flex-direction:column;}
-  .polaroid-back-face{transform:rotateY(180deg);background:#fdf9f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border-radius:1px;}
+
+  .polaroid-front {position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#faf8f5;padding:14px 14px 52px 14px;display:flex;flex-direction:column;border-radius:1px;}
+  .polaroid-back-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:#fdf9f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border-radius:1px;}
   .polaroid-secret-text{font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:300;color:#2a1f0e;text-align:center;line-height:1.8;letter-spacing:0.02em;}
   .polaroid-secret-mark{margin-top:16px;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.3em;color:rgba(201,169,110,0.6);text-transform:uppercase;}
   
-  /* For non-secret polaroids, use simpler structure */
-  .polaroid.simple-polaroid{transform-style:flat;}
   .polaroid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);transition:filter 0.4s ease,transform 0.4s cubic-bezier(0.23,1,0.32,1);pointer-events:none;}
   .polaroid:hover img,.polaroid:active img{filter:sepia(0%) contrast(1.06) brightness(1.06) saturate(1.15);transform:scale(1.04);}
   .polaroid:hover,.polaroid:active{box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5);z-index:10;}
@@ -203,7 +205,7 @@
   .ask-block.revealed{opacity:1;transform:scale(1);}
   .ask-question{font-size:clamp(2.2rem,7vw,3.5rem);font-weight:300;font-style:italic;line-height:1.2;color:var(--gold2);margin-bottom:40px;letter-spacing:0.02em;min-height:1.2em;}
   .ask-open{max-width:580px;margin:0 auto;font-size:clamp(1.15rem,3.8vw,1.45rem);font-weight:300;line-height:2;color:var(--silk);font-family:var(--serif);font-style:italic;text-align:center;}
-  .alignment-climax{margin-top:56px;padding:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
+  .alignment-climax{margin-top:56px;padding:top:44px;border-top:1px dashed rgba(201,169,110,0.2);font-size:clamp(1.2rem,4vw,1.55rem);line-height:1.95;color:var(--silk);font-weight:300;max-width:600px;margin-left:auto;margin-right:auto;}
   .align-word{display:inline-block;letter-spacing:0em;color:var(--gold2);font-style:normal;font-weight:400;transition:letter-spacing 2.4s cubic-bezier(0.16,1,0.3,1);}
   .align-word.spread{letter-spacing:0.18em;}
 
@@ -365,7 +367,6 @@
         </div>
       </div>
     </div>
-    <!-- CARD 03: THE BILLING DEPT. -->
     <div class="card-container" data-card-idx="2">
       <div class="card" id="card-3" onclick="onCardFlip(this,2)">
         <div class="card-face card-front"><span class="card-num">03 / 05</span><h3>The Billing Dept.</h3><span class="tap-hint">tap to open</span></div>
@@ -381,7 +382,6 @@
             <div class="msg sent">I'll be charging £12.99 for that<span class="msg-time">9:51 pm <span class="tick">✓✓</span></span></div>
             <div class="msg recv">You have moved to pounds, nice one. Is it because dollar is coming down?<span class="msg-time">9:52 pm</span></div>
             <div class="msg sent">Trump mehn. Idk what that brudda is doing so I'm doing GBP for now<span class="msg-time">9:52 pm <span class="tick">✓✓</span></span></div>
-            <!-- SLIP MESSAGE -->
             <div class="msg sent slip" id="slip-msg" style="opacity:0;transform:translateY(6px);transition:opacity 0.6s ease 0.4s,transform 0.6s ease 0.4s;">by the way. this whole thing is that invoice. consider yourself billed.<span class="msg-time" style="color:rgba(201,169,110,0.7);">now <span class="tick" style="color:rgba(201,169,110,0.9);">✓✓</span></span></div>
           </div>
         </div>
@@ -429,27 +429,25 @@
   <div class="divider"></div>
   <div class="polaroid-stack" id="polaroid-stack">
 
-    <!-- Polaroid 1: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo1.jpg" alt="That laugh">
       <div class="caption">that laugh though ✌🏾</div>
       <div class="date-stamp">05·02<br>2026</div>
     </div>
 
-    <!-- Polaroid 2: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo3.jpg" alt="Double peace">
       <div class="caption">double the peace, double the energy</div>
       <div class="date-stamp">05·02<br>2026</div>
     </div>
 
-    <!-- Polaroid 3: SECRET — flips to reveal message -->
+    <!-- SECRET POLAROID -->
     <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)">
       <div class="polaroid-inner" id="secret-polaroid-inner">
         <div class="polaroid-front">
-          <img src="photo4.jpg" alt="Screen share" style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);pointer-events:none;">
-          <div class="caption" style="position:absolute;bottom:16px;left:14px;right:56px;">even screen-share mode was a vibe</div>
-          <div class="date-stamp" style="position:absolute;bottom:14px;right:14px;">05·02<br>2026</div>
+          <img src="photo4.jpg" alt="Screen share">
+          <div class="caption">even screen-share mode was a vibe</div>
+          <div class="date-stamp">05·02<br>2026</div>
         </div>
         <div class="polaroid-back-face">
           <div class="polaroid-secret-text">"I kept this one because of how you weren't trying."</div>
@@ -458,29 +456,25 @@
       </div>
     </div>
 
-    <!-- Polaroid 4: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo5.jpg" alt="Lunch call">
       <div class="caption">lunch call era</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
-    <!-- Polaroid 5: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo6.jpg" alt="Eating and drinking">
       <div class="caption">unbothered &amp; thriving</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
-    <!-- Polaroid 6: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo7.jpg" alt="Professional headshot 1">
       <div class="caption">CEO ma 🌝</div>
       <div class="date-stamp">05·13<br>2026</div>
     </div>
 
-    <!-- Polaroid 7: simple -->
-    <div class="polaroid simple-polaroid" onclick="onPolaroidTap(this,false)">
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
       <img src="photo8.jpg" alt="Professional headshot 2">
       <div class="caption">overall best. always.</div>
       <div class="date-stamp">05·13<br>2026</div>
@@ -511,7 +505,6 @@
         <p>A 27-floor institution. Capital management. Infrastructure. Banking. Patents that pioneer new categories of financial engineering. A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence of a mandate fulfilled. A legacy that the generation after us will call their foundation.</p>
       </div>
 
-      <!-- UPGRADE 2: "And you" typed block -->
       <div class="and-you-block" id="and-you-section">
         <div class="block-label" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">And you</div>
         <div class="and-you-typed-text" id="and-you-typed"></div>
@@ -549,10 +542,8 @@
         <textarea class="reply-field" id="reply-field" name="message" placeholder="you can type here if you want. i won't see it tonight." rows="3" spellcheck="false" autocomplete="off"></textarea>
         <button id="send-reply-btn" class="send-btn">Leave note</button>
 
-        <!-- UPGRADE 6: 7-min ghost line -->
         <div class="seven-min-line" id="seven-min-line"></div>
 
-        <!-- UPGRADE 4: Manual epilogue trigger -->
         <div class="epilogue-trigger" id="epilogue-trigger">
           <div class="epilogue-arrow-line" onclick="triggerEpilogueManual()">
             <span>when you're done here</span>
@@ -649,7 +640,6 @@ function playTypeTick(){
   src.connect(bp);bp.connect(g);g.connect(ac.destination);src.start();
 }
 function playTypeTick_slow(){
-  // Softer tick for the "And you" slow typewriter
   const ac=getAC();if(!ac)return;
   const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);const data=buf.getChannelData(0);
   for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.2));
@@ -688,7 +678,6 @@ function playTransition(){
   osc.start();osc.stop(ac.currentTime+2);osc2.start();osc2.stop(ac.currentTime+2);
 }
 function playSecretFlip(){
-  // Delicate reverse-shimmer for the secret polaroid
   const ac=getAC();if(!ac)return;
   const freqs=[523.25,659.25,783.99];
   freqs.forEach((f,i)=>{
@@ -738,7 +727,6 @@ function onCardFlip(cardEl,idx){
     setTimeout(()=>{
       typing.classList.remove('active');
       msgs.forEach((m,i)=>setTimeout(()=>m.classList.add('shown'),i*280));
-      // UPGRADE 5: Show slip message after all others appear (card 03 only, idx=2)
       if(idx===2){
         const slip=chat.querySelector('.msg.slip');
         if(slip){
@@ -746,7 +734,6 @@ function onCardFlip(cardEl,idx){
           setTimeout(()=>{
             slip.style.opacity='1';
             slip.style.transform='translateY(0)';
-            // scroll to bottom of chat
             setTimeout(()=>{chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});},150);
           },delay);
         }
@@ -766,7 +753,6 @@ function onPolaroidTap(el,isSecret){
   haptic(8);playPolaroid();
 }
 
-/* UPGRADE 1: Secret polaroid tap handler */
 let secretFlipped=false;
 function onSecretPolaroidTap(el){
   haptic(12);
@@ -835,7 +821,6 @@ voiceAudio.addEventListener('ended',()=>{
     document.getElementById('voice-duration').textContent=`${m}:${s}`;
   }
   if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
-  // UPGRADE 3: After voice note ends → show stillness veil for 3s, then reveal ask-block
   triggerStillnessVeil();
 });
 function toggleVoiceNote(){
@@ -859,14 +844,13 @@ function toggleVoiceNote(){
   });
 }
 
-/* ── UPGRADE 3: STILLNESS VEIL ── */
+/* ── STILLNESS VEIL ── */
 let askBlockRevealed=false;
 function triggerStillnessVeil(){
-  if(askBlockRevealed)return; // only once
+  if(askBlockRevealed)return;
   const veil=document.getElementById('stillness-veil');
   buildStarField('veil-stars',160);
   veil.classList.add('visible');
-  // After 3 seconds, fade out and reveal ask block
   setTimeout(()=>{
     veil.classList.remove('visible');
     setTimeout(()=>{
@@ -888,7 +872,6 @@ function revealAskBlock(){
 /* ── STAR FIELD ── */
 function buildStarField(id,count){
   const sf=document.getElementById(id);if(!sf)return;
-  // Don't double-build
   if(sf.children.length>0&&id!=='veil-stars')return;
   for(let i=0;i<count;i++){
     const s=document.createElement('div');s.className='star';const size=Math.random()*2.5+0.5;
@@ -912,7 +895,7 @@ function showProgressThread(){document.getElementById('progress-thread').classLi
 
 /* ── NAV ── */
 let currentAct=0;
-let worldEnteredAt=null; // for 7-min timer
+let worldEnteredAt=null;
 
 function enterWorld(){
   getAC();primeJoyMusic();startAmbient();startMusic();playEntryBloom();
@@ -961,7 +944,6 @@ function goToAct4(){
   fadeOut('act3',()=>{
     window.scrollTo(0,0);const a=document.getElementById('act4');a.classList.remove('hidden');a.style.display='flex';
     setTimeout(()=>{a.classList.add('visible');initScrollReveal();},80);
-    // Start 7-minute timer
     start7MinTimer();
   });currentAct=4;
 }
@@ -969,7 +951,6 @@ function goToAct4(){
 /* ── ACT IV SCROLL REVEAL ── */
 let chimeIndex=0;
 function initScrollReveal(){
-  // Observe everything except ask-block (which is now triggered by veil)
   const blockIds=['fb1','fb2','fb3','and-you-section','voice-note-section'];
   const replyId='reply-section';
   const blocks=blockIds.map(id=>document.getElementById(id)).filter(Boolean);
@@ -980,7 +961,6 @@ function initScrollReveal(){
       if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
         entry.target.classList.add('revealed');
         playChime(chimeIndex++);
-        // UPGRADE 2: Typed "And you" block
         if(entry.target.id==='and-you-section'){
           setTimeout(typeAndYouBlock,400);
         }
@@ -994,7 +974,6 @@ function initScrollReveal(){
     entries.forEach(entry=>{
       if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
         entry.target.classList.add('revealed');
-        // Show epilogue trigger after reply section appears
         setTimeout(showEpilogueTrigger,1800);
       }
     });
@@ -1002,7 +981,7 @@ function initScrollReveal(){
   if(replyBlock)replyObs.observe(replyBlock);
 }
 
-/* ── UPGRADE 2: SLOW TYPED "AND YOU" BLOCK ── */
+/* ── SLOW TYPED "AND YOU" BLOCK ── */
 const AND_YOU_SEGMENTS=[
   {text:'Through all of it, from the early mornings, to the invoices for £12.99, to the late calls where you fell asleep mid-sentence and still charged me a thank you, ',italic:false},
   {text:'you have been the most natural constant.',italic:false},
@@ -1019,7 +998,6 @@ function typeAndYouBlock(){
 
   function typeNext(){
     if(segIdx>=AND_YOU_SEGMENTS.length){
-      // Done — remove cursor, reveal handwriting
       cursor.remove();
       setTimeout(()=>{
         document.getElementById('handwriting-wrap').classList.add('show');
@@ -1038,7 +1016,6 @@ function typeAndYouBlock(){
     if(ch!==' ')playTypeTick_slow();
     charIdx++;
 
-    // Slow: 80-160ms per character, pauses at punctuation
     let delay=80+Math.random()*80;
     if(ch==='.'||ch==='!')delay=520;
     else if(ch===',')delay=300;
@@ -1068,7 +1045,7 @@ function typeAskQuestion(){
   type();
 }
 
-/* ── UPGRADE 4: MANUAL EPILOGUE TRIGGER ── */
+/* ── MANUAL EPILOGUE TRIGGER ── */
 function showEpilogueTrigger(){
   const trigger=document.getElementById('epilogue-trigger');
   trigger.classList.add('show');
@@ -1098,7 +1075,7 @@ function typeEpilogue(){
   type();
 }
 
-/* ── UPGRADE 6: 7-MINUTE GHOST LINE ── */
+/* ── 7-MINUTE GHOST LINE ── */
 let sevenMinShown=false;
 function start7MinTimer(){
   if(!worldEnteredAt)worldEnteredAt=Date.now();
@@ -1106,14 +1083,13 @@ function start7MinTimer(){
   const elapsed=Date.now()-worldEnteredAt;
   const remaining=Math.max(0,targetMs-elapsed);
   setTimeout(()=>{
-    if(sevenMinShown||currentAct!==4)return; // only show in act 4
+    if(sevenMinShown||currentAct!==4)return;
     sevenMinShown=true;
     const line=document.getElementById('seven-min-line');
     line.textContent='you\'ve been here 7 minutes. that means something.';
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{
         line.classList.add('appeared');
-        // Fade out after 8 seconds
         setTimeout(()=>{
           line.classList.remove('appeared');
           line.classList.add('fading');
