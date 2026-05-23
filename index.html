@@ -32,7 +32,6 @@
   #progress-thread .thread-track{position:absolute;inset:0;background:rgba(201,169,110,0.1);}
   #progress-thread .thread-fill{position:absolute;top:0;left:0;right:0;height:0%;background:linear-gradient(180deg,rgba(201,169,110,0.8) 0%,rgba(201,169,110,0.3) 100%);transition:height 0.6s cubic-bezier(0.16,1,0.3,1);box-shadow:0 0 6px rgba(201,169,110,0.4);}
   #progress-thread .thread-dot{position:absolute;left:50%;transform:translateX(-50%) translateY(-50%);width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(201,169,110,0.8);transition:top 0.6s cubic-bezier(0.16,1,0.3,1);top:0%;}
-  /* Act label tooltip on dot */
   #progress-thread .thread-dot::after{content:attr(data-label);position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.5rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity 0.3s ease;pointer-events:none;}
   #progress-thread:hover .thread-dot::after{opacity:0.7;}
 
@@ -61,13 +60,10 @@
   #landing .eyebrow{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;opacity:0;animation:fadeUp 1s ease 0.4s forwards;}
   #landing h1{font-size:clamp(2.4rem,8vw,4.5rem);font-weight:300;font-style:italic;letter-spacing:0.04em;line-height:1.1;opacity:0;animation:fadeUp 1s ease 0.7s forwards;}
   #landing h1 em{font-style:normal;color:var(--gold);}
-
-  /* WAX SEAL — slow rotation, pauses on hover */
   #wax-seal{opacity:0;animation:fadeUp 1s ease 1.0s forwards;margin-top:4px;}
   #wax-seal svg{filter:drop-shadow(0 2px 8px rgba(201,169,110,0.4));animation:sealSpin 12s linear infinite;transition:animation-play-state 0.3s ease;}
   #wax-seal:hover svg{animation-play-state:paused;transform:scale(1.06);}
   @keyframes sealSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-
   #landing .tap-ring{width:72px;height:72px;border-radius:50%;border:1px solid rgba(201,169,110,0.4);display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeUp 1s ease 1.2s forwards,pulse-ring 2.5s ease 2.2s infinite;margin-top:8px;}
   #landing .tap-ring::after{content:'';width:48px;height:48px;border-radius:50%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.6);position:absolute;animation:pulse-ring 2.5s ease 2.2s infinite;}
   #landing .tap-icon{font-size:1.4rem;position:relative;z-index:1;}
@@ -126,6 +122,11 @@
   .msg-time{position:absolute;bottom:4px;right:9px;font-size:10px;color:rgba(233,237,239,0.55);white-space:nowrap;display:flex;align-items:center;gap:3px;}
   .msg.sent .msg-time{color:#53bdeb;}
   .tick{font-size:11px;}
+
+  /* UPGRADE 5: Special slip message styling */
+  .msg.slip{background:linear-gradient(135deg,#1a3a2f 0%,#005c4b 100%);border:1px solid rgba(201,169,110,0.25);font-style:italic;}
+  .msg.slip .msg-time{color:rgba(201,169,110,0.7);}
+
   .wa-typing{display:none;align-self:flex-start;background:#1f2c34;padding:10px 14px;border-radius:18px;border-bottom-left-radius:4px;gap:4px;align-items:center;margin-left:6px;position:relative;}
   .wa-typing::before{content:'';position:absolute;left:-6px;bottom:0;width:0;height:0;border-style:solid;border-width:0 0 10px 8px;border-color:transparent transparent #1f2c34 transparent;}
   .wa-typing.active{display:flex;}
@@ -137,7 +138,10 @@
   /* ACT III */
   #act3{background:linear-gradient(180deg,#0b1120 0%,#0c1018 100%);justify-content:flex-start;padding-top:80px;}
   .polaroid-stack{display:flex;flex-direction:column;align-items:center;gap:36px;width:100%;max-width:340px;margin-bottom:20px;will-change:transform;}
-  .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease;}
+
+  /* UPGRADE 1: Polaroid flip system */
+  .polaroid-wrap{perspective:1400px;width:100%;}
+  .polaroid{background:#faf8f5;padding:14px 14px 52px 14px;box-shadow:0 4px 6px rgba(0,0,0,0.3),0 14px 40px rgba(0,0,0,0.45),0 0 0 1px rgba(0,0,0,0.06);width:100%;border-radius:1px;position:relative;will-change:transform;cursor:pointer;transition:box-shadow 0.4s ease,transform 0.85s cubic-bezier(0.23,1,0.32,1);transform-style:preserve-3d;}
   .polaroid:nth-child(1){--base-rot:-2.5deg;transform:rotate(-2.5deg);}
   .polaroid:nth-child(2){--base-rot:3deg;transform:rotate(3deg);}
   .polaroid:nth-child(3){--base-rot:-1.5deg;transform:rotate(-1.5deg);}
@@ -145,7 +149,15 @@
   .polaroid:nth-child(5){--base-rot:-3deg;transform:rotate(-3deg);}
   .polaroid:nth-child(6){--base-rot:1.5deg;transform:rotate(1.5deg);}
   .polaroid:nth-child(7){--base-rot:-2deg;transform:rotate(-2deg);}
-  /* Photo hover: image scales up AND goes full colour */
+  .polaroid-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1);}
+  .polaroid.secret-flipped .polaroid-inner{transform:rotateY(180deg);}
+  .polaroid-front,.polaroid-back-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+  .polaroid-front{background:#faf8f5;padding:14px 14px 52px 14px;display:flex;flex-direction:column;}
+  .polaroid-back-face{transform:rotateY(180deg);background:#fdf9f2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border-radius:1px;}
+  .polaroid-secret-text{font-family:var(--serif);font-size:1.05rem;font-style:italic;font-weight:300;color:#2a1f0e;text-align:center;line-height:1.8;letter-spacing:0.02em;}
+  .polaroid-secret-mark{margin-top:16px;font-family:var(--mono);font-size:0.5rem;letter-spacing:0.3em;color:rgba(201,169,110,0.6);text-transform:uppercase;}
+  /* For non-secret polaroids, use simpler structure */
+  .polaroid.simple-polaroid{transform-style:flat;}
   .polaroid img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);transition:filter 0.4s ease,transform 0.4s cubic-bezier(0.23,1,0.32,1);pointer-events:none;}
   .polaroid:hover img,.polaroid:active img{filter:sepia(0%) contrast(1.06) brightness(1.06) saturate(1.15);transform:scale(1.04);}
   .polaroid:hover,.polaroid:active{box-shadow:0 8px 16px rgba(0,0,0,0.4),0 24px 60px rgba(0,0,0,0.5);z-index:10;}
@@ -160,11 +172,21 @@
   .future-block .block-label{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;}
   .future-block p{font-size:clamp(1.15rem,3.8vw,1.4rem);font-weight:300;line-height:2;color:var(--silk);}
   .future-block p em{color:var(--gold2);font-style:italic;}
+
+  /* UPGRADE 2: "And you" typed block */
   .and-you-block{margin-top:48px;padding:60px 40px;background:linear-gradient(180deg,rgba(13,21,38,0.6) 0%,rgba(8,12,20,0) 100%);border-left:2px solid var(--gold);border-top:1px solid rgba(201,169,110,0.15);border-radius:4px;opacity:0;transform:translateY(30px);transition:opacity 1.8s cubic-bezier(0.16,1,0.3,1),transform 1.8s cubic-bezier(0.16,1,0.3,1);}
   .and-you-block.revealed{opacity:1;transform:translateY(0);}
-  .handwriting-wrap{margin-top:36px;display:flex;justify-content:flex-start;opacity:0;transform:rotate(-1.5deg) translateY(12px);transition:opacity 1.2s ease 0.6s,transform 1.2s ease 0.6s;}
-  .and-you-block.revealed .handwriting-wrap{opacity:1;transform:rotate(-1.5deg) translateY(0);}
+  .and-you-typed-text{font-size:clamp(1.15rem,3.8vw,1.4rem);font-weight:300;line-height:2.1;color:var(--silk);min-height:4em;}
+  .and-you-typed-text em{color:var(--gold2);font-style:italic;}
+  .and-you-cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:2px;}
+  .handwriting-wrap{margin-top:36px;display:flex;justify-content:flex-start;opacity:0;transform:rotate(-1.5deg) translateY(12px);transition:opacity 1.2s ease 0.4s,transform 1.2s ease 0.4s;}
+  .handwriting-wrap.show{opacity:1;transform:rotate(-1.5deg) translateY(0);}
   .handwriting-wrap img{max-width:min(260px,80%);border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);filter:sepia(10%) brightness(0.95);}
+
+  /* UPGRADE 3: Stillness veil */
+  #stillness-veil{position:fixed;inset:0;background:var(--night);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1.2s ease;}
+  #stillness-veil.visible{opacity:1;pointer-events:auto;}
+  #stillness-veil .veil-stars{position:absolute;inset:0;overflow:hidden;}
 
   /* VOICE NOTE */
   .voice-note-section{max-width:680px;width:100%;margin:0 auto;padding:48px 0;border-top:1px solid rgba(201,169,110,0.12);opacity:0;transform:translateY(28px);transition:opacity 1.4s cubic-bezier(0.16,1,0.3,1),transform 1.4s cubic-bezier(0.16,1,0.3,1);}
@@ -203,6 +225,20 @@
   .send-btn{margin-top:24px;padding:10px 28px;background:transparent;border:1px solid rgba(201,169,110,0.5);color:var(--gold2);border-radius:2px;cursor:pointer;font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;transition:all 0.4s ease;opacity:0;pointer-events:none;transform:translateY(10px);}
   .send-btn.show{opacity:1;pointer-events:auto;transform:translateY(0);}
   .send-btn.sent{border-color:rgba(148,163,184,0.3);color:var(--mist);pointer-events:none;}
+
+  /* UPGRADE 4: Manual epilogue trigger */
+  .epilogue-trigger{margin-top:48px;display:none;flex-direction:column;align-items:center;gap:12px;opacity:0;transition:opacity 1.4s ease;}
+  .epilogue-trigger.show{display:flex;}
+  .epilogue-trigger.visible{opacity:1;}
+  .epilogue-arrow-line{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.25em;color:rgba(201,169,110,0.45);text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:10px;transition:color 0.3s ease,gap 0.3s ease;padding:8px 0;user-select:none;}
+  .epilogue-arrow-line:hover{color:rgba(201,169,110,0.85);gap:16px;}
+  .epilogue-arrow{font-size:1rem;transition:transform 0.3s ease;}
+  .epilogue-arrow-line:hover .epilogue-arrow{transform:translateX(4px);}
+
+  /* UPGRADE 6: 7-minute ghost line */
+  .seven-min-line{margin-top:64px;font-family:var(--mono);font-size:0.62rem;letter-spacing:0.22em;color:rgba(201,169,110,0);text-transform:lowercase;text-align:center;transition:color 3s ease,opacity 3s ease;opacity:0;font-style:italic;}
+  .seven-min-line.appeared{color:rgba(201,169,110,0.55);opacity:1;}
+  .seven-min-line.fading{color:rgba(201,169,110,0);opacity:0;}
 
   /* ACT V */
   #act5{position:fixed;inset:0;background:var(--night);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity 3s ease;}
@@ -246,6 +282,11 @@
     </div>
   </div>
   <span class="pill-label" id="pill-label">Music on</span>
+</div>
+
+<!-- UPGRADE 3: Stillness veil -->
+<div id="stillness-veil">
+  <div class="veil-stars" id="veil-stars"></div>
 </div>
 
 <div id="act5">
@@ -330,6 +371,7 @@
         </div>
       </div>
     </div>
+    <!-- CARD 03: THE BILLING DEPT. — with slip message (Upgrade 5) -->
     <div class="card-container" data-card-idx="2">
       <div class="card" id="card-3" onclick="onCardFlip(this,2)">
         <div class="card-face card-front"><span class="card-num">03 / 05</span><h3>The Billing Dept.</h3><span class="tap-hint">tap to open</span></div>
@@ -345,6 +387,8 @@
             <div class="msg sent">I'll be charging £12.99 for that<span class="msg-time">9:51 pm <span class="tick">✓✓</span></span></div>
             <div class="msg recv">You have moved to pounds, nice one. Is it because dollar is coming down?<span class="msg-time">9:52 pm</span></div>
             <div class="msg sent">Trump mehn. Idk what that brudda is doing so I'm doing GBP for now<span class="msg-time">9:52 pm <span class="tick">✓✓</span></span></div>
+            <!-- SLIP MESSAGE -->
+            <div class="msg sent slip" id="slip-msg" style="opacity:0;transform:translateY(6px);transition:opacity 0.6s ease 0.4s,transform 0.6s ease 0.4s;">by the way. this whole thing is that invoice. consider yourself billed.<span class="msg-time" style="color:rgba(201,169,110,0.7);">now <span class="tick" style="color:rgba(201,169,110,0.9);">✓✓</span></span></div>
           </div>
         </div>
       </div>
@@ -384,19 +428,69 @@
   <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
 
-<!-- ACT III -->
+<!-- ACT III — UPGRADE 1: Secret polaroid -->
 <div class="act hidden" id="act3">
   <div class="act-label">III — The Late Nights</div>
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
   <div class="divider"></div>
   <div class="polaroid-stack" id="polaroid-stack">
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo1.jpg" alt="That laugh"><div class="caption">that laugh though ✌🏾</div><div class="date-stamp">05·02<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo3.jpg" alt="Double peace"><div class="caption">double the peace, double the energy</div><div class="date-stamp">05·02<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo4.jpg" alt="Screen share"><div class="caption">even screen-share mode was a vibe</div><div class="date-stamp">05·02<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo5.jpg" alt="Lunch call"><div class="caption">lunch call era</div><div class="date-stamp">05·13<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo6.jpg" alt="Eating and drinking"><div class="caption">unbothered &amp; thriving</div><div class="date-stamp">05·13<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo7.jpg" alt="Professional headshot 1"><div class="caption">CEO ma 🌝</div><div class="date-stamp">05·13<br>2026</div></div>
-    <div class="polaroid" onclick="onPolaroidTap(this)"><img src="photo8.jpg" alt="Professional headshot 2"><div class="caption">overall best. always.</div><div class="date-stamp">05·13<br>2026</div></div>
+
+    <!-- Polaroid 1: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo1.jpg" alt="That laugh">
+      <div class="caption">that laugh though ✌🏾</div>
+      <div class="date-stamp">05·02<br>2026</div>
+    </div>
+
+    <!-- Polaroid 2: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo3.jpg" alt="Double peace">
+      <div class="caption">double the peace, double the energy</div>
+      <div class="date-stamp">05·02<br>2026</div>
+    </div>
+
+    <!-- Polaroid 3: SECRET — flips to reveal message -->
+    <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)" style="transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease;">
+      <div class="polaroid-inner" id="secret-polaroid-inner">
+        <div class="polaroid-front">
+          <img src="photo4.jpg" alt="Screen share" style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:#ddd;filter:sepia(8%) contrast(1.02) brightness(0.98);pointer-events:none;">
+          <div class="caption" style="position:absolute;bottom:16px;left:14px;right:56px;">even screen-share mode was a vibe</div>
+          <div class="date-stamp" style="position:absolute;bottom:14px;right:14px;">05·02<br>2026</div>
+        </div>
+        <div class="polaroid-back-face">
+          <div class="polaroid-secret-text">"I kept this one because of how you weren't trying."</div>
+          <div class="polaroid-secret-mark">✦ &nbsp; for zusi &nbsp; ✦</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Polaroid 4: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo5.jpg" alt="Lunch call">
+      <div class="caption">lunch call era</div>
+      <div class="date-stamp">05·13<br>2026</div>
+    </div>
+
+    <!-- Polaroid 5: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo6.jpg" alt="Eating and drinking">
+      <div class="caption">unbothered &amp; thriving</div>
+      <div class="date-stamp">05·13<br>2026</div>
+    </div>
+
+    <!-- Polaroid 6: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo7.jpg" alt="Professional headshot 1">
+      <div class="caption">CEO ma 🌝</div>
+      <div class="date-stamp">05·13<br>2026</div>
+    </div>
+
+    <!-- Polaroid 7: simple -->
+    <div class="polaroid" onclick="onPolaroidTap(this,false)">
+      <img src="photo8.jpg" alt="Professional headshot 2">
+      <div class="caption">overall best. always.</div>
+      <div class="date-stamp">05·13<br>2026</div>
+    </div>
   </div>
   <button class="next-btn" onclick="goToAct4()">The Next Chapter &nbsp;→</button>
 </div>
@@ -422,17 +516,18 @@
         <div class="block-label">The reality we are building toward</div>
         <p>A 27-floor institution. Capital management. Infrastructure. Banking. Patents that pioneer new categories of financial engineering. A life marked by <em>ease and more than enough</em>, not as the goal, but as the evidence of a mandate fulfilled. A legacy that the generation after us will call their foundation.</p>
       </div>
+
+      <!-- UPGRADE 2: "And you" typed block -->
       <div class="and-you-block" id="and-you-section">
-        <div class="future-block" id="fb4" style="border-top:none;padding:0;opacity:1;transform:none;">
-          <div class="block-label">And you</div>
-          <p>Through all of it, from the early mornings, to the invoices for £12.99, to the late calls where you fell asleep mid-sentence and still charged me a thank you, you have been the most natural constant. <em>I want to build all of this with you.</em></p>
-        </div>
+        <div class="block-label" style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.3em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">And you</div>
+        <div class="and-you-typed-text" id="and-you-typed"></div>
         <div class="handwriting-wrap" id="handwriting-wrap">
           <img src="handwriting.jpg" alt="handwritten note"
             onerror="document.getElementById('handwriting-wrap').style.display='none';document.getElementById('handwriting-missing').style.display='block';" />
         </div>
-        <div id="handwriting-missing" style="display:none;margin-top:24px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,169,110,0.4);">[ handwriting.jpg not found — check filename ]</div>
+        <div id="handwriting-missing" style="display:none;margin-top:24px;font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;color:rgba(201,169,110,0.4);">[ handwriting.jpg not found ]</div>
       </div>
+
       <div class="voice-note-section" id="voice-note-section">
         <div class="voice-note-label">a voice note</div>
         <div class="voice-player" id="voice-player" onclick="toggleVoiceNote()">
@@ -441,6 +536,7 @@
           <span class="voice-duration" id="voice-duration">1:10</span>
         </div>
       </div>
+
       <div class="ask-block" id="ask-block">
         <div class="ask-question" id="ask-question"></div>
         <div class="ask-open" id="ask-open" style="opacity:0;transition:opacity 1.2s ease 0.5s;">
@@ -453,23 +549,36 @@
           </div>
         </div>
       </div>
+
       <div class="reply-section" id="reply-section">
         <div class="reply-label">the floor is yours.</div>
         <textarea class="reply-field" id="reply-field" name="message" placeholder="you can type here if you want. i won't see it tonight." rows="3" spellcheck="false" autocomplete="off"></textarea>
         <button id="send-reply-btn" class="send-btn">Leave note</button>
+
+        <!-- UPGRADE 6: 7-min ghost line -->
+        <div class="seven-min-line" id="seven-min-line"></div>
+
+        <!-- UPGRADE 4: Manual epilogue trigger -->
+        <div class="epilogue-trigger" id="epilogue-trigger">
+          <div class="epilogue-arrow-line" onclick="triggerEpilogueManual()">
+            <span>when you're done here</span>
+            <span class="epilogue-arrow">→</span>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
 
 <script>
-/* SERVICE WORKER */
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{const sw=`const CACHE='zusi-v3';const ASSETS=['./', './index.html','./bg-music.mp3','./this-will-be.mp3','./voicenote.m4a','./handwriting.jpg','./photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline'))));});`;try{const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}catch(e){}});}
+/* ── SERVICE WORKER ── */
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{const sw=`const CACHE='zusi-v4';const ASSETS=['./', './index.html','./bg-music.mp3','./this-will-be.mp3','./voicenote.m4a','./handwriting.jpg','./photo1.jpg','./photo3.jpg','./photo4.jpg','./photo5.jpg','./photo6.jpg','./photo7.jpg','./photo8.jpg'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS).catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline'))));});`;try{const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}catch(e){}});}
 
-/* HAPTIC */
+/* ── HAPTIC ── */
 function haptic(ms=8){if(navigator.vibrate)navigator.vibrate(ms);}
 
-/* AUDIO */
+/* ── AUDIO ── */
 let AC=null,musicPlaying=false;
 const origMusic=document.getElementById('bg-music');
 const joyMusic=document.getElementById('bg-music-2');
@@ -480,24 +589,18 @@ function getAC(){
   if(AC.state==='suspended')AC.resume();
   return AC;
 }
-
 function startMusic(){
   activeMusic.volume=0;
   activeMusic.play().then(()=>{
-    musicPlaying=true;
-    let v=0;
+    musicPlaying=true;let v=0;
     const step=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(step,100);};
-    setTimeout(step,200);
-    showMusicPill();
+    setTimeout(step,200);showMusicPill();
   }).catch(()=>{});
 }
-
 function showMusicPill(){
   const p=document.getElementById('music-pill');
-  p.style.display='flex';
-  setTimeout(()=>p.classList.add('visible'),100);
+  p.style.display='flex';setTimeout(()=>p.classList.add('visible'),100);
 }
-
 function toggleMusic(){
   const bars=document.getElementById('music-bars'),label=document.getElementById('pill-label');
   if(musicPlaying){
@@ -511,54 +614,30 @@ function toggleMusic(){
   }
 }
 
-/* ═══ CROSSFADE FIX ═══
-   The trick: on first user tap (enterWorld), we play joyMusic at volume 0 and leave
-   it playing silently. This satisfies iOS's "user gesture" requirement. When 
-   crossfadeToJoy() fires later (no gesture required), we just ramp volumes.
-   We NEVER pause joyMusic after priming it. */
 let joyPrimed=false;
-
 function primeJoyMusic(){
-  if(joyPrimed)return;
-  joyPrimed=true;
+  if(joyPrimed)return;joyPrimed=true;
   joyMusic.volume=0;
-  joyMusic.play().then(()=>{
-    // Leave it running silently — this is intentional.
-    // Do NOT call joyMusic.pause() here.
-  }).catch(()=>{joyPrimed=false;});
+  joyMusic.play().then(()=>{}).catch(()=>{joyPrimed=false;});
 }
-
 function crossfadeToJoy(){
   if(activeMusic===joyMusic)return;
-  if(!joyPrimed){
-    // Fallback if prime failed (shouldn't happen but just in case)
-    joyMusic.volume=0;
-    joyMusic.play().catch(()=>{});
-  }
-  const oldMusic=activeMusic;
-  activeMusic=joyMusic;
-  targetVol=0.38;
+  if(!joyPrimed){joyMusic.volume=0;joyMusic.play().catch(()=>{});}
+  const oldMusic=activeMusic;activeMusic=joyMusic;targetVol=0.38;
   let vOld=oldMusic.volume,vNew=joyMusic.volume;
   const step=()=>{
-    vOld=Math.max(vOld-0.015,0);
-    vNew=Math.min(vNew+0.015,targetVol);
-    oldMusic.volume=vOld;
-    joyMusic.volume=vNew;
-    if(vOld>0||vNew<targetVol)setTimeout(step,40);
-    else oldMusic.pause();
-  };
-  step();
+    vOld=Math.max(vOld-0.015,0);vNew=Math.min(vNew+0.015,targetVol);
+    oldMusic.volume=vOld;joyMusic.volume=vNew;
+    if(vOld>0||vNew<targetVol)setTimeout(step,40);else oldMusic.pause();
+  };step();
 }
-
 function startAmbient(){
   const ac=getAC();if(!ac)return;
   const mg=ac.createGain();mg.gain.setValueAtTime(0,ac.currentTime);mg.gain.linearRampToValueAtTime(0.05,ac.currentTime+3);mg.connect(ac.destination);
   const lfo=ac.createOscillator();lfo.frequency.value=0.08;lfo.type='sine';
-  const lfoG=ac.createGain();lfoG.gain.value=0.025;
-  lfo.connect(lfoG);lfoG.connect(mg.gain);lfo.start();
+  const lfoG=ac.createGain();lfoG.gain.value=0.025;lfo.connect(lfoG);lfoG.connect(mg.gain);lfo.start();
   [[110,1],[165,0.6],[55,0.35]].forEach(([f,v])=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;const g=ac.createGain();g.gain.value=v;o.connect(g);g.connect(mg);o.start();});
 }
-
 function playEntryBloom(){
   const ac=getAC();if(!ac)return;
   const freqs=[110,138.59,164.81,207.65,220,277.18];
@@ -566,7 +645,6 @@ function playEntryBloom(){
   mg.gain.setValueAtTime(0,ac.currentTime);mg.gain.linearRampToValueAtTime(0.16,ac.currentTime+0.08);mg.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);
   freqs.forEach((f,i)=>{const o=ac.createOscillator();o.type='sine';o.frequency.value=f;const g=ac.createGain();g.gain.value=0;g.gain.setValueAtTime(0,ac.currentTime+i*0.04);g.gain.linearRampToValueAtTime(0.7-i*0.08,ac.currentTime+i*0.04+0.12);g.gain.linearRampToValueAtTime(0,ac.currentTime+3.5);o.connect(g);g.connect(mg);o.start(ac.currentTime+i*0.04);o.stop(ac.currentTime+4);});
 }
-
 function playTypeTick(){
   const ac=getAC();if(!ac)return;
   const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);const data=buf.getChannelData(0);
@@ -576,7 +654,16 @@ function playTypeTick(){
   const g=ac.createGain();g.gain.value=0.28;
   src.connect(bp);bp.connect(g);g.connect(ac.destination);src.start();
 }
-
+function playTypeTick_slow(){
+  // Softer tick for the "And you" slow typewriter
+  const ac=getAC();if(!ac)return;
+  const buf=ac.createBuffer(1,ac.sampleRate*0.04,ac.sampleRate);const data=buf.getChannelData(0);
+  for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(data.length*0.2));
+  const src=ac.createBufferSource();src.buffer=buf;
+  const bp=ac.createBiquadFilter();bp.type='bandpass';bp.frequency.value=500+Math.random()*200;bp.Q.value=2.5;
+  const g=ac.createGain();g.gain.value=0.14;
+  src.connect(bp);bp.connect(g);g.connect(ac.destination);src.start();
+}
 function playCardFlip(){
   const ac=getAC();if(!ac)return;
   const dur=0.35;const buf=ac.createBuffer(1,ac.sampleRate*dur,ac.sampleRate);const data=buf.getChannelData(0);
@@ -586,7 +673,6 @@ function playCardFlip(){
   const g=ac.createGain();g.gain.setValueAtTime(0.22,ac.currentTime);g.gain.linearRampToValueAtTime(0,ac.currentTime+dur);
   src.connect(hp);hp.connect(g);g.connect(ac.destination);src.start();src.stop(ac.currentTime+dur+0.05);
 }
-
 function playPolaroid(){
   const ac=getAC();if(!ac)return;
   const buf=ac.createBuffer(1,ac.sampleRate*0.08,ac.sampleRate);const d=buf.getChannelData(0);
@@ -598,7 +684,6 @@ function playPolaroid(){
   const g2=ac.createGain();g2.gain.setValueAtTime(0.06,ac.currentTime+0.01);g2.gain.linearRampToValueAtTime(0,ac.currentTime+0.25);
   osc.connect(g2);g2.connect(ac.destination);osc.start(ac.currentTime+0.01);osc.stop(ac.currentTime+0.3);
 }
-
 function playTransition(){
   const ac=getAC();if(!ac)return;
   const osc=ac.createOscillator();osc.type='sine';osc.frequency.value=73.4;
@@ -608,7 +693,20 @@ function playTransition(){
   osc.connect(g);g.connect(ac.destination);osc2.connect(g2);g2.connect(ac.destination);
   osc.start();osc.stop(ac.currentTime+2);osc2.start();osc2.stop(ac.currentTime+2);
 }
-
+function playSecretFlip(){
+  // Delicate reverse-shimmer for the secret polaroid
+  const ac=getAC();if(!ac)return;
+  const freqs=[523.25,659.25,783.99];
+  freqs.forEach((f,i)=>{
+    const o=ac.createOscillator();o.type='sine';o.frequency.value=f;
+    const g=ac.createGain();
+    g.gain.setValueAtTime(0,ac.currentTime+i*0.06);
+    g.gain.linearRampToValueAtTime(0.07,ac.currentTime+i*0.06+0.05);
+    g.gain.linearRampToValueAtTime(0,ac.currentTime+i*0.06+0.6);
+    o.connect(g);g.connect(ac.destination);
+    o.start(ac.currentTime+i*0.06);o.stop(ac.currentTime+i*0.06+0.7);
+  });
+}
 const CHIME_NOTES=[261.63,329.63,392.0,493.88];
 function playChime(i){
   const ac=getAC();if(!ac)return;
@@ -621,7 +719,7 @@ function playChime(i){
   o1.start();o1.stop(ac.currentTime+4);o2.start();o2.stop(ac.currentTime+2);
 }
 
-/* INTRO */
+/* ── INTRO ── */
 function runIntroScreen(){
   const letters=document.querySelectorAll('.intro-letter'),intro=document.getElementById('intro-screen');
   letters.forEach((l,i)=>setTimeout(()=>l.classList.add('appear'),300+i*220));
@@ -633,7 +731,7 @@ function runIntroScreen(){
 }
 runIntroScreen();
 
-/* CARD FLIP */
+/* ── CARD FLIP ── */
 const cardFlipped=[false,false,false,false,false];
 function onCardFlip(cardEl,idx){
   haptic(8);
@@ -641,38 +739,83 @@ function onCardFlip(cardEl,idx){
   playCardFlip();cardEl.classList.add('flipped');
   if(!cardFlipped[idx]){
     cardFlipped[idx]=true;
-    const chat=cardEl.querySelector('.wa-chat'),typing=chat.querySelector('.wa-typing'),msgs=chat.querySelectorAll('.msg');
+    const chat=cardEl.querySelector('.wa-chat'),typing=chat.querySelector('.wa-typing'),msgs=chat.querySelectorAll('.msg:not(.slip)');
     typing.classList.add('active');
-    setTimeout(()=>{typing.classList.remove('active');msgs.forEach((m,i)=>setTimeout(()=>m.classList.add('shown'),i*280));},1500);
+    setTimeout(()=>{
+      typing.classList.remove('active');
+      msgs.forEach((m,i)=>setTimeout(()=>m.classList.add('shown'),i*280));
+      // UPGRADE 5: Show slip message after all others appear (card 03 only, idx=2)
+      if(idx===2){
+        const slip=chat.querySelector('.msg.slip');
+        if(slip){
+          const delay=msgs.length*280+800;
+          setTimeout(()=>{
+            slip.style.opacity='1';
+            slip.style.transform='translateY(0)';
+            // scroll to bottom of chat
+            setTimeout(()=>{chat.scrollTo({top:chat.scrollHeight,behavior:'smooth'});},150);
+          },delay);
+        }
+      }
+    },1500);
   }
 }
 function staggerCards(){document.querySelectorAll('.card-container').forEach((c,i)=>setTimeout(()=>c.classList.add('appeared'),i*160));}
 
-/* POLAROID PARALLAX */
-function onPolaroidTap(el){haptic(8);playPolaroid();}
+/* ── POLAROID PARALLAX ── */
 const PARALLAX_SPEEDS=[0.06,-0.04,0.08,-0.06,0.05,-0.07,0.04];
-const BASE_ROTS=[-2.5,3,-1.5,2,-3,1.5,-2];
+const BASE_ROTS=[-2.5,3,0,2,-3,1.5,-2]; // secret polaroid (idx 2) has no rotation class, managed separately
 let act3ScrollActive=false;
 
+function onPolaroidTap(el,isSecret){
+  if(isSecret)return;
+  haptic(8);playPolaroid();
+}
+
+/* UPGRADE 1: Secret polaroid tap handler */
+let secretFlipped=false;
+function onSecretPolaroidTap(el){
+  haptic(12);
+  const inner=document.getElementById('secret-polaroid-inner');
+  if(!secretFlipped){
+    playSecretFlip();
+    el.style.transform='rotate(0deg) rotateY(180deg)';
+    secretFlipped=true;
+  } else {
+    playCardFlip();
+    el.style.transform='rotate(-1.5deg) rotateY(0deg)';
+    secretFlipped=false;
+  }
+}
+
 function initPolaroidParallax(){
-  const stack=document.getElementById('polaroid-stack'),polaroids=stack.querySelectorAll('.polaroid');
+  const stack=document.getElementById('polaroid-stack');
+  const allPolaroids=stack.querySelectorAll('.polaroid');
   act3ScrollActive=true;
   function onScroll(){
     if(!act3ScrollActive)return;
     const r=stack.getBoundingClientRect(),vh=window.innerHeight,progress=(vh-r.top)/(vh+r.height);
-    polaroids.forEach((p,i)=>{
+    allPolaroids.forEach((p,i)=>{
+      if(p.id==='secret-polaroid'){
+        // managed by flip system; just translate
+        if(!secretFlipped){
+          const offset=(progress-0.5)*vh*(PARALLAX_SPEEDS[i]||0.05);
+          p.style.transform=`rotate(-1.5deg) rotateY(0deg) translateY(${offset}px)`;
+        }
+        return;
+      }
+      const rot=BASE_ROTS[i]||0;
       const offset=(progress-0.5)*vh*(PARALLAX_SPEEDS[i]||0.05);
-      p.style.transform=`rotate(${BASE_ROTS[i]||0}deg) translateY(${offset}px)`;
+      p.style.transform=`rotate(${rot}deg) translateY(${offset}px)`;
     });
   }
   window.addEventListener('scroll',onScroll,{passive:true});
   onScroll();
 }
 
-/* VOICE NOTE */
+/* ── VOICE NOTE ── */
 const voiceAudio=document.getElementById('voice-audio');
 let voicePlaying=false;
-
 function buildWaveform(){
   const wf=document.getElementById('voice-waveform');
   [30,50,70,55,80,45,65,90,50,40,75,60,85,45,55,70,40,65,80,50,45,70,55,60,40].forEach((h,i)=>{
@@ -683,14 +826,12 @@ function buildWaveform(){
   });
 }
 buildWaveform();
-
 voiceAudio.addEventListener('loadedmetadata',()=>{
   if(voiceAudio.duration&&isFinite(voiceAudio.duration)){
     const m=Math.floor(voiceAudio.duration/60),s=Math.floor(voiceAudio.duration%60).toString().padStart(2,'0');
     document.getElementById('voice-duration').textContent=`${m}:${s}`;
   }
 });
-
 voiceAudio.addEventListener('timeupdate',()=>{
   if(!voicePlaying)return;
   const pct=voiceAudio.duration?voiceAudio.currentTime/voiceAudio.duration:0;
@@ -699,7 +840,6 @@ voiceAudio.addEventListener('timeupdate',()=>{
   const m=Math.floor(voiceAudio.currentTime/60),s=Math.floor(voiceAudio.currentTime%60).toString().padStart(2,'0');
   document.getElementById('voice-duration').textContent=`${m}:${s}`;
 });
-
 voiceAudio.addEventListener('ended',()=>{
   voicePlaying=false;
   document.getElementById('voice-play-icon').textContent='▶';
@@ -709,43 +849,73 @@ voiceAudio.addEventListener('ended',()=>{
     const m=Math.floor(voiceAudio.duration/60),s=Math.floor(voiceAudio.duration%60).toString().padStart(2,'0');
     document.getElementById('voice-duration').textContent=`${m}:${s}`;
   }
-  // Restore music
   if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
+  // UPGRADE 3: After voice note ends → show stillness veil for 3s, then reveal ask-block
+  triggerStillnessVeil();
 });
-
 function toggleVoiceNote(){
   haptic(10);
   if(AC&&AC.state==='suspended')AC.resume();
-  const icon=document.getElementById('voice-play-icon'),player=document.getElementById('voice-player'),dur=document.getElementById('voice-duration');
+  const icon=document.getElementById('voice-play-icon'),player=document.getElementById('voice-player');
   if(voicePlaying){
     voiceAudio.pause();voicePlaying=false;icon.textContent='▶';player.classList.remove('playing');
     if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
     return;
   }
-  // Dim music to near-zero fast
   if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.max(v-0.03,0.01);activeMusic.volume=v;if(v>0.01)setTimeout(fade,30);};fade();}
   if(voiceAudio.ended||voiceAudio.currentTime>=(voiceAudio.duration||Infinity))voiceAudio.currentTime=0;
   voiceAudio.play().then(()=>{
     voicePlaying=true;icon.textContent='⏸';player.classList.add('playing');
   }).catch(err=>{
-    icon.textContent='▶';player.classList.remove('playing');dur.textContent='error';dur.style.color='#e87070';
-    console.warn('Voice note error:',err.message,'src:',voiceAudio.currentSrc);
+    icon.textContent='▶';player.classList.remove('playing');
+    document.getElementById('voice-duration').textContent='error';
+    document.getElementById('voice-duration').style.color='#e87070';
     if(musicPlaying){let v=activeMusic.volume;const fade=()=>{v=Math.min(v+0.01,targetVol);activeMusic.volume=v;if(v<targetVol)setTimeout(fade,80);};fade();}
   });
 }
 
-/* STAR FIELD */
+/* ── UPGRADE 3: STILLNESS VEIL ── */
+let askBlockRevealed=false;
+function triggerStillnessVeil(){
+  if(askBlockRevealed)return; // only once
+  const veil=document.getElementById('stillness-veil');
+  buildStarField('veil-stars',160);
+  veil.classList.add('visible');
+  // After 3 seconds, fade out and reveal ask block
+  setTimeout(()=>{
+    veil.classList.remove('visible');
+    setTimeout(()=>{
+      revealAskBlock();
+    },1200);
+  },3000);
+}
+function revealAskBlock(){
+  if(askBlockRevealed)return;
+  askBlockRevealed=true;
+  const askBlock=document.getElementById('ask-block');
+  askBlock.classList.add('revealed');
+  playChime(3);
+  crossfadeToJoy();
+  playEntryBloom();
+  setTimeout(typeAskQuestion,600);
+}
+
+/* ── STAR FIELD ── */
 function buildStarField(id,count){
   const sf=document.getElementById(id);if(!sf)return;
+  // Don't double-build
+  if(sf.children.length>0&&id!=='veil-stars')return;
   for(let i=0;i<count;i++){
     const s=document.createElement('div');s.className='star';const size=Math.random()*2.5+0.5;
     s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;--delay:${(Math.random()*5).toFixed(1)}s;--peak:${(Math.random()*0.5+0.3).toFixed(2)};`;
     sf.appendChild(s);
   }
 }
-buildStarField('stars',300);buildStarField('bg-stars',200);buildStarField('epilogue-stars',350);
+buildStarField('stars',300);
+buildStarField('bg-stars',200);
+buildStarField('epilogue-stars',350);
 
-/* PROGRESS THREAD */
+/* ── PROGRESS THREAD ── */
 const ACT_LABELS={act1:'prologue',act2:'receipts',act3:'gallery',act4:'chapter',act5:'here'};
 const ACT_PROGRESS={act1:20,act2:42,act3:64,act4:85,act5:100};
 function setProgress(pct,label){
@@ -755,15 +925,15 @@ function setProgress(pct,label){
 }
 function showProgressThread(){document.getElementById('progress-thread').classList.add('visible');}
 
-/* NAV */
+/* ── NAV ── */
 let currentAct=0;
+let worldEnteredAt=null; // for 7-min timer
 
 function enterWorld(){
-  getAC();
-  primeJoyMusic(); // prime while we have a user gesture
-  startAmbient();startMusic();playEntryBloom();
+  getAC();primeJoyMusic();startAmbient();startMusic();playEntryBloom();
   const landing=document.getElementById('landing');
   landing.style.opacity='0';landing.style.pointerEvents='none';
+  worldEnteredAt=Date.now();
   setTimeout(()=>{
     landing.classList.add('hidden');showProgressThread();setProgress(ACT_PROGRESS.act1,ACT_LABELS.act1);
     const a=document.getElementById('act1');a.style.display='flex';
@@ -806,43 +976,104 @@ function goToAct4(){
   fadeOut('act3',()=>{
     window.scrollTo(0,0);const a=document.getElementById('act4');a.classList.remove('hidden');a.style.display='flex';
     setTimeout(()=>{a.classList.add('visible');initScrollReveal();},80);
+    // Start 7-minute timer
+    start7MinTimer();
   });currentAct=4;
 }
 
-/* ACT IV SCROLL REVEAL */
-let epilogueTriggered=false,chimeIndex=0;
-
+/* ── ACT IV SCROLL REVEAL ── */
+let chimeIndex=0;
 function initScrollReveal(){
-  const blocks=['fb1','fb2','fb3','and-you-section','voice-note-section','ask-block','reply-section'].map(id=>document.getElementById(id));
+  // Observe everything except ask-block (which is now triggered by veil)
+  const blockIds=['fb1','fb2','fb3','and-you-section','voice-note-section'];
+  const replyId='reply-section';
+  const blocks=blockIds.map(id=>document.getElementById(id)).filter(Boolean);
+  const replyBlock=document.getElementById(replyId);
+
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
-        entry.target.classList.add('revealed');playChime(chimeIndex++);
-        if(entry.target.id==='ask-block'){
-          // Crossfade music THEN type out "I love you, Zusi Billions."
-          crossfadeToJoy();
-          playEntryBloom();
-          setTimeout(typeAskQuestion,600);
-          if(!epilogueTriggered){epilogueTriggered=true;setTimeout(showEpilogue,90000);}
+        entry.target.classList.add('revealed');
+        playChime(chimeIndex++);
+        // UPGRADE 2: Typed "And you" block
+        if(entry.target.id==='and-you-section'){
+          setTimeout(typeAndYouBlock,400);
         }
       }
     });
-  },{threshold:0.2,rootMargin:'0px 0px -60px 0px'});
-  blocks.forEach(b=>{if(b)obs.observe(b);});
+  },{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
+
+  blocks.forEach(b=>obs.observe(b));
+
+  const replyObs=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting&&!entry.target.classList.contains('revealed')){
+        entry.target.classList.add('revealed');
+        // Show epilogue trigger after reply section appears
+        setTimeout(showEpilogueTrigger,1800);
+      }
+    });
+  },{threshold:0.1});
+  if(replyBlock)replyObs.observe(replyBlock);
 }
 
-/* TYPE OUT "I love you, Zusi Billions." */
+/* ── UPGRADE 2: SLOW TYPED "AND YOU" BLOCK ── */
+const AND_YOU_SEGMENTS=[
+  {text:'Through all of it, from the early mornings, to the invoices for £12.99, to the late calls where you fell asleep mid-sentence and still charged me a thank you, ',italic:false},
+  {text:'you have been the most natural constant.',italic:false},
+  {text:' ',italic:false},
+  {text:'I want to build all of this with you.',italic:true},
+];
+
+function typeAndYouBlock(){
+  const container=document.getElementById('and-you-typed');
+  container.innerHTML='<span class="and-you-cursor"></span>';
+  const cursor=container.querySelector('.and-you-cursor');
+
+  let segIdx=0,charIdx=0;
+
+  function typeNext(){
+    if(segIdx>=AND_YOU_SEGMENTS.length){
+      // Done — remove cursor, reveal handwriting
+      cursor.remove();
+      setTimeout(()=>{
+        document.getElementById('handwriting-wrap').classList.add('show');
+      },600);
+      return;
+    }
+    const seg=AND_YOU_SEGMENTS[segIdx];
+    if(charIdx>=seg.text.length){segIdx++;charIdx=0;typeNext();return;}
+
+    const ch=seg.text[charIdx];
+    const span=document.createElement(seg.italic?'em':'span');
+    span.textContent=ch;
+    if(seg.italic)span.style.color='var(--gold2)';
+    cursor.insertAdjacentElement('beforebegin',span);
+
+    if(ch!==' ')playTypeTick_slow();
+    charIdx++;
+
+    // Slow: 80-160ms per character, pauses at punctuation
+    let delay=80+Math.random()*80;
+    if(ch==='.'||ch==='!')delay=520;
+    else if(ch===',')delay=300;
+    else if(ch===' ')delay=55;
+    setTimeout(typeNext,delay);
+  }
+
+  setTimeout(typeNext,200);
+}
+
+/* ── TYPE OUT "I love you, Zusi Billions." ── */
 const ASK_TEXT='I love you, Zusi Billions.';
 function typeAskQuestion(){
   const el=document.getElementById('ask-question');el.textContent='';let i=0;
   function type(){
     if(i<ASK_TEXT.length){
-      el.textContent+=ASK_TEXT[i];i++;
-      playTypeTick();
+      el.textContent+=ASK_TEXT[i];i++;playTypeTick();
       const ch=ASK_TEXT[i-1];
       setTimeout(type,ch===','?280:ch==='.'?400:90+Math.random()*30);
     }else{
-      // After text complete, fade in the body copy and spread align word
       setTimeout(()=>{
         document.getElementById('ask-open').style.opacity='1';
         setTimeout(()=>{const aw=document.getElementById('align-word');if(aw)aw.classList.add('spread');},1200);
@@ -852,7 +1083,20 @@ function typeAskQuestion(){
   type();
 }
 
-/* ACT V EPILOGUE */
+/* ── UPGRADE 4: MANUAL EPILOGUE TRIGGER ── */
+function showEpilogueTrigger(){
+  const trigger=document.getElementById('epilogue-trigger');
+  trigger.classList.add('show');
+  setTimeout(()=>trigger.classList.add('visible'),80);
+}
+
+function triggerEpilogueManual(){
+  haptic(15);
+  document.getElementById('epilogue-trigger').style.opacity='0';
+  setTimeout(showEpilogue,400);
+}
+
+/* ── ACT V EPILOGUE ── */
 const EPILOGUE_TEXT="whenever you're ready, I'm here";
 function showEpilogue(){
   setProgress(100,ACT_LABELS.act5);
@@ -869,7 +1113,32 @@ function typeEpilogue(){
   type();
 }
 
-/* SCROLL PROGRESS act4 */
+/* ── UPGRADE 6: 7-MINUTE GHOST LINE ── */
+let sevenMinShown=false;
+function start7MinTimer(){
+  if(!worldEnteredAt)worldEnteredAt=Date.now();
+  const targetMs=7*60*1000;
+  const elapsed=Date.now()-worldEnteredAt;
+  const remaining=Math.max(0,targetMs-elapsed);
+  setTimeout(()=>{
+    if(sevenMinShown||currentAct!==4)return; // only show in act 4
+    sevenMinShown=true;
+    const line=document.getElementById('seven-min-line');
+    line.textContent='you\'ve been here 7 minutes. that means something.';
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        line.classList.add('appeared');
+        // Fade out after 8 seconds
+        setTimeout(()=>{
+          line.classList.remove('appeared');
+          line.classList.add('fading');
+        },8000);
+      });
+    });
+  },remaining);
+}
+
+/* ── SCROLL PROGRESS act4 ── */
 window.addEventListener('scroll',()=>{
   if(currentAct!==4)return;
   const doc=document.documentElement,st=window.scrollY||doc.scrollTop,sh=doc.scrollHeight-doc.clientHeight;
@@ -878,7 +1147,7 @@ window.addEventListener('scroll',()=>{
   setProgress(Math.min(pct,ACT_PROGRESS.act5-2));
 },{passive:true});
 
-/* REPLY FIELD */
+/* ── REPLY FIELD ── */
 const replyField=document.getElementById('reply-field'),sendBtn=document.getElementById('send-reply-btn');
 replyField.addEventListener('input',function(){
   this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px';
