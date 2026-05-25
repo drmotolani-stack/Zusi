@@ -198,8 +198,8 @@
   .voice-play-btn{width:44px;height:44px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.2s ease;}
   .voice-player:active .voice-play-btn{transform:scale(0.93);}
   .voice-play-icon{font-size:1.1rem;color:var(--night);margin-left:3px;}
-  .voice-waveform{display:flex;align-items:center;gap:2.5px;flex:1;}
-  .wv-bar{background:rgba(201,169,110,0.35);border-radius:2px;width:3px;transition:background 0.3s ease;}
+  .voice-waveform{display:flex;align-items:center;gap:2.5px;flex:1;position:relative;touch-action:none;cursor:pointer;}
+  .wv-bar{background:rgba(201,169,110,0.35);border-radius:2px;width:3px;transition:background 0.1s ease;pointer-events:none;}
   .wv-bar.played{background:rgba(201,169,110,0.85);}
   .voice-duration{font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;color:var(--mist);flex-shrink:0;}
   .voice-player.playing .wv-bar{animation:wv-pulse var(--wv-spd,0.6s) ease-in-out infinite alternate;animation-delay:var(--wv-delay,0s);}
@@ -285,7 +285,6 @@
   <span class="pill-label" id="pill-label">Music on</span>
 </div>
 
-<!-- STILLNESS VEIL -->
 <div id="stillness-veil">
   <div class="veil-stars" id="veil-stars"></div>
 </div>
@@ -320,7 +319,6 @@
   </div>
 </div>
 
-<!-- ACT I -->
 <div class="act" id="act1">
   <div class="prologue-wrap">
     <div class="act-label">I - Prologue</div>
@@ -332,7 +330,6 @@
   </div>
 </div>
 
-<!-- ACT II -->
 <div class="act hidden" id="act2">
   <div class="act-label">II - The Receipts</div>
   <div class="section-heading">Things that happened<br><em>that we cannot deny</em></div>
@@ -427,7 +424,6 @@
   <button class="next-btn" onclick="goToAct3()">The Gallery &nbsp;→</button>
 </div>
 
-<!-- ACT III -->
 <div class="act hidden" id="act3">
   <div class="act-label">III - The Late Nights</div>
   <div class="section-heading">Exhibits:<br><em>she's that girl</em></div>
@@ -446,8 +442,7 @@
       <div class="date-stamp">05·02<br>2026</div>
     </div>
 
-    <!-- SECRET POLAROID -->
-    <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)">
+        <div class="polaroid secret-polaroid" id="secret-polaroid" onclick="onSecretPolaroidTap(this)">
       <div class="polaroid-inner" id="secret-polaroid-inner">
         <div class="polaroid-front">
           <img src="photo4.jpg" alt="Screen share">
@@ -488,7 +483,6 @@
   <button class="next-btn" onclick="goToAct3_5()">Vivid Imaginationsss &nbsp;→</button>
 </div>
 
-<!-- ACT III.V -->
 <div class="act hidden" id="act3-5">
   <div style="padding: 0 24px; width: 100%; text-align: center;">
     <div class="act-label">III.V - Vivid Imaginationsss</div>
@@ -568,7 +562,6 @@
   </div>
 </div>
 
-<!-- ACT IV -->
 <div class="act hidden" id="act4" style="display:none;flex-direction:column;align-items:center;padding:0;min-height:100vh;">
   <div style="padding:60px 24px 0;text-align:center;width:100%;">
     <div class="act-label">IV - The Next Chapter</div>
@@ -604,7 +597,7 @@
         <div class="voice-note-label">a voice note</div>
         <div class="voice-player" id="voice-player" onclick="toggleVoiceNote()">
           <div class="voice-play-btn" id="voice-play-btn"><span class="voice-play-icon" id="voice-play-icon">▶</span></div>
-          <div class="voice-waveform" id="voice-waveform"></div>
+          <div class="voice-waveform" id="voice-waveform" onclick="event.stopPropagation()"></div>
           <span class="voice-duration" id="voice-duration">1:10</span>
         </div>
       </div>
@@ -895,6 +888,53 @@ function buildWaveform(){
   });
 }
 buildWaveform();
+
+/* ── VOICE NOTE SCRUBBING ── */
+const wfContainer = document.getElementById('voice-waveform');
+let isScrubbing = false;
+
+function updateVoiceTime(clientX) {
+  if (!voiceAudio.duration || !isFinite(voiceAudio.duration)) return;
+  const rect = wfContainer.getBoundingClientRect();
+  const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+  const pct = x / rect.width;
+  voiceAudio.currentTime = pct * voiceAudio.duration;
+  
+  const bars = document.querySelectorAll('.wv-bar');
+  const played = Math.floor(pct * bars.length);
+  bars.forEach((b, i) => b.classList.toggle('played', i < played));
+  
+  const m = Math.floor(voiceAudio.currentTime / 60);
+  const s = Math.floor(voiceAudio.currentTime % 60).toString().padStart(2, '0');
+  document.getElementById('voice-duration').textContent = `${m}:${s}`;
+}
+
+wfContainer.addEventListener('mousedown', (e) => {
+  e.stopPropagation();
+  isScrubbing = true;
+  updateVoiceTime(e.clientX);
+});
+window.addEventListener('mousemove', (e) => {
+  if (isScrubbing) updateVoiceTime(e.clientX);
+});
+window.addEventListener('mouseup', () => isScrubbing = false);
+
+wfContainer.addEventListener('touchstart', (e) => {
+  e.stopPropagation();
+  isScrubbing = true;
+  updateVoiceTime(e.touches[0].clientX);
+}, { passive: true });
+
+window.addEventListener('touchmove', (e) => {
+  if (isScrubbing) {
+    e.preventDefault();
+    updateVoiceTime(e.touches[0].clientX);
+  }
+}, { passive: false });
+
+window.addEventListener('touchend', () => isScrubbing = false);
+
+
 voiceAudio.addEventListener('loadedmetadata',()=>{
   if(voiceAudio.duration&&isFinite(voiceAudio.duration)){
     const m=Math.floor(voiceAudio.duration/60),s=Math.floor(voiceAudio.duration%60).toString().padStart(2,'0');
